@@ -14,6 +14,8 @@ dewa-bike-tour/
 ├── contact.html                                      # Halaman Kontak & Form Reservasi
 ├── .nojekyll                                         # Konfigurasi GitHub Pages
 ├── README.md                                         # Panduan & Dokumentasi
+├── images/
+│   └── logo.png                                      # Logo Resmi Dewa Bike (1000x1000 PNG)
 │
 ├── css/
 │   └── style.css                                     # Stylesheet Modern & Responsive
