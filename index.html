@@ -19,7 +19,7 @@
   <!-- Main Stylesheet -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
 
@@ -45,7 +45,8 @@
   <header class="site-header" id="header">
     <div class="container header-container">
       <a href="#hero" class="brand-logo">
-        <img src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img">
+        <!-- [TAG FOTO: foto-logo-header] -->
+            <img id="foto-logo-header" data-tag="foto-logo-header" src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img">
         <div class="logo-text">
           <span class="logo-title">DEWA BIKE TOUR</span>
           <span class="logo-subtitle">Ubud Private Cycling • Bali</span>
@@ -119,7 +120,8 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="hero-section" id="hero">
+  <!-- [TAG FOTO: foto-hero-bg] -->
+  <section class="hero-section" id="hero" data-tag="foto-hero-bg" style="background-image: url('images/hero-bg.jpg'); background-position: center 46%;">
     <div class="hero-overlay"></div>
     <div class="container hero-container">
       <div class="hero-content">
@@ -166,10 +168,12 @@
     <div class="container about-grid">
       <div class="about-images">
         <div class="img-wrapper main-img">
-          <img src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80" alt="Cycling in Ubud Bali" loading="lazy">
+          <!-- [TAG FOTO: foto-about-cycling-ubud] -->
+            <img id="foto-about-cycling-ubud" data-tag="foto-about-cycling-ubud" src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80" alt="Cycling in Ubud Bali" loading="lazy">
         </div>
         <div class="img-wrapper float-img">
-          <img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=600&q=80" alt="Ubud Rice Terraces" loading="lazy">
+          <!-- [TAG FOTO: foto-about-rice-terraces] -->
+            <img id="foto-about-rice-terraces" data-tag="foto-about-rice-terraces" src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=600&q=80" alt="Ubud Rice Terraces" loading="lazy">
         </div>
       </div>
 
@@ -274,7 +278,10 @@
         <div class="package-card" data-category="cycling">
           <div class="package-badge popular">Rekomendasi Utama</div>
           <div class="package-img">
-            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=700&q=80" alt="Kintamani Volcano Downhill Tour" loading="lazy">
+            <a href="bike-tours/regular-packages/kintamani-downhill.html" class="package-img-link" title="Buka Detail Kintamani Downhill Cycling Tour">
+              <!-- [TAG FOTO: foto-paket-kintamani-downhill] -->
+            <img id="foto-paket-kintamani-downhill" data-tag="foto-paket-kintamani-downhill" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=700&q=80" alt="Kintamani Volcano Downhill Tour" loading="lazy">
+            </a>
             <div class="tour-meta-pills">
               <span>⏱️ 2.5 - 3 Jam</span>
               <span>📏 18 - 22 km</span>
@@ -283,7 +290,7 @@
           </div>
           <div class="package-body">
             <div class="package-category">CYC-01 • WISATA SEPEDA GUNUNG</div>
-            <h3 class="package-title">Kintamani Downhill Cycling Tour</h3>
+            <h3 class="package-title"><a href="bike-tours/regular-packages/kintamani-downhill.html" class="package-title-link">Kintamani Downhill Cycling Tour</a></h3>
             <p class="package-desc">
               Rute santai menurun dari dataran tinggi Kintamani dengan pemandangan magis Gunung & Danau Batur, melewati hutan bambu, pura pedesaan, dan terasering sawah.
             </p>
@@ -305,9 +312,14 @@
             </div>
 
             <div class="package-footer">
-              <button class="btn btn-primary btn-block open-booking-btn" data-tour="Kintamani Downhill" data-regular="550000" data-saving="350000">
-                Pesan Tur Kintamani
-              </button>
+              <div class="package-btn-group">
+                <a href="bike-tours/regular-packages/kintamani-downhill.html" class="btn btn-outline btn-sm">
+                  Lihat Detail
+                </a>
+                <button class="btn btn-primary btn-sm open-booking-btn" data-tour="Kintamani Downhill" data-regular="550000" data-saving="350000">
+                  Pesan Tur
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -316,7 +328,10 @@
         <div class="package-card" data-category="cycling">
           <div class="package-badge nature">Lansekap Asri</div>
           <div class="package-img">
-            <img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=700&q=80" alt="Ubud Rice Fields Cycling" loading="lazy">
+            <a href="bike-tours/regular-packages/ubud-rice-fields.html" class="package-img-link" title="Buka Detail Ubud Rice Fields & Village Tour">
+              <!-- [TAG FOTO: foto-paket-ubud-rice-fields] -->
+            <img id="foto-paket-ubud-rice-fields" data-tag="foto-paket-ubud-rice-fields" src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=700&q=80" alt="Ubud Rice Fields Cycling" loading="lazy">
+            </a>
             <div class="tour-meta-pills">
               <span>⏱️ 2 - 2.5 Jam</span>
               <span>📏 12 - 15 km</span>
@@ -325,7 +340,7 @@
           </div>
           <div class="package-body">
             <div class="package-category">CYC-02 • PEDESAAN UBUD</div>
-            <h3 class="package-title">Ubud Rice Fields & Village Tour</h3>
+            <h3 class="package-title"><a href="bike-tours/regular-packages/ubud-rice-fields.html" class="package-title-link">Ubud Rice Fields & Village Tour</a></h3>
             <p class="package-desc">
               Menjelajahi jalanan aspal kecil dan pematang sawah di pedalaman Ubud. Perpaduan tanjakan ringan, jalan datar, dan udara pedesaan yang sejuk.
             </p>
@@ -347,9 +362,14 @@
             </div>
 
             <div class="package-footer">
-              <button class="btn btn-primary btn-block open-booking-btn" data-tour="Ubud Rice Fields" data-regular="550000" data-saving="350000">
-                Pesan Tur Ubud Rice
-              </button>
+              <div class="package-btn-group">
+                <a href="bike-tours/regular-packages/ubud-rice-fields.html" class="btn btn-outline btn-sm">
+                  Lihat Detail
+                </a>
+                <button class="btn btn-primary btn-sm open-booking-btn" data-tour="Ubud Rice Fields" data-regular="550000" data-saving="350000">
+                  Pesan Tur
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -358,7 +378,10 @@
         <div class="package-card" data-category="ebike">
           <div class="package-badge ebike">Kayuhan Ringan</div>
           <div class="package-img">
-            <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=700&q=80" alt="E-Bike Ubud Rice Fields Tour" loading="lazy">
+            <a href="bike-tours/regular-packages/e-bike-ubud-rice.html" class="package-img-link" title="Buka Detail Ubud E-Bike Countryside Tour">
+              <!-- [TAG FOTO: foto-paket-ebike-countryside] -->
+            <img id="foto-paket-ebike-countryside" data-tag="foto-paket-ebike-countryside" src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=700&q=80" alt="E-Bike Ubud Rice Fields Tour" loading="lazy">
+            </a>
             <div class="tour-meta-pills">
               <span>⏱️ 2 Jam</span>
               <span>📏 15 km</span>
@@ -367,7 +390,7 @@
           </div>
           <div class="package-body">
             <div class="package-category">E-BIKE • TEKNOLOGI MODERN</div>
-            <h3 class="package-title">Ubud E-Bike Countryside Tour</h3>
+            <h3 class="package-title"><a href="bike-tours/regular-packages/e-bike-ubud-rice.html" class="package-title-link">Ubud E-Bike Countryside Tour</a></h3>
             <p class="package-desc">
               Menikmati rute perbukitan Ubud tanpa rasa lelah berlebih dengan sepeda listrik bertenaga baterai ramah lingkungan. Syarat tinggi badan minimal 150 cm.
             </p>
@@ -389,9 +412,14 @@
             </div>
 
             <div class="package-footer">
-              <button class="btn btn-primary btn-block open-booking-btn" data-tour="E-Bike Ubud Countryside" data-regular="650000" data-saving="450000">
-                Pesan E-Bike Tour
-              </button>
+              <div class="package-btn-group">
+                <a href="bike-tours/regular-packages/e-bike-ubud-rice.html" class="btn btn-outline btn-sm">
+                  Lihat Detail
+                </a>
+                <button class="btn btn-primary btn-sm open-booking-btn" data-tour="E-Bike Ubud Countryside" data-regular="650000" data-saving="450000">
+                  Pesan Tur
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -400,7 +428,10 @@
         <div class="package-card" data-category="combo">
           <div class="package-badge combo">Paket Kombinasi</div>
           <div class="package-img">
-            <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=700&q=80" alt="Cycling and River Tubing Bali" loading="lazy">
+            <a href="other-tours/combination-tours/cycling-tubing.html" class="package-img-link" title="Buka Detail Cycling + River Tubing Adventure">
+              <!-- [TAG FOTO: foto-paket-cycling-tubing] -->
+            <img id="foto-paket-cycling-tubing" data-tag="foto-paket-cycling-tubing" src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=700&q=80" alt="Cycling and River Tubing Bali" loading="lazy">
+            </a>
             <div class="tour-meta-pills">
               <span>⏱️ Full Day</span>
               <span>🚲 Sepeda + Tubing</span>
@@ -409,7 +440,7 @@
           </div>
           <div class="package-body">
             <div class="package-category">COMBO • DOUBLE ADVENTURE</div>
-            <h3 class="package-title">Cycling + River Tubing Adventure</h3>
+            <h3 class="package-title"><a href="other-tours/combination-tours/cycling-tubing.html" class="package-title-link">Cycling + River Tubing Adventure</a></h3>
             <p class="package-desc">
               Kombinasi bersepeda pagi di Ubud/Kintamani dilanjutkan bermain ban di aliran sungai alami Bali yang jernih dan menyegarkan diapit tebing hijau.
             </p>
@@ -431,9 +462,14 @@
             </div>
 
             <div class="package-footer">
-              <button class="btn btn-primary btn-block open-booking-btn" data-tour="Cycling + River Tubing" data-regular="850000" data-saving="850000">
-                Pesan Tur Tubing
-              </button>
+              <div class="package-btn-group">
+                <a href="other-tours/combination-tours/cycling-tubing.html" class="btn btn-outline btn-sm">
+                  Lihat Detail
+                </a>
+                <button class="btn btn-primary btn-sm open-booking-btn" data-tour="Cycling + River Tubing" data-regular="850000" data-saving="850000">
+                  Pesan Tur
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -442,7 +478,10 @@
         <div class="package-card" data-category="combo">
           <div class="package-badge combo">Paling Menantang</div>
           <div class="package-img">
-            <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=700&q=80" alt="Cycling and ATV Quad Bike" loading="lazy">
+            <a href="other-tours/combination-tours/cycling-atv-adventure.html" class="package-img-link" title="Buka Detail Cycling + ATV Quad Bike Adventure">
+              <!-- [TAG FOTO: foto-paket-cycling-atv] -->
+            <img id="foto-paket-cycling-atv" data-tag="foto-paket-cycling-atv" src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=700&q=80" alt="Cycling and ATV Quad Bike" loading="lazy">
+            </a>
             <div class="tour-meta-pills">
               <span>⏱️ Full Day</span>
               <span>🚲 Sepeda + ATV</span>
@@ -451,7 +490,7 @@
           </div>
           <div class="package-body">
             <div class="package-category">COMBO • HIGH ADRENALINE</div>
-            <h3 class="package-title">Cycling + ATV Quad Bike Adventure</h3>
+            <h3 class="package-title"><a href="other-tours/combination-tours/cycling-atv-adventure.html" class="package-title-link">Cycling + ATV Quad Bike Adventure</a></h3>
             <p class="package-desc">
               Pagi bersepeda santai menikmati alam desa Ubud, kemudian pacu adrenalin mengendarai motor ATV 250cc melintasi gua, terowongan air, dan lumpur.
             </p>
@@ -473,9 +512,14 @@
             </div>
 
             <div class="package-footer">
-              <button class="btn btn-primary btn-block open-booking-btn" data-tour="Cycling + ATV Quad Bike" data-regular="950000" data-saving="950000">
-                Pesan Tur ATV
-              </button>
+              <div class="package-btn-group">
+                <a href="other-tours/combination-tours/cycling-atv-adventure.html" class="btn btn-outline btn-sm">
+                  Lihat Detail
+                </a>
+                <button class="btn btn-primary btn-sm open-booking-btn" data-tour="Cycling + ATV Quad Bike" data-regular="950000" data-saving="950000">
+                  Pesan Tur
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -484,7 +528,10 @@
         <div class="package-card" data-category="combo">
           <div class="package-badge nature">Edukasi & Budaya</div>
           <div class="package-img">
-            <img src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=700&q=80" alt="Rice Paddy Planting and River Rafting" loading="lazy">
+            <a href="other-tours/other-activities/rice-paddy-planting.html" class="package-img-link" title="Buka Detail Rice Paddy Planting & Ayung Rafting">
+              <!-- [TAG FOTO: foto-paket-rice-planting-rafting] -->
+            <img id="foto-paket-rice-planting-rafting" data-tag="foto-paket-rice-planting-rafting" src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=700&q=80" alt="Rice Paddy Planting and River Rafting" loading="lazy">
+            </a>
             <div class="tour-meta-pills">
               <span>⏱️ 3 - 4 Jam</span>
               <span>🌾 Edukasi Budaya</span>
@@ -493,7 +540,7 @@
           </div>
           <div class="package-body">
             <div class="package-category">EXPERIENCE • BUDAYA LOKAL</div>
-            <h3 class="package-title">Rice Paddy Planting & Ayung Rafting</h3>
+            <h3 class="package-title"><a href="other-tours/other-activities/rice-paddy-planting.html" class="package-title-link">Rice Paddy Planting & Ayung Rafting</a></h3>
             <p class="package-desc">
               Pengalaman interaktif turun langsung ke sawah membajak tanah dengan kerbau dan menanam bibit padi, atau opsi arung jeram di Sungai Ayung Ubud.
             </p>
@@ -515,9 +562,14 @@
             </div>
 
             <div class="package-footer">
-              <button class="btn btn-primary btn-block open-booking-btn" data-tour="Rice Paddy Planting & Rafting" data-regular="450000" data-saving="350000">
-                Pesan Aktivitas Ini
-              </button>
+              <div class="package-btn-group">
+                <a href="other-tours/other-activities/rice-paddy-planting.html" class="btn btn-outline btn-sm">
+                  Lihat Detail
+                </a>
+                <button class="btn btn-primary btn-sm open-booking-btn" data-tour="Rice Paddy Planting & Rafting" data-regular="450000" data-saving="350000">
+                  Pesan Tur
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -600,37 +652,43 @@
 
       <div class="gallery-grid">
         <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=600&q=80" alt="Cycling Ubud" loading="lazy">
+          <!-- [TAG FOTO: foto-galeri-home-1] -->
+            <img id="foto-galeri-home-1" data-tag="foto-galeri-home-1" src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=600&q=80" alt="Cycling Ubud" loading="lazy">
           <div class="gallery-overlay">
             <span>Ubud Rice Field Path</span>
           </div>
         </div>
         <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Kintamani Batur View" loading="lazy">
+          <!-- [TAG FOTO: foto-galeri-home-2] -->
+            <img id="foto-galeri-home-2" data-tag="foto-galeri-home-2" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Kintamani Batur View" loading="lazy">
           <div class="gallery-overlay">
             <span>Kintamani Volcano View</span>
           </div>
         </div>
         <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=600&q=80" alt="E-Bike Experience" loading="lazy">
+          <!-- [TAG FOTO: foto-galeri-home-3] -->
+            <img id="foto-galeri-home-3" data-tag="foto-galeri-home-3" src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=600&q=80" alt="E-Bike Experience" loading="lazy">
           <div class="gallery-overlay">
             <span>E-Bike Tour Ubud</span>
           </div>
         </div>
         <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=600&q=80" alt="Village Tour" loading="lazy">
+          <!-- [TAG FOTO: foto-galeri-home-4] -->
+            <img id="foto-galeri-home-4" data-tag="foto-galeri-home-4" src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=600&q=80" alt="Village Tour" loading="lazy">
           <div class="gallery-overlay">
             <span>Tradisi Rumah Bali</span>
           </div>
         </div>
         <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=600&q=80" alt="River Tubing" loading="lazy">
+          <!-- [TAG FOTO: foto-galeri-home-5] -->
+            <img id="foto-galeri-home-5" data-tag="foto-galeri-home-5" src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=600&q=80" alt="River Tubing" loading="lazy">
           <div class="gallery-overlay">
             <span>Fun River Tubing</span>
           </div>
         </div>
         <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=600&q=80" alt="ATV Adventure" loading="lazy">
+          <!-- [TAG FOTO: foto-galeri-home-6] -->
+            <img id="foto-galeri-home-6" data-tag="foto-galeri-home-6" src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=600&q=80" alt="ATV Adventure" loading="lazy">
           <div class="gallery-overlay">
             <span>ATV Quad Bike Trail</span>
           </div>
@@ -849,7 +907,8 @@
     <div class="container footer-content">
       <div class="footer-brand">
         <div class="footer-logo">
-          <img src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img small">
+          <!-- [TAG FOTO: foto-logo-footer] -->
+            <img id="foto-logo-footer" data-tag="foto-logo-footer" src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img small">
           <span class="logo-title">DEWA BIKE TOUR</span>
         </div>
         <p>
