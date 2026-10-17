@@ -488,12 +488,22 @@ button, input, select, textarea {
 }
 
 .hero-desc {
-  font-size: 1.2rem;
-  line-height: 1.7;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.6;
   color: #f1f5f9;
-  margin-bottom: 2rem;
+  margin-bottom: 0.85rem;
   max-width: 720px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+}
+
+.hero-subtext {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+  max-width: 720px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
 }
 
 .hero-usp-row {
@@ -1911,32 +1921,23 @@ button, input, select, textarea {
     gap: 0.35rem;
     flex-shrink: 0;
   }
-  .header-actions .btn-outline {
-    display: none;
-  }
+  /* Hide header booking button and WhatsApp button on mobile (floating WA bubble is available) */
+  .header-actions .btn-outline,
   .header-actions .btn-primary {
-    padding: 0.45rem 0.65rem;
-    font-size: 0.8rem;
-    gap: 0.35rem;
-    white-space: nowrap;
-    border-radius: var(--radius-sm);
-  }
-  .header-actions .btn-primary svg {
-    width: 14px;
-    height: 14px;
+    display: none !important;
   }
   .mobile-toggle {
     display: flex;
     padding: 0.35rem;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
   .mobile-toggle span {
-    width: 20px;
-    height: 2px;
+    width: 22px;
+    height: 2.5px;
   }
 
   /* Nav Links Drawer */
@@ -1963,8 +1964,84 @@ button, input, select, textarea {
   .top-announcement {
     display: none;
   }
+
+  /* Hero Section Mobile - Center Aligned & Compact Descriptions */
+  .hero-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+  }
+  .hero-badge {
+    margin: 0 auto 1.25rem;
+  }
   .hero-title {
+    text-align: center;
     font-size: 2.1rem;
+    margin-bottom: 0.75rem;
+  }
+  .hero-desc {
+    text-align: center;
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+    margin: 0 auto 0.75rem !important;
+    max-width: 100%;
+    color: #f1f5f9;
+  }
+  .hero-subtext {
+    text-align: center;
+    font-size: 0.85rem !important;
+    line-height: 1.55 !important;
+    margin: 0 auto 1.5rem !important;
+    max-width: 100%;
+    color: #cbd5e1;
+  }
+  .hero-usp-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 1.75rem;
+    width: 100%;
+    gap: 0.65rem;
+  }
+  .usp-item {
+    width: 100%;
+    max-width: 380px;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.825rem;
+    padding: 0.45rem 0.75rem;
+  }
+  .hero-cta-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  .hero-cta-group .btn {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+  }
+
+  /* Section Title & Description - Rata Kanan Kiri (Justified with Centered Last Line) */
+  .section-title {
+    text-align: justify;
+    text-align-last: center;
+    text-justify: inter-word;
+    font-size: 1.85rem;
+    line-height: 1.25;
+  }
+  .section-desc {
+    text-align: justify;
+    text-align-last: center;
+    text-justify: inter-word;
+    font-size: 0.925rem;
+    line-height: 1.6;
   }
   .hero-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -2557,6 +2634,35 @@ button, input, select, textarea {
   .page-hero h1 {
     font-size: 1.75rem;
     line-height: 1.25;
+  }
+  .hero-title {
+    font-size: 1.85rem;
+  }
+  .hero-desc {
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+  }
+  .hero-subtext {
+    font-size: 0.8rem !important;
+    line-height: 1.45 !important;
+  }
+  .usp-item {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .section-title {
+    font-size: 1.65rem;
+    line-height: 1.25;
+    text-align: justify;
+    text-align-last: center;
+    text-justify: inter-word;
+  }
+  .section-desc {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    text-align: justify;
+    text-align-last: center;
+    text-justify: inter-word;
   }
   .tour-main-card {
     padding: 1rem 0.65rem;
