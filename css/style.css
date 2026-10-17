@@ -50,7 +50,7 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
   width: 100%;
 }
@@ -60,7 +60,7 @@ body {
   color: var(--text-main);
   background-color: var(--bg-page);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
   width: 100%;
   position: relative;
@@ -428,12 +428,20 @@ button, input, select, textarea {
 /* [TAG FOTO: foto-hero-bg] */
 .hero-section {
   position: relative;
-  background: url('../images/hero-bg.jpg') center 46% / cover no-repeat;
-  min-height: 85vh;
+  background-image: url('../images/hero-bg.jpg');
+  background-position: center 46%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: calc(100vh - 7rem);
+  height: calc(100dvh - 7rem);
+  min-height: calc(100vh - 7rem);
+  min-height: calc(100dvh - 7rem);
   display: flex;
   align-items: center;
   color: #ffffff;
-  padding: 5rem 0;
+  padding: 2.5rem 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .hero-overlay {
@@ -488,7 +496,7 @@ button, input, select, textarea {
 }
 
 .hero-desc {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-style: italic;
   line-height: 1.6;
   color: #f1f5f9;
@@ -1876,7 +1884,7 @@ button, input, select, textarea {
 @media (max-width: 768px) {
   /* Universal Overflow Prevention */
   html, body {
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     position: relative;
     width: 100% !important;
     max-width: 100% !important;
@@ -1965,8 +1973,111 @@ button, input, select, textarea {
     display: none;
   }
 
+  /* Hero Section Mobile Polish */
+  .hero-section {
+    min-height: calc(100vh - 4rem);
+    min-height: calc(100dvh - 4rem);
+    height: auto;
+    padding: 2.5rem 0 2rem;
+    background-position: center 30% !important;
+    background-size: cover !important;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.58) 35%, rgba(15, 23, 42, 0.86) 75%, rgba(15, 23, 42, 0.96) 100%);
+  }
+
+  .hero-content {
+    max-width: 100%;
+    width: 100%;
+    text-align: left;
+  }
+
+  .hero-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    margin-bottom: 0.75rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+  }
+
   .hero-title {
     font-size: 2.1rem;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-desc {
+    font-size: 1.05rem !important;
+    line-height: 1.5;
+    margin-bottom: 0.65rem;
+    color: #f1f5f9;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  }
+
+  .hero-subtext {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    margin-bottom: 1.35rem;
+    color: #cbd5e1;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  }
+
+  .hero-usp-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+
+  .usp-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    padding: 0.65rem 0.85rem;
+    background: rgba(15, 23, 42, 0.80);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-sizing: border-box;
+    width: 100%;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  }
+
+  .usp-check {
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    color: #4ade80;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+  }
+
+  .hero-cta-group .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
   }
 
   /* Section Title & Description - Rata Kanan Kiri (Justified with Centered Last Line) */
@@ -2567,6 +2678,44 @@ button, input, select, textarea {
   .page-hero .container {
     padding-left: 1.25rem !important;
     padding-right: 1.25rem !important;
+  }
+  /* Retain comfortable side spacing for Hero Banner on Small Mobile */
+  .hero-section .container,
+  .hero-container {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .hero-section {
+    padding: 2.25rem 0 1.75rem;
+    min-height: calc(100vh - 4rem);
+    min-height: calc(100dvh - 4rem);
+  }
+
+  .hero-title {
+    font-size: 1.85rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .hero-desc {
+    font-size: 0.95rem !important;
+    line-height: 1.45;
+  }
+
+  .hero-subtext {
+    font-size: 0.825rem;
+    line-height: 1.45;
+    margin-bottom: 1.1rem;
+  }
+
+  .usp-item {
+    font-size: 0.8rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .hero-cta-group .btn {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
   }
   .site-header .container {
     padding-left: 0.5rem !important;
