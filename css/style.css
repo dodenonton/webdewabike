@@ -2310,6 +2310,14 @@ button, input, select, textarea {
     padding-right: 0.75rem;
   }
 
+  /* Retain comfortable side spacing for Page Hero Banner and Header */
+  .page-hero .container,
+  .site-header .container,
+  .top-announcement .container {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
   .dropdown-menu {
     position: static;
     opacity: 1;
@@ -2438,6 +2446,16 @@ button, input, select, textarea {
   .container {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+  }
+  /* Retain comfortable side spacing for Page Hero Banner and Header */
+  .page-hero .container,
+  .site-header .container {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+  .page-hero h1 {
+    font-size: 1.75rem;
+    line-height: 1.25;
   }
   .tour-main-card {
     padding: 1rem 0.65rem;
