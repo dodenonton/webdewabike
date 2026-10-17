@@ -50,6 +50,9 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
 }
 
 body {
@@ -58,6 +61,10 @@ body {
   background-color: var(--bg-page);
   line-height: 1.6;
   overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
 }
 
 img {
@@ -1857,9 +1864,85 @@ button, input, select, textarea {
 }
 
 @media (max-width: 768px) {
+  /* Universal Overflow Prevention */
+  html, body {
+    overflow-x: hidden !important;
+    position: relative;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  section, .section-header, .container {
+    max-width: 100% !important;
+    overflow-x: clip;
+  }
+
+  /* Compact Mobile Header - Perfectly Fits Screen */
+  .site-header {
+    width: 100%;
+    max-width: 100vw;
+  }
+  .site-header .container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  .header-container {
+    height: 4rem;
+  }
+  .brand-logo {
+    gap: 0.45rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .brand-logo-img {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+  .logo-title {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+  .logo-subtitle {
+    font-size: 0.625rem;
+    white-space: nowrap;
+  }
+  .header-actions {
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+  .header-actions .btn-outline {
+    display: none;
+  }
+  .header-actions .btn-primary {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.8rem;
+    gap: 0.35rem;
+    white-space: nowrap;
+    border-radius: var(--radius-sm);
+  }
+  .header-actions .btn-primary svg {
+    width: 14px;
+    height: 14px;
+  }
+  .mobile-toggle {
+    display: flex;
+    padding: 0.35rem;
+    width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .mobile-toggle span {
+    width: 20px;
+    height: 2px;
+  }
+
+  /* Nav Links Drawer */
   .nav-links {
     position: fixed;
-    top: 4.5rem;
+    top: 4rem;
     left: 0;
     right: 0;
     background-color: #ffffff;
@@ -1869,16 +1952,14 @@ button, input, select, textarea {
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
     display: none;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .nav-links.mobile-open {
     display: flex;
   }
-  .mobile-toggle {
-    display: flex;
-  }
-  .header-actions .btn-outline {
-    display: none;
-  }
+
   .top-announcement {
     display: none;
   }
@@ -1928,9 +2009,28 @@ button, input, select, textarea {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+
+  /* Floating WhatsApp - Prevent tooltip touch spill */
   .floating-wa {
-    bottom: 1.25rem;
-    right: 1.25rem;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .wa-tooltip {
+    display: none !important;
+  }
+  .wa-icon-bubble {
+    width: 52px;
+    height: 52px;
+  }
+
+  /* Tour package card buttons & pricing wrap cleanly */
+  .package-btn-group {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .tier-line {
+    flex-wrap: wrap;
+    gap: 0.25rem;
   }
 }
 
@@ -2310,10 +2410,8 @@ button, input, select, textarea {
     padding-right: 0.75rem;
   }
 
-  /* Retain comfortable side spacing for Page Hero Banner and Header */
-  .page-hero .container,
-  .site-header .container,
-  .top-announcement .container {
+  /* Retain comfortable side spacing for Page Hero Banner */
+  .page-hero .container {
     padding-left: 1.25rem !important;
     padding-right: 1.25rem !important;
   }
@@ -2447,11 +2545,14 @@ button, input, select, textarea {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
-  /* Retain comfortable side spacing for Page Hero Banner and Header */
-  .page-hero .container,
-  .site-header .container {
+  /* Retain comfortable side spacing for Page Hero Banner */
+  .page-hero .container {
     padding-left: 1.25rem !important;
     padding-right: 1.25rem !important;
+  }
+  .site-header .container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
   .page-hero h1 {
     font-size: 1.75rem;
