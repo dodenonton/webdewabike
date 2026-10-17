@@ -2080,19 +2080,39 @@ button, input, select, textarea {
     box-sizing: border-box;
   }
 
-  /* Section Title & Description - Rata Kanan Kiri (Justified with Centered Last Line) */
+  /* Section Title & Description - Rapi, Natural, & Proporsional */
   .section-title {
-    text-align: justify;
-    text-align-last: center;
-    text-justify: inter-word;
-    font-size: 1.85rem;
+    text-align: center;
+    word-spacing: normal;
+    text-justify: auto;
+    font-size: 1.75rem;
     line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%;
   }
   .section-desc {
-    text-align: justify;
-    text-align-last: center;
-    text-justify: inter-word;
-    font-size: 0.925rem;
+    text-align: center;
+    word-spacing: normal;
+    text-justify: auto;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 540px;
+  }
+  .about-text .section-title {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+  .about-text .lead-text {
+    text-align: left;
+    font-size: 0.95rem;
     line-height: 1.6;
   }
   .hero-stats {
@@ -2533,10 +2553,10 @@ button, input, select, textarea {
 }
 
 @media (max-width: 768px) {
-  /* Site-wide Container Spacing - Compact for Mobile */
+  /* Site-wide Container Spacing - Nyaman & Rapi untuk Mobile */
   .container {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 1.15rem;
+    padding-right: 1.15rem;
   }
 
   /* Retain comfortable side spacing for Page Hero Banner */
@@ -2671,8 +2691,8 @@ button, input, select, textarea {
 /* Extra Compact Mobile Screens (Phones <= 480px, e.g. iPhone) */
 @media (max-width: 480px) {
   .container {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: 1.15rem;
+    padding-right: 1.15rem;
   }
   /* Retain comfortable side spacing for Page Hero Banner */
   .page-hero .container {
@@ -2726,18 +2746,38 @@ button, input, select, textarea {
     line-height: 1.25;
   }
   .section-title {
-    font-size: 1.65rem;
+    font-size: 1.6rem;
     line-height: 1.25;
-    text-align: justify;
-    text-align-last: center;
-    text-justify: inter-word;
+    text-align: center;
+    word-spacing: normal;
+    text-justify: auto;
+    letter-spacing: -0.01em;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%;
   }
   .section-desc {
     font-size: 0.875rem;
     line-height: 1.55;
-    text-align: justify;
-    text-align-last: center;
-    text-justify: inter-word;
+    text-align: center;
+    word-spacing: normal;
+    text-justify: auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 520px;
+  }
+  .about-text .section-title {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+  .about-text .lead-text {
+    text-align: left;
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
   .tour-main-card {
     padding: 1rem 0.65rem;
