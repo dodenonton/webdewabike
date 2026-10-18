@@ -429,7 +429,7 @@ button, input, select, textarea {
 .hero-section {
   position: relative;
   background-image: url('../images/hero-bg.jpg');
-  background-position: center 46%;
+  background-position: center 42%;
   background-size: cover;
   background-repeat: no-repeat;
   height: calc(100vh - 7rem);
@@ -666,6 +666,7 @@ button, input, select, textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 60%;
 }
 
 .float-img {
@@ -681,6 +682,7 @@ button, input, select, textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 45%;
 }
 
 .float-badge {
@@ -1000,6 +1002,30 @@ button, input, select, textarea {
 .package-card:hover .package-img img,
 .package-card:hover .package-img-link img {
   transform: scale(1.06);
+}
+
+#foto-paket-kintamani-downhill,
+#foto-allpkg-kintamani-regular,
+#foto-allpkg-kintamani-saving,
+#foto-detail-kintamani-downhill,
+#foto-saving-kintamani-downhill {
+  object-position: center 48%;
+}
+
+#foto-paket-ubud-rice-fields,
+#foto-allpkg-ubud-rice-regular,
+#foto-allpkg-ubud-rice-saving,
+#foto-detail-ubud-rice-fields,
+#foto-saving-ubud-rice-fields {
+  object-position: center 50%;
+}
+
+#foto-paket-ebike-countryside,
+#foto-allpkg-ebike-regular,
+#foto-allpkg-ebike-saving,
+#foto-detail-ebike-ubud-rice,
+#foto-saving-ebike-ubud-rice {
+  object-position: center 55%;
 }
 
 .package-title-link {

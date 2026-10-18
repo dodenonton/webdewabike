@@ -198,9 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalUSD = Math.round(total / USD_RATE);
 
     calcPricePerPerson.textContent = formatIDR(pricePerPerson);
-    calcGuestCount.textContent = `${guests} orang`;
+    calcGuestCount.textContent = `${guests} ${guests > 1 ? 'guests' : 'guest'}`;
     calcTotalIdr.textContent = formatIDR(total);
-    calcTotalUsd.textContent = `(Sekitar ~$${totalUSD} USD)`;
+    calcTotalUsd.textContent = `(Approx. ~$${totalUSD} USD)`;
   };
 
   // Open Modal logic
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalTourSelect) {
       if (packageData[tourKey]) {
         modalTourSelect.value = tourKey;
-        modalTourTitle.textContent = `Pesan: ${packageData[tourKey].title}`;
+        modalTourTitle.textContent = `Book: ${packageData[tourKey].title}`;
       } else {
         modalTourSelect.value = 'Kintamani Downhill';
       }
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalTourSelect.addEventListener('change', () => {
       const selected = modalTourSelect.value;
       if (packageData[selected]) {
-        modalTourTitle.textContent = `Pesan: ${packageData[selected].title}`;
+        modalTourTitle.textContent = `Book: ${packageData[selected].title}`;
       }
       recalculateModal();
     });
@@ -291,23 +291,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const tierLabel = selectedTier === 'regular' ? 'Regular (Inc. Lunch & Hotel Transfer)' : 'Saving (Ride Only)';
       
       const guests = modalGuestsInput.value;
-      const date = modalDate.value || 'Fleksibel';
-      const name = modalName.value.trim() || 'Pelanggan';
+      const date = modalDate.value || 'Flexible';
+      const name = modalName.value.trim() || 'Guest';
       const hotel = modalHotel.value.trim() || '-';
       const totalCost = calcTotalIdr.textContent;
 
       const message = 
-`*RESERVASI BARU - DEWA BIKE TOUR*
+`*NEW RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
-👤 *Nama*: ${name}
-🚲 *Paket Tur*: ${tourName}
-📦 *Format Paket*: ${tierLabel}
-📅 *Tanggal Tur*: ${date}
-👥 *Jumlah Peserta*: ${guests} Orang
-🏨 *Hotel / Penjemputan*: ${hotel}
-💰 *Estimasi Total*: ${totalCost}
+👤 *Name*: ${name}
+🚲 *Tour Package*: ${tourName}
+📦 *Package Tier*: ${tierLabel}
+📅 *Tour Date*: ${date}
+👥 *Number of Guests*: ${guests} ${guests > 1 ? 'Guests' : 'Guest'}
+🏨 *Hotel / Pickup Location*: ${hotel}
+💰 *Estimated Total*: ${totalCost}
 ---------------------------------------
-Halo Tim Dewa Bike Tour, mohon info ketersediaan slot untuk jadwal di atas. Terima kasih! 🙏`;
+Hello Dewa Bike Tour Team, please check slot availability for the schedule above. Thank you! 🙏`;
 
       const encodedMsg = encodeURIComponent(message);
       const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMsg}`;
@@ -339,15 +339,15 @@ Halo Tim Dewa Bike Tour, mohon info ketersediaan slot untuk jadwal di atas. Teri
       const notes = document.getElementById('cNotes').value.trim() || '-';
 
       const message = 
-`*KONSULTASI & BOOKING DEWA BIKE TOUR*
+`*INQUIRY & BOOKING - DEWA BIKE TOUR*
 ---------------------------------------
-👤 *Nama*: ${name}
-📅 *Tanggal Tur*: ${date}
-👥 *Jumlah*: ${guests} Orang
-🚲 *Paket*: ${packageSel}
-📝 *Catatan / Hotel*: ${notes}
+👤 *Name*: ${name}
+📅 *Tour Date*: ${date}
+👥 *Guests*: ${guests}
+🚲 *Package*: ${packageSel}
+📝 *Notes / Hotel*: ${notes}
 ---------------------------------------
-Halo Dewa Bike Tour, tolong konfirmasi ketersediaan paket dan harga untuk detail di atas.`;
+Hello Dewa Bike Tour, please confirm package availability and details for my trip above.`;
 
       const encoded = encodeURIComponent(message);
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
