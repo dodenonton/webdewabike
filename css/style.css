@@ -2538,6 +2538,11 @@ button, input, select, textarea {
               url('../images/page-hero-about.jpg?v=2') 78% 28% / cover no-repeat;
 }
 
+.page-hero.all-packages-hero {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(16, 91, 56, 0.75) 100%),
+              url('../images/hero-all-packages.jpg?v=1') center 45% / cover no-repeat;
+}
+
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -2818,6 +2823,11 @@ button, input, select, textarea {
   .page-hero.about-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.72) 48%, rgba(16, 91, 56, 0.62) 100%),
                 url('../images/page-hero-about.jpg?v=2') 90% 28% / cover no-repeat !important;
+  }
+
+  .page-hero.all-packages-hero {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.70) 50%, rgba(16, 91, 56, 0.65) 100%),
+                url('../images/hero-all-packages.jpg?v=1') center 45% / cover no-repeat !important;
   }
 
   .dropdown-menu {
