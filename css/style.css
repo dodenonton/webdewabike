@@ -1790,6 +1790,7 @@ button, input, select, textarea {
   align-items: center;
   gap: 0.75rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .wa-icon-bubble {
@@ -1802,6 +1803,12 @@ button, input, select, textarea {
   justify-content: center;
   box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
   transition: transform 0.3s ease;
+}
+
+.wa-icon-bubble svg {
+  width: 34px;
+  height: 34px;
+  display: block;
 }
 
 .floating-wa:hover .wa-icon-bubble {
@@ -2415,6 +2422,10 @@ button, input, select, textarea {
   .wa-icon-bubble {
     width: 52px;
     height: 52px;
+  }
+  .wa-icon-bubble svg {
+    width: 28px;
+    height: 28px;
   }
 
   /* Tour package card buttons & pricing wrap cleanly */
