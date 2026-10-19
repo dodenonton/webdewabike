@@ -384,4 +384,161 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
     });
   }
+
+  /* -------------------------------------------------------------
+   * 7. TOUR PHOTO GALLERY SLIDER / CAROUSEL
+   * ------------------------------------------------------------- */
+  const initTourSlider = () => {
+    const slider = document.getElementById('tourSlider');
+    if (!slider) return;
+
+    const track = slider.querySelector('.tour-slider-track');
+    const slides = slider.querySelectorAll('.tour-slide');
+    const prevBtn = document.getElementById('sliderPrev');
+    const nextBtn = document.getElementById('sliderNext');
+    const counterCurrent = document.getElementById('currentSlideNum');
+    const counterTotal = document.getElementById('totalSlidesNum');
+    const dotsContainer = document.getElementById('sliderDots');
+    const thumbs = document.querySelectorAll('.tour-thumb');
+
+    if (!track || slides.length === 0) return;
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+    let autoplayTimer = null;
+
+    if (counterTotal) counterTotal.textContent = totalSlides;
+
+    // Build dots dynamically if container is empty
+    if (dotsContainer && dotsContainer.children.length === 0) {
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = `slider-dot ${i === 0 ? 'active' : ''}`;
+        dot.setAttribute('type', 'button');
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dot.addEventListener('click', () => {
+          stopAutoplay();
+          goToSlide(i);
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    const dots = dotsContainer ? dotsContainer.querySelectorAll('.slider-dot') : [];
+
+    const updateSlider = () => {
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      if (counterCurrent) counterCurrent.textContent = currentIndex + 1;
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+
+      thumbs.forEach((thumb, idx) => {
+        thumb.classList.toggle('active', idx === currentIndex);
+        if (idx === currentIndex) {
+          thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
+    };
+
+    const goToSlide = (index) => {
+      if (index < 0) {
+        currentIndex = totalSlides - 1;
+      } else if (index >= totalSlides) {
+        currentIndex = 0;
+      } else {
+        currentIndex = index;
+      }
+      updateSlider();
+    };
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoplay();
+        goToSlide(currentIndex - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoplay();
+        goToSlide(currentIndex + 1);
+      });
+    }
+
+    thumbs.forEach((thumb, idx) => {
+      thumb.addEventListener('click', () => {
+        stopAutoplay();
+        goToSlide(idx);
+      });
+    });
+
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    slider.addEventListener('touchstart', (e) => {
+      stopAutoplay();
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    slider.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipe();
+    }, { passive: true });
+
+    const handleSwipe = () => {
+      const diffX = touchStartX - touchEndX;
+      const diffY = touchStartY - touchEndY;
+      // Ensure horizontal swipe is dominant over vertical scroll
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+        if (diffX > 0) {
+          goToSlide(currentIndex + 1);
+        } else {
+          goToSlide(currentIndex - 1);
+        }
+      }
+    };
+
+    // Keyboard navigation when slider is focused
+    slider.setAttribute('tabindex', '0');
+    slider.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        stopAutoplay();
+        goToSlide(currentIndex - 1);
+      } else if (e.key === 'ArrowRight') {
+        stopAutoplay();
+        goToSlide(currentIndex + 1);
+      }
+    });
+
+    // Autoplay functions
+    const startAutoplay = () => {
+      if (autoplayTimer) clearInterval(autoplayTimer);
+      autoplayTimer = setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 5000);
+    };
+
+    const stopAutoplay = () => {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    };
+
+    slider.addEventListener('mouseenter', stopAutoplay);
+    slider.addEventListener('mouseleave', startAutoplay);
+
+    startAutoplay();
+  };
+
+  initTourSlider();
 });

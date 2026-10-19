@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kintamani Downhill Cycling Tour (Regular Package) | Dewa Bike Tour Bali</title>
-  <meta name="description" content="Paket tur sepeda Kintamani Downhill Regular. Termasuk antar-jemput hotel, kunjungan Batur volcano view point, makan siang prasmanan, 18 km rute turunan aman. Rp 550.000 / dewasa.">
+  <meta name="description" content="Kintamani Downhill Cycling Tour (Regular Package). Includes hotel pickup & return, Mount Batur volcano view point, authentic Balinese lunch, 18-22 km scenic downhill route. Rp 550.000 / adult.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../../images/logo.png">
   <link rel="apple-touch-icon" href="../../images/logo.png">
-  <link rel="stylesheet" href="../../css/style.css?v=43">
+  <link rel="stylesheet" href="../../css/style.css?v=44">
 </head>
 <body>
 
@@ -99,7 +99,7 @@
         <span>Kintamani Downhill</span>
       </div>
       <h1>Kintamani Downhill Cycling Tour (Regular Package)</h1>
-      <p class="page-hero-subtitle">Rute turunan 80% dari Kintamani dengan pemandangan megah Gunung Batur. Paket lengkap antar-jemput hotel dan makan siang khas Bali.</p>
+      <p class="page-hero-subtitle">80% downhill route from Kintamani with breathtaking views of Mount Batur. Complete package includes hotel pickup & return and authentic Balinese lunch.</p>
     </div>
   </div>
 
@@ -154,25 +154,112 @@
         <div class="tour-specs-strip">
           <div class="spec-item">
             <strong>18 - 22 km</strong>
-            <span>Jarak Tempuh</span>
+            <span>Distance</span>
           </div>
           <div class="spec-item">
-            <strong>2.5 Jam</strong>
-            <span>Durasi Gowes</span>
+            <strong>2.5 Hours</strong>
+            <span>Duration</span>
           </div>
           <div class="spec-item">
             <strong>80% Downhill</strong>
-            <span>Karakter Jalur</span>
+            <span>Route Character</span>
           </div>
           <div class="spec-item">
-            <strong>Semua Umur</strong>
-            <span>Level Kemampuan</span>
+            <strong>All Ages</strong>
+            <span>Skill Level</span>
           </div>
         </div>
 
-        <div class="tour-main-img">
-          <!-- [TAG FOTO: foto-detail-kintamani-downhill] -->
-            <img id="foto-detail-kintamani-downhill" data-tag="foto-detail-kintamani-downhill" src="../../images/package-kintamani.jpg" alt="Kintamani Batur Downhill" loading="lazy">
+        <!-- Tour Photo Gallery Slider -->
+        <div class="tour-slider-wrapper">
+          <div class="tour-slider" id="tourSlider" aria-label="Kintamani Tour Photo Gallery">
+            <div class="tour-slider-track">
+              <!-- Slide 1 (Original Viewpoint) -->
+              <div class="tour-slide">
+                <img id="foto-detail-kintamani-downhill" data-tag="foto-detail-kintamani-downhill" src="../../images/package-kintamani.jpg" alt="Mount Batur Volcano viewpoint with cycling guests" loading="eager">
+              </div>
+              <!-- Slide 2 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-1.jpg" alt="Pak Dewa and guest with mountain bikes" loading="lazy">
+              </div>
+              <!-- Slide 3 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-2.jpg" alt="Guests interacting with local farmers at rice fields" loading="lazy">
+              </div>
+              <!-- Slide 4 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-3.jpg" alt="Cycling through Bali village and plantation" loading="lazy">
+              </div>
+              <!-- Slide 5 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-4.jpg" alt="Downhill cycling along scenic rice terrace ridge" loading="lazy">
+              </div>
+              <!-- Slide 6 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-5.jpg" alt="Exploring Bali countryside and village trail" loading="lazy">
+              </div>
+              <!-- Slide 7 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-6.jpg" alt="Group of cyclists posing at Bali rice terrace" loading="lazy">
+              </div>
+              <!-- Slide 8 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-7.jpg" alt="Cycling tour on quiet rural village road" loading="lazy">
+              </div>
+              <!-- Slide 9 -->
+              <div class="tour-slide">
+                <img src="../../images/kintamani/kintamani-slide-8.jpg" alt="Downhill bike ride through lush green trail" loading="lazy">
+              </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="slider-btn prev" id="sliderPrev" aria-label="Previous Photo" type="button">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="slider-btn next" id="sliderNext" aria-label="Next Photo" type="button">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <!-- Slide Counter -->
+            <div class="slider-counter" id="sliderCounter">
+              <span>📷</span>
+              <span id="currentSlideNum">1</span> / <span id="totalSlidesNum">9</span>
+            </div>
+
+            <!-- Dots Indicator -->
+            <div class="slider-dots" id="sliderDots" role="tablist"></div>
+          </div>
+
+          <!-- Thumbnail Strip -->
+          <div class="tour-slider-thumbs" id="sliderThumbs" aria-label="Photo thumbnails">
+            <button type="button" class="tour-thumb active" aria-label="View photo 1">
+              <img src="../../images/package-kintamani.jpg" alt="Thumbnail 1">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 2">
+              <img src="../../images/kintamani/kintamani-slide-1.jpg" alt="Thumbnail 2">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 3">
+              <img src="../../images/kintamani/kintamani-slide-2.jpg" alt="Thumbnail 3">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 4">
+              <img src="../../images/kintamani/kintamani-slide-3.jpg" alt="Thumbnail 4">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 5">
+              <img src="../../images/kintamani/kintamani-slide-4.jpg" alt="Thumbnail 5">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 6">
+              <img src="../../images/kintamani/kintamani-slide-5.jpg" alt="Thumbnail 6">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 7">
+              <img src="../../images/kintamani/kintamani-slide-6.jpg" alt="Thumbnail 7">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 8">
+              <img src="../../images/kintamani/kintamani-slide-7.jpg" alt="Thumbnail 8">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 9">
+              <img src="../../images/kintamani/kintamani-slide-8.jpg" alt="Thumbnail 9">
+            </button>
+          </div>
         </div>
 
         <div class="tour-description">
@@ -368,6 +455,6 @@
     </div>
   </a>
 
-  <script src="../../js/app.js?v=3"></script>
+  <script src="../../js/app.js?v=4"></script>
 </body>
 </html>
