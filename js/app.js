@@ -215,11 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     recalculateModal();
     modal.classList.add('open');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
+    const modalCard = modal.querySelector('.modal-card');
+    if (modalCard) {
+      modalCard.scrollTop = 0;
+      modalCard.scrollLeft = 0;
+    }
   };
 
   const closeModal = () => {
     modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
   };
 
