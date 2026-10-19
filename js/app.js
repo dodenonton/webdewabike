@@ -61,8 +61,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const navMenu = document.getElementById('navMenu');
 
   if (mobileToggle && navMenu) {
-    mobileToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('mobile-open');
+    const toggleMenu = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const isOpen = navMenu.classList.toggle('mobile-open');
+      mobileToggle.classList.toggle('active', isOpen);
+      mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    };
+
+    mobileToggle.addEventListener('click', toggleMenu);
+
+    // Close when clicking outside header/menu
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+        if (navMenu.classList.contains('mobile-open')) {
+          navMenu.classList.remove('mobile-open');
+          mobileToggle.classList.remove('active');
+          mobileToggle.setAttribute('aria-expanded', 'false');
+        }
+      }
     });
 
     // Mobile dropdown and link behavior
@@ -74,12 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
           if (window.innerWidth <= 768) {
             e.preventDefault();
+            e.stopPropagation();
             item.classList.toggle('open-mobile');
           }
         });
       } else if (link) {
         link.addEventListener('click', () => {
           navMenu.classList.remove('mobile-open');
+          mobileToggle.classList.remove('active');
+          mobileToggle.setAttribute('aria-expanded', 'false');
         });
       }
     });
@@ -88,6 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
     navMenu.querySelectorAll('.dropdown-item').forEach(item => {
       item.addEventListener('click', () => {
         navMenu.classList.remove('mobile-open');
+        mobileToggle.classList.remove('active');
+        mobileToggle.setAttribute('aria-expanded', 'false');
       });
     });
   }
