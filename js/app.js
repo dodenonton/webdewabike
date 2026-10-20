@@ -425,6 +425,7 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     }
 
     const dots = dotsContainer ? dotsContainer.querySelectorAll('.slider-dot') : [];
+    const thumbsContainer = document.getElementById('sliderThumbs');
 
     const updateSlider = () => {
       track.style.transform = `translateX(-${currentIndex * 100}%)`;
@@ -436,10 +437,14 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
 
       thumbs.forEach((thumb, idx) => {
         thumb.classList.toggle('active', idx === currentIndex);
-        if (idx === currentIndex) {
-          thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
       });
+
+      // Safely scroll ONLY the horizontal thumbnail strip without ever scrolling the page window
+      if (thumbsContainer && thumbs[currentIndex]) {
+        const activeThumb = thumbs[currentIndex];
+        const targetLeft = activeThumb.offsetLeft - (thumbsContainer.clientWidth / 2) + (activeThumb.offsetWidth / 2);
+        thumbsContainer.scrollTo({ left: targetLeft, behavior: 'smooth' });
+      }
     };
 
     const goToSlide = (index) => {
