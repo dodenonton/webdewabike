@@ -377,7 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
     recalculateModal();
     modal.classList.add('open');
     document.body.classList.add('modal-open');
+    document.documentElement.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     const modalCard = modal.querySelector('.modal-card');
     if (modalCard) {
       modalCard.scrollTop = 0;
@@ -388,7 +390,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeModal = () => {
     modal.classList.remove('open');
     document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   };
 
   // Delegate click for any .open-booking-btn anywhere across the document
@@ -405,8 +409,20 @@ document.addEventListener('DOMContentLoaded', () => {
     modalClose.addEventListener('click', closeModal);
   }
 
-  // Close when clicking outside card
+  // Prevent background scroll and close when clicking outside card
   if (modal) {
+    modal.addEventListener('wheel', (e) => {
+      if (e.target === modal) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    modal.addEventListener('touchmove', (e) => {
+      if (e.target === modal) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal();
     });
@@ -823,16 +839,20 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
 
       modal.classList.add('open');
       document.body.classList.add('modal-open');
+      document.documentElement.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
 
-      const modalCard = modal.querySelector('.modal-card');
-      if (modalCard) modalCard.scrollTop = 0;
+      const modalBody = modal.querySelector('.facility-modal-body');
+      if (modalBody) modalBody.scrollTop = 0;
     };
 
     const closeFacilityModal = () => {
       modal.classList.remove('open');
       document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('modal-open');
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
 
     if (modalPrev) {
@@ -891,6 +911,19 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
 
     if (modalClose) modalClose.addEventListener('click', closeFacilityModal);
     if (modalOkBtn) modalOkBtn.addEventListener('click', closeFacilityModal);
+
+    // Prevent any scrolling on the backdrop (green line area) so the background stays completely fixed
+    modal.addEventListener('wheel', (e) => {
+      if (e.target === modal) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    modal.addEventListener('touchmove', (e) => {
+      if (e.target === modal) {
+        e.preventDefault();
+      }
+    }, { passive: false });
 
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeFacilityModal();
@@ -952,7 +985,9 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
 
       modal.classList.add('open');
       document.body.classList.add('modal-open');
+      document.documentElement.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
 
       const modalCard = modal.querySelector('.modal-card');
       if (modalCard) modalCard.scrollTop = 0;
@@ -961,7 +996,9 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     const closeTeamModal = () => {
       modal.classList.remove('open');
       document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('modal-open');
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
 
     document.querySelectorAll('.clickable-team-avatar').forEach(avatar => {
@@ -976,6 +1013,19 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
 
     if (modalClose) modalClose.addEventListener('click', closeTeamModal);
     if (modalOkBtn) modalOkBtn.addEventListener('click', closeTeamModal);
+
+    // Prevent background scroll and close when clicking outside card
+    modal.addEventListener('wheel', (e) => {
+      if (e.target === modal) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    modal.addEventListener('touchmove', (e) => {
+      if (e.target === modal) {
+        e.preventDefault();
+      }
+    }, { passive: false });
 
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeTeamModal();
@@ -1151,7 +1201,9 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
 
       modal.classList.add('open');
       document.body.classList.add('modal-open');
+      document.documentElement.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
 
       renderThumbnails();
       updateSlide(currentIndex);
@@ -1160,7 +1212,9 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     const closeLightbox = () => {
       modal.classList.remove('open');
       document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('modal-open');
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
       if (modalImg) modalImg.src = '';
     };
 
@@ -1192,6 +1246,14 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     if (modalClose) modalClose.addEventListener('click', closeLightbox);
     if (modalNext) modalNext.addEventListener('click', (e) => { e.stopPropagation(); nextSlide(); });
     if (modalPrev) modalPrev.addEventListener('click', (e) => { e.stopPropagation(); prevSlide(); });
+    // Prevent any scrolling on lightbox backdrop so background is completely fixed
+    modal.addEventListener('wheel', (e) => {
+      e.preventDefault();
+    }, { passive: false });
+
+    modal.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
 
     modal.addEventListener('click', (e) => {
       if (e.target.closest('.lightbox-thumbnails-wrap') || e.target.closest('.lightbox-img-wrap')) {

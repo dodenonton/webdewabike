@@ -77,7 +77,8 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-body.modal-open {
+body.modal-open,
+html.modal-open {
   overflow: hidden !important;
   touch-action: none;
 }
@@ -1503,6 +1504,7 @@ button, input, select, textarea {
   visibility: hidden;
   transition: opacity 0.28s ease, visibility 0.28s ease;
   overflow: hidden;
+  overscroll-behavior: contain !important;
   user-select: none;
 }
 
@@ -2365,7 +2367,7 @@ button, input, select, textarea {
   transition: var(--transition);
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  overscroll-behavior: contain;
+  overscroll-behavior: contain !important;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -3971,13 +3973,25 @@ button, input, select, textarea {
 }
 
 /* Facility Modal Popup */
+#facilityModal {
+  align-items: flex-start !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
 .facility-modal-card {
   max-width: 580px;
   width: 100%;
+  max-height: calc(100dvh - 3rem) !important;
+  margin: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
   padding: 0 !important;
   overflow: hidden !important;
   border-radius: 20px !important;
   position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
 }
 
 .facility-modal-card .modal-close {
@@ -4000,6 +4014,8 @@ button, input, select, textarea {
   position: relative;
   width: 100%;
   height: 280px;
+  min-height: 280px;
+  flex-shrink: 0;
   background-color: #0f172a;
   overflow: hidden;
 }
@@ -4102,6 +4118,9 @@ button, input, select, textarea {
 
 .facility-modal-body {
   padding: 1.5rem 1.75rem 1.75rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
 }
 
 .facility-modal-title {
@@ -4162,13 +4181,25 @@ button, input, select, textarea {
 }
 
 /* Team Member Profile / Photo Lightbox Modal */
+#teamPhotoModal {
+  align-items: flex-start !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
 .team-modal-card {
   max-width: 480px;
   width: 100%;
+  max-height: calc(100dvh - 3rem) !important;
+  margin: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
   padding: 0 !important;
   overflow: hidden !important;
   border-radius: 20px !important;
   position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
 }
 
 .team-modal-card .modal-close {
@@ -4436,9 +4467,11 @@ button, input, select, textarea {
   }
   .facility-modal-card {
     max-width: 95% !important;
+    max-height: calc(100dvh - 2rem) !important;
   }
   .facility-modal-img-wrap {
     height: 180px !important;
+    min-height: 180px !important;
   }
   .facility-modal-body {
     padding: 1.25rem 1.15rem 1.35rem !important;
