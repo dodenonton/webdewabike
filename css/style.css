@@ -2779,6 +2779,16 @@ button, input, select, textarea {
               url('../images/package-kintamani.jpg?v=3') center 53% / cover no-repeat;
 }
 
+.page-hero.ubud-rice-hero {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
+              url('../images/package-ubud-rice.jpg?v=5') center 47% / cover no-repeat;
+}
+
+.page-hero.ebike-hero {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
+              url('../images/package-ebike.jpg?v=3') center 33% / cover no-repeat;
+}
+
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -3233,6 +3243,8 @@ button, input, select, textarea {
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
   transition: var(--transition);
+  display: flex;
+  flex-direction: column;
 }
 
 .facility-card:hover {
@@ -3242,16 +3254,64 @@ button, input, select, textarea {
 
 .facility-img {
   height: 220px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 .facility-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.facility-card:hover .facility-img img {
+  transform: scale(1.06);
+}
+
+.facility-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.65) 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1rem;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.facility-card:hover .facility-img-overlay {
+  opacity: 1;
+}
+
+.facility-zoom-pill {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+}
+
+.facility-card:hover .facility-zoom-pill {
+  background: var(--primary);
+  color: #ffffff;
+  transform: translateY(-2px);
 }
 
 .facility-body {
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .facility-body h3 {
@@ -3265,6 +3325,133 @@ button, input, select, textarea {
   font-size: 0.9rem;
   color: var(--text-muted);
   line-height: 1.5;
+}
+
+.facility-open-btn {
+  margin-top: auto;
+  padding-top: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.facility-open-btn:hover {
+  color: var(--primary-dark);
+  gap: 0.7rem;
+}
+
+/* Facility Modal Popup */
+.facility-modal-card {
+  max-width: 560px;
+  width: 100%;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 20px !important;
+  position: relative;
+}
+
+.facility-modal-card .modal-close {
+  top: 1rem !important;
+  right: 1rem !important;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.facility-modal-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 230px;
+  background-color: #0f172a;
+}
+
+.facility-modal-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.facility-modal-tag {
+  position: absolute;
+  bottom: 1rem;
+  left: 1.25rem;
+  background: rgba(16, 91, 56, 0.92);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(4px);
+}
+
+.facility-modal-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.facility-modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  color: var(--dark);
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+.facility-modal-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.facility-modal-desc-item {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.95rem 1.1rem;
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.facility-modal-desc-item .item-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.facility-modal-desc-item .item-content {
+  flex-grow: 1;
+}
+
+.facility-modal-desc-item strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--dark);
+  margin-bottom: 0.25rem;
+}
+
+.facility-modal-desc-item p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.facility-modal-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
 }
 
 @media (max-width: 1024px) {
@@ -3302,6 +3489,16 @@ button, input, select, textarea {
   .page-hero.kintamani-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
                 url('../images/package-kintamani.jpg?v=3') center 80% / cover no-repeat !important;
+  }
+
+  .page-hero.ubud-rice-hero {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
+                url('../images/package-ubud-rice.jpg?v=5') center 70% / cover no-repeat !important;
+  }
+
+  .page-hero.ebike-hero {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
+                url('../images/package-ebike.jpg?v=3') center 40% / cover no-repeat !important;
   }
 
   .dropdown-menu {
@@ -3435,6 +3632,18 @@ button, input, select, textarea {
   }
   .facility-grid {
     grid-template-columns: 1fr;
+  }
+  .facility-modal-card {
+    max-width: 95% !important;
+  }
+  .facility-modal-img-wrap {
+    height: 180px !important;
+  }
+  .facility-modal-body {
+    padding: 1.25rem 1.15rem 1.35rem !important;
+  }
+  .facility-modal-title {
+    font-size: 1.2rem !important;
   }
   .page-hero h1 {
     font-size: 2rem;

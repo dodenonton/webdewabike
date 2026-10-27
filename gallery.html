@@ -81,6 +81,9 @@
       </nav>
 
       <div class="header-actions">
+        <button class="btn btn-outline btn-sm open-booking-btn" data-tour="Kintamani Downhill">
+          Book Now
+        </button>
         <a href="https://wa.me/6281339545689" target="_blank" class="btn btn-primary btn-sm">Chat WhatsApp</a>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
       </div>
@@ -106,57 +109,197 @@
       <div class="section-header text-center">
         <div class="section-tag">TOUR ACTIVITIES</div>
         <h2 class="section-title">Memories with Dewa Bike Tour</h2>
+        <p class="section-desc" style="max-width: 680px; margin: 0.75rem auto 0; color: #64748b; font-size: 1.05rem;">
+          Real snapshots and joyful memories from our guests on the trails of Kintamani downhill cycling, Ubud rice fields, e-bike tours, and authentic Balinese cultural visits.
+        </p>
       </div>
 
-      <div class="gallery-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-ubud-rice-fields] -->
-            <img id="foto-galeri-ubud-rice-fields" data-tag="foto-galeri-ubud-rice-fields" src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=700&q=80" alt="Ubud Rice Fields" loading="lazy">
-          <div class="gallery-overlay"><span>Ubud Rice Fields Cycling</span></div>
-        </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-kintamani-batur-view] -->
-            <img id="foto-galeri-kintamani-batur-view" data-tag="foto-galeri-kintamani-batur-view" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=700&q=80" alt="Kintamani Batur View" loading="lazy">
+      <!-- Gallery Filter Buttons -->
+      <div class="gallery-filters" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.65rem; margin-top: 2rem; margin-bottom: 2.5rem;">
+        <button type="button" class="btn-filter active" data-filter="all" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: 2px solid #105b38; background-color: #105b38; color: #ffffff; transition: all 0.2s;">All Photos (23)</button>
+        <button type="button" class="btn-filter" data-filter="kintamani" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0; background-color: #ffffff; color: #1e293b; transition: all 0.2s;">Kintamani Downhill (9)</button>
+        <button type="button" class="btn-filter" data-filter="ubud" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0; background-color: #ffffff; color: #1e293b; transition: all 0.2s;">Ubud Rice Fields & E-Bike (6)</button>
+        <button type="button" class="btn-filter" data-filter="culture" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0; background-color: #ffffff; color: #1e293b; transition: all 0.2s;">Balinese Culture (4)</button>
+        <button type="button" class="btn-filter" data-filter="activities" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0; background-color: #ffffff; color: #1e293b; transition: all 0.2s;">Other Activities & Pool (4)</button>
+      </div>
+
+      <div class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+        <!-- 1: Kintamani Volcano View -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img id="foto-galeri-kintamani-view" data-tag="foto-galeri-kintamani-view" src="images/package-kintamani.jpg" alt="Mount Batur Volcano viewpoint with cycling guests" loading="lazy">
           <div class="gallery-overlay"><span>Kintamani Batur Volcano View</span></div>
         </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-ebike-ubud-rice] -->
-            <img id="foto-galeri-ebike-ubud-rice" data-tag="foto-galeri-ebike-ubud-rice" src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=700&q=80" alt="E-Bike Ubud Rice Fields" loading="lazy">
-          <div class="gallery-overlay"><span>E-Bike Ubud Rice Fields</span></div>
+
+        <!-- 2: Kintamani Slide 1 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-1.jpg" alt="Pak Dewa and guest with mountain bikes" loading="lazy">
+          <div class="gallery-overlay"><span>Mountain Bike Prep with Pak Dewa</span></div>
         </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-family-compound-visit] -->
-            <img id="foto-galeri-family-compound-visit" data-tag="foto-galeri-family-compound-visit" src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=700&q=80" alt="Family Compound Visit" loading="lazy">
-          <div class="gallery-overlay"><span>Balinese Family Compound Visit</span></div>
+
+        <!-- 3: Kintamani Slide 2 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-2.jpg" alt="Guests interacting with local farmers at rice fields" loading="lazy">
+          <div class="gallery-overlay"><span>Meeting Local Rice Farmers</span></div>
         </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-river-tubing-adventure] -->
-            <img id="foto-galeri-river-tubing-adventure" data-tag="foto-galeri-river-tubing-adventure" src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=700&q=80" alt="River Tubing Adventure" loading="lazy">
-          <div class="gallery-overlay"><span>River Tubing Adventure</span></div>
+
+        <!-- 4: Kintamani Slide 3 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-3.jpg" alt="Downhill cycling through Bali village and plantation" loading="lazy">
+          <div class="gallery-overlay"><span>Downhill Cycling Through Village</span></div>
         </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-atv-adventure] -->
-            <img id="foto-galeri-atv-adventure" data-tag="foto-galeri-atv-adventure" src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=700&q=80" alt="ATV Adventure" loading="lazy">
-          <div class="gallery-overlay"><span>ATV Adventure</span></div>
+
+        <!-- 5: Kintamani Slide 4 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-4.jpg" alt="Downhill cycling along scenic rice terrace ridge" loading="lazy">
+          <div class="gallery-overlay"><span>Scenic Rice Terrace Ridge Ride</span></div>
         </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-planting-rice-tours] -->
-            <img id="foto-galeri-planting-rice-tours" data-tag="foto-galeri-planting-rice-tours" src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=700&q=80" alt="Planting Rice Tours" loading="lazy">
-          <div class="gallery-overlay"><span>Planting Rice Tours</span></div>
+
+        <!-- 6: Kintamani Slide 5 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-5.jpg" alt="Exploring Bali countryside and village trail" loading="lazy">
+          <div class="gallery-overlay"><span>Countryside Cycling Trail</span></div>
         </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-river-rafting-adventure] -->
-            <img id="foto-galeri-river-rafting-adventure" data-tag="foto-galeri-river-rafting-adventure" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80" alt="River Rafting Adventure" loading="lazy">
-          <div class="gallery-overlay"><span>River Rafting Adventure</span></div>
+
+        <!-- 7: Kintamani Slide 6 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-6.jpg" alt="Group of cyclists posing at Bali rice terrace" loading="lazy">
+          <div class="gallery-overlay"><span>Group Photo at Bali Rice Terraces</span></div>
         </div>
-        <div class="gallery-item" style="height: 300px;">
-          <!-- [TAG FOTO: foto-galeri-balinese-cuisine-pool] -->
-            <img id="foto-galeri-balinese-cuisine-pool" data-tag="foto-galeri-balinese-cuisine-pool" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=700&q=80" alt="Balinese Cuisine & Pool" loading="lazy">
-          <div class="gallery-overlay"><span>Balinese Cuisine & Pool Lunch</span></div>
+
+        <!-- 8: Kintamani Slide 7 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-7.jpg" alt="Cycling tour on quiet rural village road" loading="lazy">
+          <div class="gallery-overlay"><span>Quiet Rural Village Road</span></div>
+        </div>
+
+        <!-- 9: Kintamani Slide 8 -->
+        <div class="gallery-item" data-category="kintamani" style="height: 280px;">
+          <img src="images/kintamani/kintamani-slide-8.jpg" alt="Downhill bike ride through lush green trail" loading="lazy">
+          <div class="gallery-overlay"><span>Lush Green Bamboo Forest Path</span></div>
+        </div>
+
+        <!-- 10: Ubud Rice Fields Cover -->
+        <div class="gallery-item" data-category="ubud" style="height: 280px;">
+          <img id="foto-galeri-ubud-rice-fields" data-tag="foto-galeri-ubud-rice-fields" src="images/package-ubud-rice.jpg" alt="Ubud Rice Fields Cycling Tour" loading="lazy">
+          <div class="gallery-overlay"><span>Ubud Rice Fields Cycling</span></div>
+        </div>
+
+        <!-- 11: E-Bike Cover -->
+        <div class="gallery-item" data-category="ubud" style="height: 280px;">
+          <img id="foto-galeri-ebike-ubud-rice" data-tag="foto-galeri-ebike-ubud-rice" src="images/package-ebike.jpg" alt="E-Bike Ubud Rice Fields" loading="lazy">
+          <div class="gallery-overlay"><span>E-Bike Ubud Rice Fields Tour</span></div>
+        </div>
+
+        <!-- 12: Ubud Slide 1 -->
+        <div class="gallery-item" data-category="ubud" style="height: 280px;">
+          <img src="images/ubud/ubud-slide-1.jpg" alt="Cycling guests posing among lush Ubud rice fields" loading="lazy">
+          <div class="gallery-overlay"><span>Fun in Ubud Green Rice Fields</span></div>
+        </div>
+
+        <!-- 13: Ubud Slide 2 (Group Selfie) -->
+        <div class="gallery-item" data-category="ubud" style="height: 280px;">
+          <img src="images/ubud/ubud-slide-2.jpg" alt="Cheerful group selfie on Ubud cycling trail" loading="lazy" style="object-position: center 36%;">
+          <div class="gallery-overlay"><span>Group Selfie Along Ubud Trail</span></div>
+        </div>
+
+        <!-- 14: Ubud Slide 3 (Temple Gate) -->
+        <div class="gallery-item" data-category="culture" style="height: 280px;">
+          <img src="images/ubud/ubud-slide-3.jpg" alt="Balinese village temple gate visit" loading="lazy" style="object-position: center 58%;">
+          <div class="gallery-overlay"><span>Balinese Village Temple Visit</span></div>
+        </div>
+
+        <!-- 15: Ubud Slide 4 (Irrigation Path) -->
+        <div class="gallery-item" data-category="ubud" style="height: 280px;">
+          <img src="images/ubud/ubud-slide-4.jpg" alt="Cycling with guide along traditional Bali irrigation paths" loading="lazy">
+          <div class="gallery-overlay"><span>Subak Irrigation & Rice Paths</span></div>
+        </div>
+
+        <!-- 16: Family Compound -->
+        <div class="gallery-item" data-category="culture" style="height: 280px;">
+          <img id="foto-galeri-family-compound-visit" data-tag="foto-galeri-family-compound-visit" src="images/about-dewa-family.jpg" alt="Authentic Balinese family compound visit" loading="lazy" style="object-position: center 35%;">
+          <div class="gallery-overlay"><span>Family Compound Cultural Visit</span></div>
+        </div>
+
+        <!-- 17: Traditional Balinese Pavilion -->
+        <div class="gallery-item" data-category="culture" style="height: 280px;">
+          <img src="images/gallery-home-4.jpg" alt="Relaxing at traditional Balinese pavilion" loading="lazy" style="object-position: center 65%;">
+          <div class="gallery-overlay"><span>Traditional Balinese House</span></div>
+        </div>
+
+        <!-- 18: Local School Visit -->
+        <div class="gallery-item" data-category="culture" style="height: 280px;">
+          <img src="images/ubud/ubud-slide-7.jpg" alt="Visiting Balinese elementary school with guests" loading="lazy" style="object-position: center 40%;">
+          <div class="gallery-overlay"><span>Local Balinese School Visit</span></div>
+        </div>
+
+        <!-- 19: Morning Ride Ubud -->
+        <div class="gallery-item" data-category="ubud" style="height: 280px;">
+          <img src="images/gallery-home-1.jpg" alt="Morning ride in Ubud rice field path" loading="lazy">
+          <div class="gallery-overlay"><span>Morning Ride in Ubud Countryside</span></div>
+        </div>
+
+        <!-- 20: E-Bike Nature Ride -->
+        <div class="gallery-item" data-category="ubud" style="height: 280px;">
+          <img src="images/gallery-home-3.jpg" alt="E-bike ride along Ubud countryside and hills" loading="lazy">
+          <div class="gallery-overlay"><span>E-Bike Nature Exploration</span></div>
+        </div>
+
+        <!-- 21: River Tubing -->
+        <div class="gallery-item" data-category="activities" style="height: 280px;">
+          <img id="foto-galeri-river-tubing-adventure" data-tag="foto-galeri-river-tubing-adventure" src="images/gallery-home-5.jpg" alt="Ayung river tubing adventure" loading="lazy">
+          <div class="gallery-overlay"><span>Ayung River Tubing Adventure</span></div>
+        </div>
+
+        <!-- 22: ATV Adventure -->
+        <div class="gallery-item" data-category="activities" style="height: 280px;">
+          <img id="foto-galeri-atv-adventure" data-tag="foto-galeri-atv-adventure" src="images/gallery-home-6.jpg" alt="ATV Quad bike trail in Bali" loading="lazy">
+          <div class="gallery-overlay"><span>ATV Quad Bike Trail</span></div>
+        </div>
+
+        <!-- 23: Authentic Lunch & Pool -->
+        <div class="gallery-item" data-category="activities" style="height: 280px;">
+          <img id="foto-galeri-balinese-cuisine-pool" data-tag="foto-galeri-balinese-cuisine-pool" src="images/about-float.jpg" alt="Balinese cuisine lunch and swimming pool" loading="lazy">
+          <div class="gallery-overlay"><span>Balinese Lunch & Pool Relaxation</span></div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Interactive Filter Script for Gallery -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const filterBtns = document.querySelectorAll('.gallery-filters .btn-filter');
+      const galleryItems = document.querySelectorAll('.gallery-grid .gallery-item');
+      if (filterBtns.length > 0 && galleryItems.length > 0) {
+        filterBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            filterBtns.forEach(b => {
+              b.classList.remove('active');
+              b.style.backgroundColor = '#ffffff';
+              b.style.borderColor = '#e2e8f0';
+              b.style.color = '#1e293b';
+              b.style.fontWeight = '600';
+            });
+            btn.classList.add('active');
+            btn.style.backgroundColor = '#105b38';
+            btn.style.borderColor = '#105b38';
+            btn.style.color = '#ffffff';
+            btn.style.fontWeight = '700';
+
+            const filter = btn.getAttribute('data-filter');
+            galleryItems.forEach(item => {
+              const cat = item.getAttribute('data-category');
+              if (filter === 'all' || cat === filter) {
+                item.style.display = 'block';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          });
+        });
+      }
+    });
+  </script>
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -231,6 +374,6 @@
     </div>
   </a>
 
-  <script src="js/app.js?v=3"></script>
+  <script src="js/app.js?v=6"></script>
 </body>
 </html>

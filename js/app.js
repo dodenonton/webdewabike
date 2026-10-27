@@ -169,9 +169,113 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------------------------------------------------------------
    * 5. BOOKING MODAL & LIVE ESTIMATOR
    * ------------------------------------------------------------- */
-  const modal = document.getElementById('bookingModal');
+  const ensureBookingModal = () => {
+    let modalEl = document.getElementById('bookingModal');
+    if (!modalEl) {
+      modalEl = document.createElement('div');
+      modalEl.className = 'modal-backdrop';
+      modalEl.id = 'bookingModal';
+      modalEl.innerHTML = `
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <div class="section-tag">PRIVATE TOUR BOOKING FORM</div>
+        <h3 id="modalTourTitle">Book Dewa Bike Tour</h3>
+        <p>Calculate your total price instantly and forward your booking details to WhatsApp.</p>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select Cycling Tour</label>
+          <select id="modalTourSelect">
+            <option value="Kintamani Downhill" data-regular="550000" data-saving="350000">Kintamani Downhill Cycling</option>
+            <option value="Ubud Rice Fields" data-regular="550000" data-saving="350000">Ubud Rice Fields Cycling</option>
+            <option value="E-Bike Ubud Countryside" data-regular="650000" data-saving="450000">Ubud E-Bike Tour (Electric)</option>
+            <option value="Cycling + River Tubing" data-regular="850000" data-saving="850000">Cycling + River Tubing Combo</option>
+            <option value="Cycling + ATV Quad Bike" data-regular="950000" data-saving="950000">Cycling + ATV Quad Bike Combo</option>
+            <option value="Rice Paddy Planting & Rafting" data-regular="450000" data-saving="350000">Rice Paddy Planting / Rafting</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Package Tier</label>
+          <div class="tier-radio-group">
+            <label class="radio-card selected">
+              <input type="radio" name="modalTier" value="regular" checked>
+              <div class="radio-info">
+                <strong>Regular (All-Inclusive)</strong>
+                <span>+ Hotel pickup & Indonesian lunch</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="modalTier" value="saving">
+              <div class="radio-info">
+                <strong>Saving (Budget)</strong>
+                <span>Ride only, without lunch & transfer</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tour Date</label>
+            <input type="date" id="modalDate" required>
+          </div>
+          <div class="form-group">
+            <label>Number of Guests</label>
+            <div class="number-stepper">
+              <button type="button" id="stepDec">-</button>
+              <input type="number" id="modalGuests" value="2" min="1" max="50" readonly>
+              <button type="button" id="stepInc">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Lead Guest Name</label>
+          <input type="text" id="modalName" placeholder="Your Name / Lead Guest">
+        </div>
+
+        <div class="form-group">
+          <label>Hotel Pickup / Special Requests</label>
+          <input type="text" id="modalHotel" placeholder="Hotel Name or Pickup Location">
+        </div>
+
+        <!-- Live Price Calculation Box -->
+        <div class="price-calculation-box">
+          <div class="calc-row">
+            <span>Price per person:</span>
+            <strong id="calcPricePerPerson">Rp 550,000</strong>
+          </div>
+          <div class="calc-row">
+            <span>Number of guests:</span>
+            <strong id="calcGuestCount">2 guests</strong>
+          </div>
+          <div class="calc-divider"></div>
+          <div class="calc-row total-row">
+            <span>Estimated Total Cost:</span>
+            <div>
+              <span class="total-idr" id="calcTotalIdr">Rp 1,100,000</span>
+              <span class="total-usd" id="calcTotalUsd">(Approx. ~$71 USD)</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block btn-lg" id="btnSubmitModalBooking">
+          <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+          Confirm & Book on WhatsApp
+        </button>
+      </div>
+    </div>
+      `;
+      document.body.appendChild(modalEl);
+    }
+    return modalEl;
+  };
+
+  const modal = ensureBookingModal();
   const modalClose = document.getElementById('modalClose');
-  const openBookingBtns = document.querySelectorAll('.open-booking-btn');
 
   const modalTourSelect = document.getElementById('modalTourSelect');
   const modalTourTitle = document.getElementById('modalTourTitle');
@@ -205,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Live Recalculate Prices
   const recalculateModal = () => {
-    const selectedTourKey = modalTourSelect.value;
+    const selectedTourKey = modalTourSelect ? modalTourSelect.value : 'Kintamani Downhill';
     const tourInfo = packageData[selectedTourKey] || {
       regular: 550000,
       saving: 350000
@@ -254,12 +358,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = '';
   };
 
-  openBookingBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+  // Delegate click for any .open-booking-btn anywhere across the document
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.open-booking-btn');
+    if (btn) {
       e.preventDefault();
       const tour = btn.getAttribute('data-tour') || 'Kintamani Downhill';
       openModal(tour);
-    });
+    }
   });
 
   if (modalClose) {
@@ -545,5 +651,92 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     startAutoplay();
   };
 
+  /* -------------------------------------------------------------
+   * 8. FACILITY POPUP MODAL
+   * ------------------------------------------------------------- */
+  const initFacilityModal = () => {
+    const modal = document.getElementById('facilityModal');
+    if (!modal) return;
+
+    const modalClose = document.getElementById('facilityModalClose');
+    const modalOkBtn = document.getElementById('facilityModalOkBtn');
+    const modalImg = document.getElementById('facilityModalImg');
+    const modalTag = document.getElementById('facilityModalTag');
+    const modalTitle = document.getElementById('facilityModalTitle');
+    const modalDesc = document.getElementById('facilityModalDesc');
+
+    const openFacilityModal = (card) => {
+      const img = card.querySelector('.facility-img img');
+      const tag = card.querySelector('.section-tag');
+      const title = card.querySelector('h3');
+      const detailData = card.querySelector('.facility-detail-data');
+
+      if (modalImg && img) {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt || (title ? title.textContent : 'Facility Photo');
+      }
+      if (modalTag && tag) {
+        modalTag.textContent = tag.textContent;
+      }
+      if (modalTitle && title) {
+        modalTitle.textContent = title.textContent;
+      }
+      if (modalDesc && detailData) {
+        modalDesc.innerHTML = detailData.innerHTML;
+      }
+
+      modal.classList.add('open');
+      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+
+      const modalCard = modal.querySelector('.modal-card');
+      if (modalCard) {
+        modalCard.scrollTop = 0;
+      }
+    };
+
+    const closeFacilityModal = () => {
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+    };
+
+    document.querySelectorAll('.facility-card').forEach(card => {
+      const imgWrap = card.querySelector('.facility-img');
+      const openBtn = card.querySelector('.facility-open-btn');
+
+      if (imgWrap) {
+        imgWrap.addEventListener('click', () => openFacilityModal(card));
+        imgWrap.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openFacilityModal(card);
+          }
+        });
+      }
+
+      if (openBtn) {
+        openBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openFacilityModal(card);
+        });
+      }
+    });
+
+    if (modalClose) modalClose.addEventListener('click', closeFacilityModal);
+    if (modalOkBtn) modalOkBtn.addEventListener('click', closeFacilityModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeFacilityModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) {
+        closeFacilityModal();
+      }
+    });
+  };
+
   initTourSlider();
+  initFacilityModal();
 });

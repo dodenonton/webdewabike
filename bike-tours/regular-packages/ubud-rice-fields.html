@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../../images/logo.png">
   <link rel="apple-touch-icon" href="../../images/logo.png">
-  <link rel="stylesheet" href="../../css/style.css?v=43">
+  <link rel="stylesheet" href="../../css/style.css?v=47">
 </head>
 <body>
 
@@ -80,6 +80,9 @@
       </nav>
 
       <div class="header-actions">
+        <button class="btn btn-outline btn-sm open-booking-btn" data-tour="Ubud Rice Fields">
+          Book Now
+        </button>
         <a href="https://wa.me/6281339545689" target="_blank" class="btn btn-primary btn-sm">Chat WhatsApp</a>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
       </div>
@@ -87,7 +90,7 @@
   </header>
 
   <!-- Page Hero -->
-  <div class="page-hero">
+  <div class="page-hero ubud-rice-hero" id="foto-hero-ubud-rice" data-tag="foto-hero-ubud-rice" style="background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%), url('../../images/package-ubud-rice.jpg?v=5'); background-position: center 47%;">
     <div class="container">
       <div class="breadcrumb">
         <a href="../../index.html">Home</a>
@@ -170,9 +173,89 @@
           </div>
         </div>
 
-        <div class="tour-main-img">
-          <!-- [TAG FOTO: foto-detail-ubud-rice-fields] -->
-            <img id="foto-detail-ubud-rice-fields" data-tag="foto-detail-ubud-rice-fields" src="../../images/package-ubud-rice.jpg" alt="Ubud Rice Fields Cycling" loading="lazy">
+        <!-- Tour Photo Gallery Slider -->
+        <div class="tour-slider-wrapper">
+          <div class="tour-slider" id="tourSlider" aria-label="Ubud Rice Fields Tour Photo Gallery">
+            <div class="tour-slider-track">
+              <!-- Slide 1 (Original Cover) -->
+              <div class="tour-slide">
+                <img id="foto-detail-ubud-rice-fields" data-tag="foto-detail-ubud-rice-fields" src="../../images/package-ubud-rice.jpg" alt="Ubud Rice Fields Cycling Tour" loading="eager">
+              </div>
+              <!-- Slide 2 -->
+              <div class="tour-slide">
+                <img src="../../images/ubud/ubud-slide-1.jpg" alt="Cycling through Ubud countryside rice fields" loading="lazy">
+              </div>
+              <!-- Slide 3 -->
+              <div class="tour-slide">
+                <img src="../../images/ubud/ubud-slide-2.jpg" alt="Ubud Rice Fields cycling guest posing on trail" loading="lazy" style="object-position: center 36%;">
+              </div>
+              <!-- Slide 4 -->
+              <div class="tour-slide">
+                <img src="../../images/ubud/ubud-slide-3.jpg" alt="Scenic green rice terrace trail in Ubud" loading="lazy" style="object-position: center 58%;">
+              </div>
+              <!-- Slide 5 -->
+              <div class="tour-slide">
+                <img src="../../images/ubud/ubud-slide-4.jpg" alt="Cycling with guide along traditional Bali irrigation paths" loading="lazy">
+              </div>
+              <!-- Slide 6 -->
+              <div class="tour-slide">
+                <img src="../../images/about-dewa-family.jpg" alt="Rest stop in authentic Balinese family compound" loading="lazy" style="object-position: center 35%;">
+              </div>
+              <!-- Slide 7 -->
+              <div class="tour-slide">
+                <img src="../../images/gallery-home-4.jpg" alt="Exploring village roads and local traditional house" loading="lazy" style="object-position: center 65%;">
+              </div>
+              <!-- Slide 8 -->
+              <div class="tour-slide">
+                <img src="../../images/ubud/ubud-slide-7.jpg" alt="Fun bicycle tour experience in Ubud Bali" loading="lazy" style="object-position: center 40%;">
+              </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="slider-btn prev" id="sliderPrev" aria-label="Previous Photo" type="button">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="slider-btn next" id="sliderNext" aria-label="Next Photo" type="button">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <!-- Slide Counter -->
+            <div class="slider-counter" id="sliderCounter">
+              <span>📷</span>
+              <span id="currentSlideNum">1</span> / <span id="totalSlidesNum">8</span>
+            </div>
+
+            <!-- Dots Indicator -->
+            <div class="slider-dots" id="sliderDots" role="tablist"></div>
+          </div>
+
+          <!-- Thumbnail Strip -->
+          <div class="tour-slider-thumbs" id="sliderThumbs" aria-label="Photo thumbnails">
+            <button type="button" class="tour-thumb active" aria-label="View photo 1">
+              <img src="../../images/package-ubud-rice.jpg" alt="Thumbnail 1">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 2">
+              <img src="../../images/ubud/ubud-slide-1.jpg" alt="Thumbnail 2">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 3">
+              <img src="../../images/ubud/ubud-slide-2.jpg" alt="Thumbnail 3">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 4">
+              <img src="../../images/ubud/ubud-slide-3.jpg" alt="Thumbnail 4">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 5">
+              <img src="../../images/ubud/ubud-slide-4.jpg" alt="Thumbnail 5">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 6">
+              <img src="../../images/about-dewa-family.jpg" alt="Thumbnail 6">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 7">
+              <img src="../../images/gallery-home-4.jpg" alt="Thumbnail 7">
+            </button>
+            <button type="button" class="tour-thumb" aria-label="View photo 8">
+              <img src="../../images/ubud/ubud-slide-7.jpg" alt="Thumbnail 8">
+            </button>
+          </div>
         </div>
 
         <div class="tour-description">
@@ -396,6 +479,6 @@
     </div>
   </a>
 
-  <script src="../../js/app.js?v=3"></script>
+  <script src="../../js/app.js?v=6"></script>
 </body>
 </html>

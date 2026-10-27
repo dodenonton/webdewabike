@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Facilities | Dewa Bike Tour Bali</title>
-  <meta name="description" content="Fasilitas lengkap Dewa Bike Tour: Armada mobil antar-jemput ber-AC, mobil pengangkut sepeda, MTB berkualitas, E-Bike modern, helm SNI/CE, baby seat, dan mekanik handal.">
+  <meta name="description" content="Explore Dewa Bike Tour facilities: Air-conditioned guest pick-up vehicles, dedicated bike support trucks, quality MTBs, modern E-Bikes, certified helmets, and expert mechanics.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../images/logo.png">
   <link rel="apple-touch-icon" href="../images/logo.png">
-  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/style.css?v=48">
 </head>
 <body>
 
@@ -89,6 +89,9 @@
       </nav>
 
       <div class="header-actions">
+        <button class="btn btn-outline btn-sm open-booking-btn" data-tour="Kintamani Downhill">
+          Book Now
+        </button>
         <a href="https://wa.me/6281339545689" target="_blank" class="btn btn-primary btn-sm">Chat WhatsApp</a>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
       </div>
@@ -105,8 +108,8 @@
         <span class="breadcrumb-sep">/</span>
         <span>Our Facilities</span>
       </div>
-      <h1>Fasilitas & Standar Keamanan Kami</h1>
-      <p class="page-hero-subtitle">Keselamatan dan kenyamanan Anda adalah prioritas utama. Seluruh armada sepeda dan kendaraan dirawat berkala oleh tim teknisi kami.</p>
+      <h1>Our Facilities & Safety Standards</h1>
+      <p class="page-hero-subtitle">Your safety and comfort are our top priority. Our entire fleet of bicycles and vehicles is routinely maintained by our expert technician team.</p>
     </div>
   </div>
 
@@ -115,55 +118,134 @@
     <div class="container">
       <div class="section-header text-center">
         <div class="section-tag">EQUIPMENT & FLEET</div>
-        <h2 class="section-title">Peralatan Berkualitas untuk Kenyamanan Maksimal</h2>
+        <h2 class="section-title">Quality Equipment for Maximum Comfort</h2>
       </div>
 
       <div class="facility-grid">
         <!-- 1. Car Fleet -->
-        <div class="facility-card">
-          <div class="facility-img">
+        <div class="facility-card" data-facility="transportation">
+          <div class="facility-img" role="button" tabindex="0" aria-label="Click to view details for Car to carry bike and pick up guest">
             <!-- [TAG FOTO: foto-fasilitas-mobil-antar-jemput] -->
             <img id="foto-fasilitas-mobil-antar-jemput" data-tag="foto-fasilitas-mobil-antar-jemput" src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=600&q=80" alt="Car to carry bike and pick up guest" loading="lazy">
+            <div class="facility-img-overlay">
+              <span class="facility-zoom-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                Click to view details
+              </span>
+            </div>
           </div>
           <div class="facility-body">
             <div class="section-tag" style="margin-bottom: 0.35rem;">TRANSPORTATION</div>
             <h3>Car to carry bike and pick up guest</h3>
-            <p><strong>Car pick up guests:</strong> Air-conditioned clean vehicle for guest pick-up and drop-off to your hotel.</p>
-            <p><strong>Car carrying bicycle:</strong> Specially equipped support truck carrying bicycles that follows all the time during the tour.</p>
+            <button type="button" class="facility-open-btn" aria-label="View Details for Car to carry bike and pick up guest">
+              <span>View Details</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+            <div class="facility-detail-data" style="display: none;">
+              <div class="facility-modal-desc-item">
+                <div class="item-icon">🚗</div>
+                <div class="item-content">
+                  <strong>Car pick up guests:</strong>
+                  <p>Air-conditioned clean vehicle for guest pick-up and drop-off to your hotel.</p>
+                </div>
+              </div>
+              <div class="facility-modal-desc-item">
+                <div class="item-icon">🚚</div>
+                <div class="item-content">
+                  <strong>Car carrying bicycle:</strong>
+                  <p>Specially equipped support truck carrying bicycles that follows all the time during the tour.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- 2. Normal Bike & E-Bike -->
-        <div class="facility-card">
-          <div class="facility-img">
+        <div class="facility-card" data-facility="gear">
+          <div class="facility-img" role="button" tabindex="0" aria-label="Click to view details for Bike and helmet">
             <!-- [TAG FOTO: foto-fasilitas-sepeda-dan-helm] -->
             <img id="foto-fasilitas-sepeda-dan-helm" data-tag="foto-fasilitas-sepeda-dan-helm" src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=600&q=80" alt="Bike and helmet" loading="lazy">
+            <div class="facility-img-overlay">
+              <span class="facility-zoom-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                Click to view details
+              </span>
+            </div>
           </div>
           <div class="facility-body">
             <div class="section-tag" style="margin-bottom: 0.35rem;">GEAR & BIKES</div>
             <h3>Bike and helmet</h3>
-            <p><strong>Normal Bike:</strong> Mountain bikes with suspension and Shimano gears (Size S - XL, and small bike for min height 120cm & 135cm).</p>
-            <p><strong>E-bike:</strong> Electric bikes with pedal assist (size S - M, min height 150cm).</p>
-            <p><strong>Helmet:</strong> Clean sanitized helmets with adjustable straps for all sizes.</p>
+            <button type="button" class="facility-open-btn" aria-label="View Details for Bike and helmet">
+              <span>View Details</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+            <div class="facility-detail-data" style="display: none;">
+              <div class="facility-modal-desc-item">
+                <div class="item-icon">🚵</div>
+                <div class="item-content">
+                  <strong>Normal Bike:</strong>
+                  <p>Mountain bikes with suspension and Shimano gears (Size S – XL, and small bike for min height 120cm & 135cm).</p>
+                </div>
+              </div>
+              <div class="facility-modal-desc-item">
+                <div class="item-icon">⚡</div>
+                <div class="item-content">
+                  <strong>E-bike:</strong>
+                  <p>Electric bikes with pedal assist (size S – M, min height 150cm).</p>
+                </div>
+              </div>
+              <div class="facility-modal-desc-item">
+                <div class="item-icon">⛑️</div>
+                <div class="item-content">
+                  <strong>Helmet:</strong>
+                  <p>Clean sanitized helmets with adjustable straps for all sizes.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- 3. Bike Mechanic -->
-        <div class="facility-card">
-          <div class="facility-img">
+        <!-- 3. Bike Mechanic & Restaurant -->
+        <div class="facility-card" data-facility="maintenance">
+          <div class="facility-img" role="button" tabindex="0" aria-label="Click to view details for Bike Mechanic">
             <!-- [TAG FOTO: foto-fasilitas-mekanik-sepeda] -->
             <img id="foto-fasilitas-mekanik-sepeda" data-tag="foto-fasilitas-mekanik-sepeda" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80" alt="Bike Mechanic" loading="lazy">
+            <div class="facility-img-overlay">
+              <span class="facility-zoom-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                Click to view details
+              </span>
+            </div>
           </div>
           <div class="facility-body">
             <div class="section-tag" style="margin-bottom: 0.35rem;">MAINTENANCE</div>
             <h3>Bike Mechanic</h3>
-            <p><strong>The Mechanic (Dewa Munduk):</strong> Professional bike mechanic with 14+ years experience ensuring all bikes are safe and tuned up before every ride.</p>
-            <p><strong>Restaurant:</strong> End your tour with delicious Balinese lunch and relaxing swimming pool access.</p>
+            <button type="button" class="facility-open-btn" aria-label="View Details for Bike Mechanic">
+              <span>View Details</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+            <div class="facility-detail-data" style="display: none;">
+              <div class="facility-modal-desc-item">
+                <div class="item-icon">🔧</div>
+                <div class="item-content">
+                  <strong>The Mechanic (Dewa Munduk):</strong>
+                  <p>Professional bike mechanic with 14+ years experience ensuring all bikes are safe and tuned up before every ride.</p>
+                </div>
+              </div>
+              <div class="facility-modal-desc-item">
+                <div class="item-icon">🍽️</div>
+                <div class="item-content">
+                  <strong>Restaurant & Pool:</strong>
+                  <p>End your tour with delicious Balinese lunch and relaxing swimming pool access.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="text-center" style="margin-top: 3rem;">
-        <a href="../bike-tours/all-cycling-packages.html" class="btn btn-primary btn-lg">Pilih Paket Bersepeda Sekarang</a>
+        <a href="../bike-tours/all-cycling-packages.html" class="btn btn-primary btn-lg">Choose Your Cycling Package Now</a>
       </div>
     </div>
   </section>
@@ -241,6 +323,30 @@
     </div>
   </a>
 
-  <script src="../js/app.js?v=3"></script>
+  <!-- Facility Details Popup Modal -->
+  <div class="modal-backdrop" id="facilityModal" role="dialog" aria-modal="true" aria-labelledby="facilityModalTitle">
+    <div class="modal-card facility-modal-card">
+      <button class="modal-close" id="facilityModalClose" aria-label="Close modal">&times;</button>
+      
+      <div class="facility-modal-img-wrap">
+        <img id="facilityModalImg" src="" alt="Facility details">
+        <span class="facility-modal-tag" id="facilityModalTag">TRANSPORTATION</span>
+      </div>
+
+      <div class="facility-modal-body">
+        <h3 id="facilityModalTitle" class="facility-modal-title">Facility Title</h3>
+        
+        <div class="facility-modal-desc" id="facilityModalDesc">
+          <!-- Dynamic details injected here -->
+        </div>
+
+        <div class="facility-modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" id="facilityModalOkBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js?v=7"></script>
 </body>
 </html>
