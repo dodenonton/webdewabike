@@ -19,7 +19,7 @@
   <!-- Main Stylesheet -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=43">
+  <link rel="stylesheet" href="css/style.css?v=57">
 </head>
 <body>
 
@@ -658,7 +658,38 @@
     </div>
   </div>
 
+  <!-- Photo Gallery Lightbox Slider Modal -->
+  <div class="lightbox-backdrop" id="galleryLightboxModal" role="dialog" aria-modal="true" aria-label="Photo Gallery Lightbox">
+    <div class="lightbox-container">
+      <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close gallery">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      
+      <div class="lightbox-header-bar">
+        <span class="lightbox-counter" id="lightboxCounter">1 / 1</span>
+      </div>
+
+      <button type="button" class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous photo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+
+      <button type="button" class="lightbox-nav next" id="lightboxNext" aria-label="Next photo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div class="lightbox-stage" id="lightboxStage">
+        <div class="lightbox-img-wrap" id="lightboxImgWrap">
+          <img id="lightboxImg" src="" alt="Gallery photo">
+        </div>
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Main JavaScript File -->
-  <script src="js/app.js?v=6"></script>
+  <script src="js/app.js?v=16"></script>
 </body>
 </html>

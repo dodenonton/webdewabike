@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../images/logo.png">
   <link rel="apple-touch-icon" href="../images/logo.png">
-  <link rel="stylesheet" href="../css/style.css?v=43">
+  <link rel="stylesheet" href="../css/style.css?v=57">
 </head>
 <body>
 
@@ -187,24 +187,56 @@
 
       <div class="benefits-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 900px; margin: 0 auto;">
         <div class="benefit-card" style="padding: 2rem;">
-          <div class="founder-avatar border-green">
+          <div class="founder-avatar border-primary clickable-team-avatar"
+               role="button"
+               tabindex="0"
+               aria-label="Click to enlarge photo of Dewa Munduk"
+               title="Click to view photo"
+               data-name="Dewa Munduk"
+               data-role="Founder &amp; Head Mechanic"
+               data-badge-class="badge-green"
+               data-pos="center 15%"
+               data-img="../images/team-dewa-munduk.jpg?v=2"
+               data-bio="Over 14 years of experience maintaining bicycles and guiding thousands of travelers along the scenic trails of Kintamani and Ubud. Always ensuring every bicycle is in 100% prime and safe condition before every journey.">
             <!-- [TAG FOTO: foto-profil-dewa-munduk] -->
             <img id="foto-profil-dewa-munduk" data-tag="foto-profil-dewa-munduk" src="../images/team-dewa-munduk.jpg?v=2" alt="Dewa Munduk" loading="lazy">
+            <span class="avatar-click-hint" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </span>
+            <span class="avatar-zoom-badge" aria-hidden="true">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </span>
           </div>
           <h3>Dewa Munduk</h3>
-          <p style="color: var(--primary); font-weight: 600; margin-bottom: 0.5rem;">Founder & Head Mechanic</p>
+          <p style="color: var(--primary); font-weight: 600; margin-bottom: 0.5rem;">Founder &amp; Head Mechanic</p>
           <p>
             Over 14 years of experience maintaining bicycles and guiding thousands of travelers along the scenic trails of Kintamani and Ubud. Always ensuring every bicycle is in 100% prime and safe condition before every journey.
           </p>
         </div>
 
         <div class="benefit-card" style="padding: 2rem;">
-          <div class="founder-avatar border-amber">
+          <div class="founder-avatar border-amber clickable-team-avatar"
+               role="button"
+               tabindex="0"
+               aria-label="Click to enlarge photo of Dewa Eka (Dode)"
+               title="Click to view photo"
+               data-name="Dewa Eka (Dode)"
+               data-role="Co-Founder &amp; Tour Director"
+               data-badge-class="badge-amber"
+               data-pos="center 15%"
+               data-img="../images/team-dewa-eka.jpg?v=2"
+               data-bio="Son of Dewa Munduk. Developing cultural educational routes, digital operations, and international guest reservations to ensure every guest receives prompt, warm, and memorable hospitality.">
             <!-- [TAG FOTO: foto-profil-dewa-eka] -->
             <img id="foto-profil-dewa-eka" data-tag="foto-profil-dewa-eka" src="../images/team-dewa-eka.jpg?v=2" alt="Dewa Eka (Dode)" loading="lazy">
+            <span class="avatar-click-hint" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </span>
+            <span class="avatar-zoom-badge" aria-hidden="true">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </span>
           </div>
           <h3>Dewa Eka (Dode)</h3>
-          <p style="color: var(--accent-hover); font-weight: 600; margin-bottom: 0.5rem;">Co-Founder & Tour Director</p>
+          <p style="color: var(--accent-hover); font-weight: 600; margin-bottom: 0.5rem;">Co-Founder &amp; Tour Director</p>
           <p>
             Son of Dewa Munduk. Developing cultural educational routes, digital operations, and international guest reservations to ensure every guest receives prompt, warm, and memorable hospitality.
           </p>
@@ -286,6 +318,30 @@
     </div>
   </a>
 
-  <script src="../js/app.js?v=6"></script>
+  <!-- Team Member Photo & Profile Lightbox Modal -->
+  <div class="modal-backdrop" id="teamPhotoModal" role="dialog" aria-modal="true" aria-labelledby="teamModalName">
+    <div class="modal-card team-modal-card">
+      <button class="modal-close" id="teamModalClose" aria-label="Close modal">&times;</button>
+      
+      <div class="team-modal-img-wrap">
+        <img id="teamModalImg" src="" alt="Team Member Photo">
+        <span class="team-modal-badge" id="teamModalBadge">Founder &amp; Head Mechanic</span>
+      </div>
+
+      <div class="team-modal-body">
+        <h3 id="teamModalName" class="team-modal-name">Dewa Munduk</h3>
+        <p id="teamModalRole" class="team-modal-role-text">Founder &amp; Head Mechanic</p>
+        <p id="teamModalDesc" class="team-modal-desc">
+          <!-- Bio details injected dynamically -->
+        </p>
+
+        <div class="team-modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" id="teamModalOkBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js?v=16"></script>
 </body>
 </html>

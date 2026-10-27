@@ -43,16 +43,49 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /* -------------------------------------------------------------
-   * 1. STICKY HEADER SCROLL EFFECT
+   * 1. STICKY / FIXED HEADER SCROLL EFFECT
    * ------------------------------------------------------------- */
   const header = document.getElementById('header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 40) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
+  const topBar = document.querySelector('.top-announcement');
+
+  if (header) {
+    let spacer = null;
+
+    const handleHeaderScroll = () => {
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      const threshold = topBar ? topBar.offsetHeight : 40;
+
+      if (scrollY > threshold) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+
+      // Fail-safe fallback: if browser fails native sticky positioning (e.g. rect.top < -1 when scrolled down)
+      const rect = header.getBoundingClientRect();
+      if (scrollY > threshold && rect.top < -1) {
+        if (!header.classList.contains('is-fixed')) {
+          if (!spacer) {
+            spacer = document.createElement('div');
+            spacer.className = 'header-spacer';
+            spacer.style.height = `${header.offsetHeight}px`;
+            header.parentNode.insertBefore(spacer, header.nextSibling);
+          }
+          header.classList.add('is-fixed');
+        }
+      } else if (scrollY <= threshold && header.classList.contains('is-fixed')) {
+        header.classList.remove('is-fixed');
+        if (spacer && spacer.parentNode) {
+          spacer.parentNode.removeChild(spacer);
+          spacer = null;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleHeaderScroll, { passive: true });
+    window.addEventListener('resize', handleHeaderScroll, { passive: true });
+    handleHeaderScroll();
+  }
 
   /* -------------------------------------------------------------
    * 2. MOBILE MENU TOGGLE
@@ -655,44 +688,145 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
    * 8. FACILITY POPUP MODAL
    * ------------------------------------------------------------- */
   const initFacilityModal = () => {
+    // 1. Initialize card sliders on .facility-card
+    document.querySelectorAll('.facility-card').forEach(card => {
+      const slides = card.querySelectorAll('.facility-slider-track .facility-slide');
+      const dots = card.querySelectorAll('.facility-dots .dot');
+      const prevBtn = card.querySelector('.facility-arrow.prev');
+      const nextBtn = card.querySelector('.facility-arrow.next');
+
+      if (slides.length > 1) {
+        let currentSlide = 0;
+
+        const setSlide = (idx) => {
+          if (idx < 0) idx = slides.length - 1;
+          if (idx >= slides.length) idx = 0;
+          currentSlide = idx;
+
+          slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === currentSlide);
+          });
+          dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentSlide);
+          });
+        };
+
+        if (prevBtn) {
+          prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setSlide(currentSlide - 1);
+          });
+        }
+        if (nextBtn) {
+          nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setSlide(currentSlide + 1);
+          });
+        }
+        dots.forEach((dot, i) => {
+          dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setSlide(i);
+          });
+        });
+
+        // Touch swipe on card slider
+        let touchStartX = 0;
+        const imgContainer = card.querySelector('.facility-img');
+        if (imgContainer) {
+          imgContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+          }, { passive: true });
+          imgContainer.addEventListener('touchend', (e) => {
+            const diffX = e.changedTouches[0].screenX - touchStartX;
+            if (Math.abs(diffX) > 40) {
+              if (diffX < 0) setSlide(currentSlide + 1);
+              else setSlide(currentSlide - 1);
+            }
+          }, { passive: true });
+        }
+      }
+    });
+
+    // 2. Modal initialization
     const modal = document.getElementById('facilityModal');
     if (!modal) return;
 
     const modalClose = document.getElementById('facilityModalClose');
     const modalOkBtn = document.getElementById('facilityModalOkBtn');
-    const modalImg = document.getElementById('facilityModalImg');
+    const modalTrack = document.getElementById('facilityModalTrack');
+    const modalPrev = document.getElementById('facilityModalPrev');
+    const modalNext = document.getElementById('facilityModalNext');
+    const modalCounter = document.getElementById('facilityModalCounter');
     const modalTag = document.getElementById('facilityModalTag');
     const modalTitle = document.getElementById('facilityModalTitle');
     const modalDesc = document.getElementById('facilityModalDesc');
 
+    let modalCurrentIdx = 0;
+    let modalSlideImgs = [];
+
+    const updateModalSlide = (idx) => {
+      if (!modalSlideImgs.length) return;
+      if (idx < 0) idx = modalSlideImgs.length - 1;
+      if (idx >= modalSlideImgs.length) idx = 0;
+      modalCurrentIdx = idx;
+
+      modalSlideImgs.forEach((img, i) => {
+        img.classList.toggle('active', i === modalCurrentIdx);
+      });
+
+      if (modalCounter) {
+        modalCounter.textContent = `${modalCurrentIdx + 1} / ${modalSlideImgs.length}`;
+      }
+    };
+
     const openFacilityModal = (card) => {
-      const img = card.querySelector('.facility-img img');
+      const cardSlides = Array.from(card.querySelectorAll('.facility-slider-track img, .facility-img img'));
+      const activeCardImg = card.querySelector('.facility-slider-track img.active') || card.querySelector('.facility-img img');
       const tag = card.querySelector('.section-tag');
       const title = card.querySelector('h3');
       const detailData = card.querySelector('.facility-detail-data');
 
-      if (modalImg && img) {
-        modalImg.src = img.src;
-        modalImg.alt = img.alt || (title ? title.textContent : 'Facility Photo');
+      // Populate modal slides
+      if (modalTrack) {
+        modalTrack.innerHTML = '';
+        modalSlideImgs = [];
+
+        cardSlides.forEach((cImg, i) => {
+          const mImg = document.createElement('img');
+          mImg.src = cImg.src;
+          mImg.alt = cImg.alt || (title ? title.textContent : 'Facility Photo');
+          if (cImg === activeCardImg) {
+            mImg.classList.add('active');
+            modalCurrentIdx = i;
+          }
+          modalTrack.appendChild(mImg);
+          modalSlideImgs.push(mImg);
+        });
+
+        if (modalSlideImgs.length > 1) {
+          if (modalPrev) modalPrev.style.display = 'flex';
+          if (modalNext) modalNext.style.display = 'flex';
+          if (modalCounter) modalCounter.style.display = 'block';
+          updateModalSlide(modalCurrentIdx);
+        } else {
+          if (modalPrev) modalPrev.style.display = 'none';
+          if (modalNext) modalNext.style.display = 'none';
+          if (modalCounter) modalCounter.style.display = 'none';
+          if (modalSlideImgs[0]) modalSlideImgs[0].classList.add('active');
+        }
       }
-      if (modalTag && tag) {
-        modalTag.textContent = tag.textContent;
-      }
-      if (modalTitle && title) {
-        modalTitle.textContent = title.textContent;
-      }
-      if (modalDesc && detailData) {
-        modalDesc.innerHTML = detailData.innerHTML;
-      }
+
+      if (modalTag && tag) modalTag.textContent = tag.textContent;
+      if (modalTitle && title) modalTitle.textContent = title.textContent;
+      if (modalDesc && detailData) modalDesc.innerHTML = detailData.innerHTML;
 
       modal.classList.add('open');
       document.body.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
 
       const modalCard = modal.querySelector('.modal-card');
-      if (modalCard) {
-        modalCard.scrollTop = 0;
-      }
+      if (modalCard) modalCard.scrollTop = 0;
     };
 
     const closeFacilityModal = () => {
@@ -701,12 +835,44 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
       document.body.style.overflow = '';
     };
 
+    if (modalPrev) {
+      modalPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateModalSlide(modalCurrentIdx - 1);
+      });
+    }
+
+    if (modalNext) {
+      modalNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateModalSlide(modalCurrentIdx + 1);
+      });
+    }
+
+    const modalSliderEl = document.getElementById('facilityModalSlider');
+    if (modalSliderEl) {
+      let mTouchStartX = 0;
+      modalSliderEl.addEventListener('touchstart', (e) => {
+        mTouchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      modalSliderEl.addEventListener('touchend', (e) => {
+        const diffX = e.changedTouches[0].screenX - mTouchStartX;
+        if (Math.abs(diffX) > 40) {
+          if (diffX < 0) updateModalSlide(modalCurrentIdx + 1);
+          else updateModalSlide(modalCurrentIdx - 1);
+        }
+      }, { passive: true });
+    }
+
     document.querySelectorAll('.facility-card').forEach(card => {
       const imgWrap = card.querySelector('.facility-img');
       const openBtn = card.querySelector('.facility-open-btn');
 
       if (imgWrap) {
-        imgWrap.addEventListener('click', () => openFacilityModal(card));
+        imgWrap.addEventListener('click', (e) => {
+          if (e.target.closest('.facility-arrow') || e.target.closest('.facility-dots')) return;
+          openFacilityModal(card);
+        });
         imgWrap.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -731,12 +897,342 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('open')) {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') {
         closeFacilityModal();
+      } else if (e.key === 'ArrowRight') {
+        updateModalSlide(modalCurrentIdx + 1);
+      } else if (e.key === 'ArrowLeft') {
+        updateModalSlide(modalCurrentIdx - 1);
       }
     });
   };
 
+  /* -------------------------------------------------------------
+   * 9. TEAM MEMBER PHOTO LIGHTBOX MODAL
+   * ------------------------------------------------------------- */
+  const initTeamModal = () => {
+    const modal = document.getElementById('teamPhotoModal');
+    if (!modal) return;
+
+    const modalClose = document.getElementById('teamModalClose');
+    const modalOkBtn = document.getElementById('teamModalOkBtn');
+    const modalImg = document.getElementById('teamModalImg');
+    const modalBadge = document.getElementById('teamModalBadge');
+    const modalName = document.getElementById('teamModalName');
+    const modalRole = document.getElementById('teamModalRole');
+    const modalDesc = document.getElementById('teamModalDesc');
+
+    const openTeamModal = (avatar) => {
+      const img = avatar.querySelector('img');
+      const name = avatar.getAttribute('data-name') || (img ? img.alt : 'Team Member');
+      const role = avatar.getAttribute('data-role') || '';
+      const bio = avatar.getAttribute('data-bio') || '';
+      const imgSrc = avatar.getAttribute('data-img') || (img ? img.src : '');
+      const badgeClass = avatar.getAttribute('data-badge-class') || '';
+      const objectPos = avatar.getAttribute('data-pos') || 'center 15%';
+
+      if (modalImg) {
+        modalImg.src = imgSrc;
+        modalImg.alt = name;
+        modalImg.style.objectPosition = objectPos;
+      }
+
+      if (modalBadge) {
+        modalBadge.textContent = role;
+        modalBadge.className = 'team-modal-badge ' + (badgeClass === 'badge-amber' ? 'badge-amber' : 'badge-orange');
+      }
+
+      if (modalName) modalName.textContent = name;
+      if (modalRole) {
+        modalRole.textContent = role;
+        modalRole.style.color = (badgeClass === 'badge-amber' ? 'var(--accent-hover)' : 'var(--primary)');
+      }
+      if (modalDesc) modalDesc.textContent = bio;
+
+      modal.classList.add('open');
+      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+
+      const modalCard = modal.querySelector('.modal-card');
+      if (modalCard) modalCard.scrollTop = 0;
+    };
+
+    const closeTeamModal = () => {
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+    };
+
+    document.querySelectorAll('.clickable-team-avatar').forEach(avatar => {
+      avatar.addEventListener('click', () => openTeamModal(avatar));
+      avatar.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openTeamModal(avatar);
+        }
+      });
+    });
+
+    if (modalClose) modalClose.addEventListener('click', closeTeamModal);
+    if (modalOkBtn) modalOkBtn.addEventListener('click', closeTeamModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeTeamModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) {
+        closeTeamModal();
+      }
+    });
+  };
+
+  /* -------------------------------------------------------------
+   * 10. GALLERY LIGHTBOX SLIDER MODAL
+   * ------------------------------------------------------------- */
+  const initGalleryLightbox = () => {
+    const galleryItems = document.querySelectorAll('.gallery-grid .gallery-item');
+    if (galleryItems.length === 0) return;
+
+    let modal = document.getElementById('galleryLightboxModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'galleryLightboxModal';
+      modal.className = 'lightbox-backdrop';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-label', 'Photo Gallery Lightbox');
+      modal.innerHTML = `
+        <div class="lightbox-container">
+          <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close gallery">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          
+          <div class="lightbox-header-bar">
+            <span class="lightbox-counter" id="lightboxCounter">1 / 1</span>
+          </div>
+
+          <button type="button" class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous photo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+
+          <button type="button" class="lightbox-nav next" id="lightboxNext" aria-label="Next photo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+
+          <div class="lightbox-stage" id="lightboxStage">
+            <div class="lightbox-img-wrap" id="lightboxImgWrap">
+              <img id="lightboxImg" src="" alt="Gallery photo">
+            </div>
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+            <div class="lightbox-thumbnails-wrap" id="lightboxThumbnailsWrap">
+              <div class="lightbox-thumbnails" id="lightboxThumbnails" role="tablist" aria-label="Photo thumbnails"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    const modalClose = modal.querySelector('#lightboxClose');
+    const modalPrev = modal.querySelector('#lightboxPrev');
+    const modalNext = modal.querySelector('#lightboxNext');
+    const modalImg = modal.querySelector('#lightboxImg');
+    const modalCaption = modal.querySelector('#lightboxCaption');
+    const modalCounter = modal.querySelector('#lightboxCounter');
+    const modalStage = modal.querySelector('#lightboxStage');
+    const modalThumbnails = modal.querySelector('#lightboxThumbnails');
+
+    let currentList = [];
+    let currentIndex = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const getVisibleGalleryItems = () => {
+      const items = Array.from(document.querySelectorAll('.gallery-grid .gallery-item'));
+      return items.filter(item => {
+        const style = window.getComputedStyle(item);
+        return style.display !== 'none' && item.offsetParent !== null;
+      });
+    };
+
+    const renderThumbnails = () => {
+      if (!modalThumbnails) return;
+      modalThumbnails.innerHTML = '';
+
+      currentList.forEach((item, idx) => {
+        const img = item.querySelector('img');
+        const overlaySpan = item.querySelector('.gallery-overlay span');
+        const captionText = overlaySpan ? overlaySpan.textContent.trim() : (img ? img.alt : `Photo ${idx + 1}`);
+        const src = img ? (img.getAttribute('src') || '') : '';
+
+        const thumbBtn = document.createElement('button');
+        thumbBtn.type = 'button';
+        thumbBtn.className = `lightbox-thumb${idx === currentIndex ? ' active' : ''}`;
+        thumbBtn.setAttribute('aria-label', `Go to photo ${idx + 1}: ${captionText}`);
+        thumbBtn.setAttribute('data-index', idx);
+        thumbBtn.innerHTML = `<img src="${src}" alt="${captionText}" loading="lazy">`;
+
+        thumbBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (idx !== currentIndex) {
+            const dir = idx > currentIndex ? 1 : -1;
+            updateSlide(idx, dir);
+          }
+        });
+
+        modalThumbnails.appendChild(thumbBtn);
+      });
+    };
+
+    const updateSlide = (index, direction = 0) => {
+      if (!currentList.length) return;
+      if (index < 0) index = currentList.length - 1;
+      if (index >= currentList.length) index = 0;
+      currentIndex = index;
+
+      const currentItem = currentList[currentIndex];
+      const img = currentItem.querySelector('img');
+      const overlaySpan = currentItem.querySelector('.gallery-overlay span');
+      const captionText = overlaySpan ? overlaySpan.textContent.trim() : (img ? img.alt : '');
+      const src = img ? (img.getAttribute('src') || '') : '';
+
+      if (modalImg) {
+        modalImg.style.opacity = '0';
+        modalImg.style.transform = direction !== 0 ? `translateX(${direction * 25}px) scale(0.96)` : 'scale(0.96)';
+        
+        setTimeout(() => {
+          modalImg.src = src;
+          modalImg.alt = captionText;
+          modalImg.onload = () => {
+            modalImg.style.opacity = '1';
+            modalImg.style.transform = 'translateX(0) scale(1)';
+          };
+          if (modalImg.complete) {
+            modalImg.style.opacity = '1';
+            modalImg.style.transform = 'translateX(0) scale(1)';
+          }
+        }, 120);
+      }
+
+      if (modalCaption) {
+        modalCaption.textContent = captionText;
+      }
+
+      if (modalCounter) {
+        modalCounter.textContent = `${currentIndex + 1} / ${currentList.length}`;
+      }
+
+      if (modalThumbnails) {
+        const thumbs = modalThumbnails.querySelectorAll('.lightbox-thumb');
+        thumbs.forEach((thumb, idx) => {
+          if (idx === currentIndex) {
+            thumb.classList.add('active');
+            thumb.setAttribute('aria-current', 'true');
+            thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          } else {
+            thumb.classList.remove('active');
+            thumb.removeAttribute('aria-current');
+          }
+        });
+      }
+    };
+
+    const openLightbox = (item) => {
+      currentList = getVisibleGalleryItems();
+      if (!currentList.length) currentList = Array.from(galleryItems);
+
+      const foundIndex = currentList.indexOf(item);
+      currentIndex = foundIndex !== -1 ? foundIndex : 0;
+
+      modal.classList.add('open');
+      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+
+      renderThumbnails();
+      updateSlide(currentIndex);
+    };
+
+    const closeLightbox = () => {
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      if (modalImg) modalImg.src = '';
+    };
+
+    const nextSlide = () => {
+      updateSlide(currentIndex + 1, 1);
+    };
+
+    const prevSlide = () => {
+      updateSlide(currentIndex - 1, -1);
+    };
+
+    galleryItems.forEach(item => {
+      item.setAttribute('role', 'button');
+      item.setAttribute('tabindex', '0');
+      const titleSpan = item.querySelector('.gallery-overlay span');
+      if (titleSpan) {
+        item.setAttribute('aria-label', `View photo: ${titleSpan.textContent.trim()}`);
+      }
+
+      item.addEventListener('click', () => openLightbox(item));
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(item);
+        }
+      });
+    });
+
+    if (modalClose) modalClose.addEventListener('click', closeLightbox);
+    if (modalNext) modalNext.addEventListener('click', (e) => { e.stopPropagation(); nextSlide(); });
+    if (modalPrev) modalPrev.addEventListener('click', (e) => { e.stopPropagation(); prevSlide(); });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target.closest('.lightbox-thumbnails-wrap') || e.target.closest('.lightbox-img-wrap')) {
+        return;
+      }
+      if (e.target === modal || e.target.classList.contains('lightbox-container') || e.target === modalStage) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') {
+        closeLightbox();
+      } else if (e.key === 'ArrowRight') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    modal.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    modal.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diffX = touchEndX - touchStartX;
+      if (Math.abs(diffX) > 40) {
+        if (diffX < 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+    }, { passive: true });
+  };
+
   initTourSlider();
   initFacilityModal();
+  initTeamModal();
+  initGalleryLightbox();
 });
+

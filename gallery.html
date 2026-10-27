@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=43">
+  <link rel="stylesheet" href="css/style.css?v=57">
 </head>
 <body>
 
@@ -116,7 +116,7 @@
 
       <!-- Gallery Filter Buttons -->
       <div class="gallery-filters" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.65rem; margin-top: 2rem; margin-bottom: 2.5rem;">
-        <button type="button" class="btn-filter active" data-filter="all" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: 2px solid #105b38; background-color: #105b38; color: #ffffff; transition: all 0.2s;">All Photos (23)</button>
+        <button type="button" class="btn-filter active" data-filter="all" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: 2px solid var(--primary); background-color: var(--primary); color: #ffffff; transition: all 0.2s;">All Photos (23)</button>
         <button type="button" class="btn-filter" data-filter="kintamani" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0; background-color: #ffffff; color: #1e293b; transition: all 0.2s;">Kintamani Downhill (9)</button>
         <button type="button" class="btn-filter" data-filter="ubud" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0; background-color: #ffffff; color: #1e293b; transition: all 0.2s;">Ubud Rice Fields & E-Bike (6)</button>
         <button type="button" class="btn-filter" data-filter="culture" style="padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0; background-color: #ffffff; color: #1e293b; transition: all 0.2s;">Balinese Culture (4)</button>
@@ -281,8 +281,8 @@
               b.style.fontWeight = '600';
             });
             btn.classList.add('active');
-            btn.style.backgroundColor = '#105b38';
-            btn.style.borderColor = '#105b38';
+            btn.style.backgroundColor = 'var(--primary)';
+            btn.style.borderColor = 'var(--primary)';
             btn.style.color = '#ffffff';
             btn.style.fontWeight = '700';
 
@@ -374,6 +374,40 @@
     </div>
   </a>
 
-  <script src="js/app.js?v=6"></script>
+  <!-- Photo Gallery Lightbox Slider Modal -->
+  <div class="lightbox-backdrop" id="galleryLightboxModal" role="dialog" aria-modal="true" aria-label="Photo Gallery Lightbox">
+    <div class="lightbox-container">
+      <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close gallery">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      
+      <div class="lightbox-header-bar">
+        <span class="lightbox-counter" id="lightboxCounter">1 / 1</span>
+      </div>
+
+      <button type="button" class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous photo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+
+      <button type="button" class="lightbox-nav next" id="lightboxNext" aria-label="Next photo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div class="lightbox-stage" id="lightboxStage">
+        <div class="lightbox-img-wrap" id="lightboxImgWrap">
+          <img id="lightboxImg" src="" alt="Gallery photo">
+        </div>
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+        <div class="lightbox-thumbnails-wrap" id="lightboxThumbnailsWrap">
+          <div class="lightbox-thumbnails" id="lightboxThumbnails" role="tablist" aria-label="Photo thumbnails"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=16"></script>
 </body>
 </html>
