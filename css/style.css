@@ -4460,6 +4460,17 @@ button, input, select, textarea {
   .tour-detail-grid {
     grid-template-columns: 1fr;
   }
+  .tour-sidebar-card {
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overscroll-behavior: auto !important;
+  }
+  .tour-sidebar-card::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+  }
   .facility-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -4726,7 +4737,11 @@ button, input, select, textarea {
   .tour-sidebar-card {
     padding: 1.25rem 0.85rem;
     border-radius: var(--radius-md);
-    position: static;
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overscroll-behavior: auto !important;
   }
   .sidebar-price-header {
     padding-bottom: 1rem;
@@ -4766,6 +4781,10 @@ button, input, select, textarea {
   }
   .page-hero h1 {
     font-size: 2rem;
+  }
+  .page-hero-subtitle {
+    font-size: 0.95rem !important;
+    line-height: 1.45 !important;
   }
 }
 
@@ -4846,6 +4865,10 @@ button, input, select, textarea {
     font-size: 1.75rem;
     line-height: 1.25;
   }
+  .page-hero-subtitle {
+    font-size: 0.88rem !important;
+    line-height: 1.4 !important;
+  }
   .section-title {
     font-size: 1.6rem;
     line-height: 1.25;
@@ -4887,6 +4910,11 @@ button, input, select, textarea {
   .tour-sidebar-card {
     padding: 1rem 0.65rem;
     border-radius: 10px;
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overscroll-behavior: auto !important;
   }
   .package-body {
     padding: 1.15rem 0.75rem;
