@@ -88,6 +88,71 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* -------------------------------------------------------------
+   * 1.1 DESKTOP STICKY SIDEBAR SCROLL SYNC (ZERO JITTER)
+   * ------------------------------------------------------------- */
+  const initDesktopStickySidebar = () => {
+    const sidebarCards = document.querySelectorAll('.tour-sidebar-card');
+    if (!sidebarCards.length) return;
+
+    sidebarCards.forEach(card => {
+      // Ensure no transform is applied, letting native GPU sticky run at 120Hz with zero stutter or ghosting
+      if (card.style.transform) {
+        card.style.transform = '';
+      }
+
+      const grid = card.closest('.tour-detail-grid');
+      if (!grid) return;
+
+      let isHovered = false;
+      card.addEventListener('mouseenter', () => { isHovered = true; });
+      card.addEventListener('mouseleave', () => { isHovered = false; });
+
+      let ticking = false;
+
+      const updateScrollSync = () => {
+        if (window.innerWidth <= 1024) return;
+
+        const headerEl = document.getElementById('header');
+        const headerHeight = headerEl ? headerEl.offsetHeight : 72;
+        const topOffset = headerHeight + 16;
+        const gridRect = grid.getBoundingClientRect();
+
+        // Dynamic Scroll Sync: saat bagian kiri discroll turun, bagian kanan ikut turun menampilkan tombol booking
+        if (!isHovered) {
+          const maxInternalScroll = card.scrollHeight - card.clientHeight;
+          if (maxInternalScroll > 0) {
+            if (gridRect.top >= topOffset) {
+              card.scrollTop = 0;
+            } else {
+              const scrollPast = topOffset - gridRect.top;
+              const syncDistance = 420;
+              const progress = Math.min(1, Math.max(0, scrollPast / syncDistance));
+              card.scrollTop = Math.round(progress * maxInternalScroll);
+            }
+          }
+        }
+      };
+
+      const onScroll = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateScrollSync();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      window.addEventListener('load', updateScrollSync);
+      updateScrollSync();
+    });
+  };
+
+  initDesktopStickySidebar();
+
+  /* -------------------------------------------------------------
    * 2. MOBILE MENU TOGGLE
    * ------------------------------------------------------------- */
   const mobileToggle = document.getElementById('mobileToggle');
@@ -148,30 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-
-  /* -------------------------------------------------------------
-   * 3. PACKAGE CATEGORY FILTERS
-   * ------------------------------------------------------------- */
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const packageCards = document.querySelectorAll('.package-card');
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const selectedCat = btn.getAttribute('data-category');
-
-      packageCards.forEach(card => {
-        const cardCat = card.getAttribute('data-category');
-        if (selectedCat === 'all' || cardCat === selectedCat) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-  });
 
   /* -------------------------------------------------------------
    * 4. FAQ ACCORDION INTERACTION
@@ -973,7 +1014,7 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
 
       if (modalBadge) {
         modalBadge.textContent = role;
-        modalBadge.className = 'team-modal-badge ' + (badgeClass === 'badge-amber' ? 'badge-amber' : 'badge-orange');
+        modalBadge.className = 'team-modal-badge ' + (badgeClass === 'badge-amber' ? 'badge-amber' : 'badge-green');
       }
 
       if (modalName) modalName.textContent = name;
