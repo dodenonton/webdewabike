@@ -1292,6 +1292,52 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     }, { passive: true });
   };
 
+  /* -------------------------------------------------------------
+   * 11. CLEAN URL ADDRESS BAR (FOR LIVE SITE)
+   * ------------------------------------------------------------- */
+  try {
+    if (window.location.protocol.startsWith('http') && window.location.pathname.endsWith('.html')) {
+      let cleanPath = window.location.pathname.replace(/\.html$/, '');
+      if (cleanPath.endsWith('/index')) {
+        cleanPath = cleanPath.slice(0, -5) || '/';
+      }
+      const newUrl = cleanPath + window.location.search + window.location.hash;
+      window.history.replaceState(null, '', newUrl);
+    }
+  } catch (err) {
+    // Graceful fallback
+  }
+
+  /* -------------------------------------------------------------
+   * 12. FAIL-SAFE LINK CLICK HANDLER FOR OFFLINE / LOCAL PREVIEWS
+   * ------------------------------------------------------------- */
+  if (window.location.protocol === 'file:') {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href) return;
+      if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('http://') || href.startsWith('https://') || href.startsWith('javascript:')) return;
+      if (href.endsWith('.html') || href.includes('.html#') || href.includes('.html?')) return;
+      
+      if (href === './' || href === '../' || href === '../../' || href.endsWith('/')) {
+        e.preventDefault();
+        window.location.href = href + 'index.html';
+        return;
+      }
+      
+      const parts = href.split('#');
+      const baseAndQuery = parts[0].split('?');
+      const base = baseAndQuery[0];
+      const query = baseAndQuery[1] ? '?' + baseAndQuery[1] : '';
+      const hash = parts[1] ? '#' + parts[1] : '';
+      if (!base) return;
+      
+      e.preventDefault();
+      window.location.href = base + '.html' + query + hash;
+    });
+  }
+
   initTourSlider();
   initFacilityModal();
   initTeamModal();
