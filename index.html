@@ -33,7 +33,7 @@
   <!-- Main Stylesheet -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=69">
+  <link rel="stylesheet" href="css/style.css?v=74">
   <link rel="canonical" href="https://www.dewabike.com/">
 
   <!-- Schema.org Structured Data (JSON-LD) for LocalBusiness & TourOperator -->
@@ -650,53 +650,129 @@
       <div class="modal-header">
         <div class="section-tag">PRIVATE TOUR BOOKING FORM</div>
         <h3 id="modalTourTitle">Book Dewa Bike Tour</h3>
-        <p>Calculate your total price instantly and forward your booking details to WhatsApp.</p>
+        <p>Calculate your total price instantly and forward your booking details via WhatsApp or Email.</p>
       </div>
 
       <div class="modal-body">
         <div class="form-group">
           <label>Select Cycling Tour</label>
           <select id="modalTourSelect">
-            <option value="Kintamani Downhill" data-regular="550000" data-saving="350000">Kintamani Downhill Cycling</option>
-            <option value="Ubud Rice Fields" data-regular="550000" data-saving="350000">Ubud Rice Fields Cycling</option>
-            <option value="E-Bike Ubud Countryside" data-regular="650000" data-saving="450000">Ubud E-Bike Tour (Electric)</option>
-            <option value="Cycling + River Tubing" data-regular="850000" data-saving="850000">Cycling + River Tubing Combo</option>
-            <option value="Cycling + ATV Quad Bike" data-regular="950000" data-saving="950000">Cycling + ATV Quad Bike Combo</option>
-            <option value="Rice Paddy Planting & Rafting" data-regular="450000" data-saving="350000">Rice Paddy Planting / Rafting</option>
+            <optgroup label="Regular Packages (Inc. Lunch &amp; Hotel Transfer)">
+              <option value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</option>
+              <option value="Ubud Rice Fields">Ubud Rice Fields Cycling (Regular)</option>
+              <option value="E-Bike Ubud Countryside">Ubud E-Bike Tour (Regular)</option>
+              <option value="Cycling + River Tubing">Cycling + River Tubing Combo</option>
+              <option value="Cycling + ATV Quad Bike">Cycling + ATV Quad Bike Combo</option>
+              <option value="Rice Paddy Planting &amp; Rafting">Rice Paddy Planting &amp; Rafting</option>
+            </optgroup>
+            <optgroup label="Saving Packages (Ride Only, Without Lunch &amp; Transfer)">
+              <option value="Kintamani Downhill (Saving)">Kintamani Downhill (Saving Package)</option>
+              <option value="Ubud Rice Fields (Saving)">Ubud Rice Fields (Saving Package)</option>
+              <option value="E-Bike Ubud Countryside (Saving)">Ubud E-Bike Tour (Saving Package)</option>
+            </optgroup>
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="packageTierGroup">
           <label>Package Tier</label>
           <div class="tier-radio-group">
-            <label class="radio-card selected">
-              <input type="radio" name="modalTier" value="regular" checked>
+            <label class="radio-card selected" data-tier-card="private">
+              <input type="radio" name="modalTier" value="private" checked>
               <div class="radio-info">
-                <strong>Regular (All-Inclusive)</strong>
-                <span>+ Hotel pickup & Indonesian lunch</span>
+                <strong>PRIVATE</strong>
+                <span id="tierDescPrivate">Without sharing other group</span>
               </div>
             </label>
-            <label class="radio-card">
-              <input type="radio" name="modalTier" value="saving">
+            <label class="radio-card" data-tier-card="sharing">
+              <input type="radio" name="modalTier" value="sharing">
               <div class="radio-info">
-                <strong>Saving (Budget)</strong>
-                <span>Ride only, without lunch & transfer</span>
+                <strong>SHARING</strong>
+                <span id="tierDescSharing">With a small group</span>
               </div>
             </label>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tour Date</label>
-            <input type="date" id="modalDate" required>
+        <div class="form-group">
+          <label>Tour Date</label>
+          <input type="date" id="modalDate" required>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <label style="margin: 0; font-weight: 600;">Number of Guests by Age</label>
+            <span class="total-guests-pill" id="calcTotalGuestsPill">2 Guests</span>
           </div>
-          <div class="form-group">
-            <label>Number of Guests</label>
-            <div class="number-stepper">
-              <button type="button" id="stepDec">-</button>
-              <input type="number" id="modalGuests" value="2" min="1" max="50" readonly>
-              <button type="button" id="stepInc">+</button>
+
+          <div class="age-category-list">
+            <!-- 1. Adult -->
+            <div class="age-row" id="rowAdult">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabelAdult">Adults</span>
+                <span class="age-desc" id="descLabelAdult">Age 12+ years</span>
+                <span class="age-price" id="priceLabelAdult">Rp 600.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guestAdult" data-dir="-">&minus;</button>
+                <input type="number" id="guestAdult" value="2" min="1" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guestAdult" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 2. Child 8 - 11 yrs -->
+            <div class="age-row" id="row8_11">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel8_11">Children</span>
+                <span class="age-desc" id="descLabel8_11">Age 8 &ndash; 11 years old</span>
+                <span class="age-price" id="priceLabel8_11">Rp 400.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest8_11" data-dir="-">&minus;</button>
+                <input type="number" id="guest8_11" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest8_11" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 3. Child 6, 7 yrs -->
+            <div class="age-row" id="row6_7">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel6_7">Children</span>
+                <span class="age-desc" id="descLabel6_7">Age 6 &ndash; 7 years old</span>
+                <span class="age-price" id="priceLabel6_7">Rp 300.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest6_7" data-dir="-">&minus;</button>
+                <input type="number" id="guest6_7" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest6_7" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 4. Child 3, 4, 5 yrs -->
+            <div class="age-row" id="row3_5">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel3_5">Young Children</span>
+                <span class="age-desc" id="descLabel3_5">Age 3, 4, 5 years old</span>
+                <span class="age-price" id="priceLabel3_5">Rp 200.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest3_5" data-dir="-">&minus;</button>
+                <input type="number" id="guest3_5" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest3_5" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 5. Infant 1, 2 yrs -->
+            <div class="age-row" id="row1_2">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel1_2">Infants / Toddlers</span>
+                <span class="age-desc" id="descLabel1_2">Age 1 &ndash; 2 years old</span>
+                <span class="age-price" id="priceLabel1_2">Rp 50.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest1_2" data-dir="-">&minus;</button>
+                <input type="number" id="guest1_2" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest1_2" data-dir="+">&plus;</button>
+              </div>
             </div>
           </div>
         </div>
@@ -713,28 +789,39 @@
 
         <!-- Live Price Calculation Box -->
         <div class="price-calculation-box">
-          <div class="calc-row">
-            <span>Price per person:</span>
-            <strong id="calcPricePerPerson">Rp 550,000</strong>
-          </div>
-          <div class="calc-row">
-            <span>Number of guests:</span>
-            <strong id="calcGuestCount">2 guests</strong>
+          <div class="calc-breakdown-items" id="calcBreakdownList">
+            <div class="calc-row">
+              <span>Adults (2x @ Rp 600.000):</span>
+              <strong>Rp 1.200.000</strong>
+            </div>
+            <div class="calc-row" style="color: var(--text-muted); font-size: 0.82rem;">
+              <span>Total participants:</span>
+              <strong>2 guests</strong>
+            </div>
           </div>
           <div class="calc-divider"></div>
           <div class="calc-row total-row">
             <span>Estimated Total Cost:</span>
             <div class="total-wrap">
-              <div class="total-idr" id="calcTotalIdr">Rp 1,100,000</div>
-              <div class="total-usd" id="calcTotalUsd">(Approx. ~$73 USD)</div>
+              <div class="total-idr" id="calcTotalIdr">Rp 1.200.000</div>
+              <div class="total-usd" id="calcTotalUsd">(Approx. ~$77 USD)</div>
             </div>
           </div>
         </div>
 
-        <button type="button" id="btnSubmitModalBooking" class="btn btn-primary btn-block btn-lg">
-          Confirm Booking via WhatsApp ➔
-        </button>
+        <!-- WhatsApp & Email Action Buttons -->
+        <div class="modal-booking-actions">
+          <button type="button" class="btn btn-whatsapp btn-block btn-lg" id="btnSubmitModalBooking">
+            <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+            Confirm book on Whatsapp
+          </button>
+          <button type="button" class="btn btn-email btn-block btn-lg" id="btnSubmitModalEmail">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Confirm book via Email
+          </button>
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -770,6 +857,6 @@
   </div>
 
   <!-- Main JavaScript File -->
-  <script src="js/app.js?v=27"></script>
+  <script src="js/app.js?v=32"></script>
 </body>
 </html>

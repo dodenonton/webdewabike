@@ -11,34 +11,46 @@ document.addEventListener('DOMContentLoaded', () => {
   // Package Data Dictionary for Quick Price Lookup
   const packageData = {
     'Kintamani Downhill': {
-      title: 'Kintamani Downhill Cycling Tour',
-      regular: 550000,
-      saving: 350000
+      title: 'Kintamani Downhill Cycling Tour (Regular)',
+      isEBike: false,
+      isSaving: false
     },
     'Ubud Rice Fields': {
-      title: 'Ubud Rice Fields & Village Tour',
-      regular: 550000,
-      saving: 350000
+      title: 'Ubud Rice Fields & Village Tour (Regular)',
+      isEBike: false,
+      isSaving: false
     },
     'E-Bike Ubud Countryside': {
-      title: 'Ubud E-Bike Countryside Tour',
-      regular: 650000,
-      saving: 450000
+      title: 'Ubud E-Bike Countryside Tour (Regular)',
+      isEBike: true,
+      isSaving: false
+    },
+    'Kintamani Downhill (Saving)': {
+      title: 'Kintamani Downhill Cycling (Saving Package)',
+      isEBike: false,
+      isSaving: true
+    },
+    'Ubud Rice Fields (Saving)': {
+      title: 'Ubud Rice Fields & Village Tour (Saving Package)',
+      isEBike: false,
+      isSaving: true
+    },
+    'E-Bike Ubud Countryside (Saving)': {
+      title: 'Ubud E-Bike Tour (Saving Package)',
+      isEBike: true,
+      isSaving: true
     },
     'Cycling + River Tubing': {
       title: 'Cycling + River Tubing Adventure',
-      regular: 850000,
-      saving: 850000
+      comboPrice: 850000
     },
     'Cycling + ATV Quad Bike': {
       title: 'Cycling + ATV Quad Bike Adventure',
-      regular: 950000,
-      saving: 950000
+      comboPrice: 950000
     },
     'Rice Paddy Planting & Rafting': {
       title: 'Rice Paddy Planting & Ayung Rafting',
-      regular: 450000,
-      saving: 350000
+      comboPrice: 450000
     }
   };
 
@@ -255,53 +267,129 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="modal-header">
         <div class="section-tag">PRIVATE TOUR BOOKING FORM</div>
         <h3 id="modalTourTitle">Book Dewa Bike Tour</h3>
-        <p>Calculate your total price instantly and forward your booking details to WhatsApp.</p>
+        <p>Calculate your total price instantly and forward your booking details via WhatsApp or Email.</p>
       </div>
 
       <div class="modal-body">
         <div class="form-group">
           <label>Select Cycling Tour</label>
           <select id="modalTourSelect">
-            <option value="Kintamani Downhill" data-regular="550000" data-saving="350000">Kintamani Downhill Cycling</option>
-            <option value="Ubud Rice Fields" data-regular="550000" data-saving="350000">Ubud Rice Fields Cycling</option>
-            <option value="E-Bike Ubud Countryside" data-regular="650000" data-saving="450000">Ubud E-Bike Tour (Electric)</option>
-            <option value="Cycling + River Tubing" data-regular="850000" data-saving="850000">Cycling + River Tubing Combo</option>
-            <option value="Cycling + ATV Quad Bike" data-regular="950000" data-saving="950000">Cycling + ATV Quad Bike Combo</option>
-            <option value="Rice Paddy Planting & Rafting" data-regular="450000" data-saving="350000">Rice Paddy Planting / Rafting</option>
+            <optgroup label="Regular Packages (Inc. Lunch &amp; Hotel Transfer)">
+              <option value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</option>
+              <option value="Ubud Rice Fields">Ubud Rice Fields Cycling (Regular)</option>
+              <option value="E-Bike Ubud Countryside">Ubud E-Bike Tour (Regular)</option>
+              <option value="Cycling + River Tubing">Cycling + River Tubing Combo</option>
+              <option value="Cycling + ATV Quad Bike">Cycling + ATV Quad Bike Combo</option>
+              <option value="Rice Paddy Planting &amp; Rafting">Rice Paddy Planting &amp; Rafting</option>
+            </optgroup>
+            <optgroup label="Saving Packages (Ride Only, Without Lunch &amp; Transfer)">
+              <option value="Kintamani Downhill (Saving)">Kintamani Downhill (Saving Package)</option>
+              <option value="Ubud Rice Fields (Saving)">Ubud Rice Fields (Saving Package)</option>
+              <option value="E-Bike Ubud Countryside (Saving)">Ubud E-Bike Tour (Saving Package)</option>
+            </optgroup>
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="packageTierGroup">
           <label>Package Tier</label>
           <div class="tier-radio-group">
-            <label class="radio-card selected">
-              <input type="radio" name="modalTier" value="regular" checked>
+            <label class="radio-card selected" data-tier-card="private">
+              <input type="radio" name="modalTier" value="private" checked>
               <div class="radio-info">
-                <strong>Regular (All-Inclusive)</strong>
-                <span>+ Hotel pickup & Indonesian lunch</span>
+                <strong>PRIVATE</strong>
+                <span id="tierDescPrivate">Without sharing other group</span>
               </div>
             </label>
-            <label class="radio-card">
-              <input type="radio" name="modalTier" value="saving">
+            <label class="radio-card" data-tier-card="sharing">
+              <input type="radio" name="modalTier" value="sharing">
               <div class="radio-info">
-                <strong>Saving (Budget)</strong>
-                <span>Ride only, without lunch & transfer</span>
+                <strong>SHARING</strong>
+                <span id="tierDescSharing">With a small group</span>
               </div>
             </label>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tour Date</label>
-            <input type="date" id="modalDate" required>
+        <div class="form-group">
+          <label>Tour Date</label>
+          <input type="date" id="modalDate" required>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <label style="margin: 0; font-weight: 600;">Number of Guests by Age</label>
+            <span class="total-guests-pill" id="calcTotalGuestsPill">2 Guests</span>
           </div>
-          <div class="form-group">
-            <label>Number of Guests</label>
-            <div class="number-stepper">
-              <button type="button" id="stepDec">-</button>
-              <input type="number" id="modalGuests" value="2" min="1" max="50" readonly>
-              <button type="button" id="stepInc">+</button>
+
+          <div class="age-category-list">
+            <!-- 1. Adult -->
+            <div class="age-row" id="rowAdult">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabelAdult">Adults</span>
+                <span class="age-desc" id="descLabelAdult">Age 12+ years</span>
+                <span class="age-price" id="priceLabelAdult">Rp 600.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guestAdult" data-dir="-">&minus;</button>
+                <input type="number" id="guestAdult" value="2" min="1" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guestAdult" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 2. Child 8 - 11 yrs -->
+            <div class="age-row" id="row8_11">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel8_11">Children</span>
+                <span class="age-desc" id="descLabel8_11">Age 8 &ndash; 11 years old</span>
+                <span class="age-price" id="priceLabel8_11">Rp 400.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest8_11" data-dir="-">&minus;</button>
+                <input type="number" id="guest8_11" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest8_11" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 3. Child 6, 7 yrs -->
+            <div class="age-row" id="row6_7">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel6_7">Children</span>
+                <span class="age-desc" id="descLabel6_7">Age 6 &ndash; 7 years old</span>
+                <span class="age-price" id="priceLabel6_7">Rp 300.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest6_7" data-dir="-">&minus;</button>
+                <input type="number" id="guest6_7" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest6_7" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 4. Child 3, 4, 5 yrs -->
+            <div class="age-row" id="row3_5">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel3_5">Young Children</span>
+                <span class="age-desc" id="descLabel3_5">Age 3, 4, 5 years old</span>
+                <span class="age-price" id="priceLabel3_5">Rp 200.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest3_5" data-dir="-">&minus;</button>
+                <input type="number" id="guest3_5" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest3_5" data-dir="+">&plus;</button>
+              </div>
+            </div>
+
+            <!-- 5. Infant 1, 2 yrs -->
+            <div class="age-row" id="row1_2">
+              <div class="age-meta">
+                <span class="age-name" id="nameLabel1_2">Infants / Toddlers</span>
+                <span class="age-desc" id="descLabel1_2">Age 1 &ndash; 2 years old</span>
+                <span class="age-price" id="priceLabel1_2">Rp 50.000/pax</span>
+              </div>
+              <div class="number-stepper compact">
+                <button type="button" class="age-step-btn" data-target="guest1_2" data-dir="-">&minus;</button>
+                <input type="number" id="guest1_2" value="0" min="0" max="50" readonly>
+                <button type="button" class="age-step-btn" data-target="guest1_2" data-dir="+">&plus;</button>
+              </div>
             </div>
           </div>
         </div>
@@ -318,30 +406,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- Live Price Calculation Box -->
         <div class="price-calculation-box">
-          <div class="calc-row">
-            <span>Price per person:</span>
-            <strong id="calcPricePerPerson">Rp 550,000</strong>
-          </div>
-          <div class="calc-row">
-            <span>Number of guests:</span>
-            <strong id="calcGuestCount">2 guests</strong>
+          <div class="calc-breakdown-items" id="calcBreakdownList">
+            <div class="calc-row">
+              <span>Adults (2x @ Rp 600.000):</span>
+              <strong>Rp 1.200.000</strong>
+            </div>
+            <div class="calc-row" style="color: var(--text-muted); font-size: 0.82rem;">
+              <span>Total participants:</span>
+              <strong>2 guests</strong>
+            </div>
           </div>
           <div class="calc-divider"></div>
           <div class="calc-row total-row">
             <span>Estimated Total Cost:</span>
             <div>
-              <span class="total-idr" id="calcTotalIdr">Rp 1,100,000</span>
-              <span class="total-usd" id="calcTotalUsd">(Approx. ~$71 USD)</span>
+              <span class="total-idr" id="calcTotalIdr">Rp 1.200.000</span>
+              <span class="total-usd" id="calcTotalUsd">(Approx. ~$77 USD)</span>
             </div>
           </div>
         </div>
 
-        <button type="button" class="btn btn-primary btn-block btn-lg" id="btnSubmitModalBooking">
-          <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-          Confirm & Book on WhatsApp
-        </button>
+        <!-- WhatsApp & Email Action Buttons -->
+        <div class="modal-booking-actions">
+          <button type="button" class="btn btn-whatsapp btn-block btn-lg" id="btnSubmitModalBooking">
+            <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+            Confirm book on Whatsapp
+          </button>
+          <button type="button" class="btn btn-email btn-block btn-lg" id="btnSubmitModalEmail">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Confirm book via Email
+          </button>
+        </div>
       </div>
     </div>
+
       `;
       document.body.appendChild(modalEl);
     }
@@ -383,38 +481,288 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Live Recalculate Prices
   const recalculateModal = () => {
-    const selectedTourKey = modalTourSelect ? modalTourSelect.value : 'Kintamani Downhill';
-    const tourInfo = packageData[selectedTourKey] || {
-      regular: 550000,
-      saving: 350000
+    const selectedTourKey = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : 'Kintamani Downhill';
+    const pkg = packageData[selectedTourKey] || {
+      isEBike: false,
+      isSaving: false
     };
 
-    let selectedTier = 'regular';
-    modalTierInputs.forEach(input => {
-      if (input.checked) selectedTier = input.value;
-    });
+    const isEBike = !!pkg.isEBike;
+    const isSaving = !!pkg.isSaving;
+    const comboPrice = pkg.comboPrice;
 
-    const pricePerPerson = selectedTier === 'regular' ? tourInfo.regular : tourInfo.saving;
-    const guests = parseInt(modalGuestsInput.value, 10) || 1;
-    const total = pricePerPerson * guests;
-    const totalUSD = Math.round(total / USD_RATE);
+    let selectedTier = 'private';
+    const checkedRadio = document.querySelector('input[name="modalTier"]:checked');
+    if (checkedRadio) selectedTier = checkedRadio.value;
 
-    calcPricePerPerson.textContent = formatIDR(pricePerPerson);
-    calcGuestCount.textContent = `${guests} ${guests > 1 ? 'guests' : 'guest'}`;
-    calcTotalIdr.textContent = formatIDR(total);
-    calcTotalUsd.textContent = `(Approx. ~$${totalUSD} USD)`;
+    // References to row elements
+    const rowAdult = document.getElementById('rowAdult');
+    const row8_11 = document.getElementById('row8_11');
+    const row6_7 = document.getElementById('row6_7');
+    const row3_5 = document.getElementById('row3_5');
+    const row1_2 = document.getElementById('row1_2');
+
+    // References to labels
+    const nameLabelAdult = document.getElementById('nameLabelAdult');
+    const descLabelAdult = document.getElementById('descLabelAdult');
+    const priceLabelAdult = document.getElementById('priceLabelAdult');
+
+    const nameLabel8_11 = document.getElementById('nameLabel8_11');
+    const descLabel8_11 = document.getElementById('descLabel8_11');
+    const priceLabel8_11 = document.getElementById('priceLabel8_11');
+
+    const nameLabel6_7 = document.getElementById('nameLabel6_7');
+    const descLabel6_7 = document.getElementById('descLabel6_7');
+    const priceLabel6_7 = document.getElementById('priceLabel6_7');
+
+    const nameLabel3_5 = document.getElementById('nameLabel3_5');
+    const descLabel3_5 = document.getElementById('descLabel3_5');
+    const priceLabel3_5 = document.getElementById('priceLabel3_5');
+
+    const nameLabel1_2 = document.getElementById('nameLabel1_2');
+    const descLabel1_2 = document.getElementById('descLabel1_2');
+    const priceLabel1_2 = document.getElementById('priceLabel1_2');
+
+    // Configure category visibility & label descriptions based on tour type
+    if (comboPrice) {
+      if (row8_11) row8_11.style.display = 'none';
+      if (row6_7) row6_7.style.display = 'none';
+      if (row3_5) row3_5.style.display = 'none';
+      if (row1_2) row1_2.style.display = 'none';
+      if (rowAdult) rowAdult.style.display = 'flex';
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Guests (Combo Rider)';
+      if (descLabelAdult) descLabelAdult.textContent = 'Minimum 2 pax for combo';
+    } else if (isEBike && !isSaving) {
+      // E-Bike Regular (Gambar 1)
+      if (row8_11) row8_11.style.display = 'none';
+      if (row6_7) row6_7.style.display = 'none';
+      if (row3_5) row3_5.style.display = 'flex';
+      if (row1_2) row1_2.style.display = 'flex';
+      if (rowAdult) rowAdult.style.display = 'flex';
+
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults (Solo E-Bike)';
+      if (descLabelAdult) descLabelAdult.textContent = 'Age 12+ years';
+      if (nameLabel3_5) nameLabel3_5.textContent = 'Children (Baby Seat)';
+      if (descLabel3_5) descLabel3_5.textContent = 'Age 3, 4 years old (middle baby seat)';
+      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants (Baby Seat)';
+      if (descLabel1_2) descLabel1_2.textContent = 'Age 1, 2 years old (middle baby seat)';
+    } else if (isEBike && isSaving) {
+      // E-Bike Saving (Gambar 3)
+      if (row8_11) row8_11.style.display = 'none';
+      if (row6_7) row6_7.style.display = 'none';
+      if (row3_5) row3_5.style.display = 'none';
+      if (row1_2) row1_2.style.display = 'flex';
+      if (rowAdult) rowAdult.style.display = 'flex';
+
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults / Over 11 yrs';
+      if (descLabelAdult) descLabelAdult.textContent = 'Over 11 years of age';
+      if (nameLabel1_2) nameLabel1_2.textContent = 'Baby / Toddler (Baby Seat)';
+      if (descLabel1_2) descLabel1_2.textContent = 'Age 1, 2, 3 years old (baby seat)';
+    } else if (!isEBike && isSaving) {
+      // Normal Bike Saving (Gambar 2)
+      if (rowAdult) rowAdult.style.display = 'flex';
+      if (row8_11) row8_11.style.display = 'flex';
+      if (row6_7) row6_7.style.display = 'flex';
+      if (row3_5) row3_5.style.display = 'flex';
+      if (row1_2) row1_2.style.display = 'flex';
+
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults';
+      if (descLabelAdult) descLabelAdult.textContent = 'Age 12+ years';
+      if (nameLabel8_11) nameLabel8_11.textContent = 'Child (Under 11 yo)';
+      if (descLabel8_11) descLabel8_11.textContent = 'Age 8 – 11 years old';
+      if (nameLabel6_7) nameLabel6_7.textContent = 'Young Child (3-7 yo)';
+      if (descLabel6_7) descLabel6_7.textContent = 'Age 6 – 7 years old';
+      if (nameLabel3_5) nameLabel3_5.textContent = 'Young Child (3-7 yo)';
+      if (descLabel3_5) descLabel3_5.textContent = 'Age 3, 4, 5 years old';
+      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants / Toddlers';
+      if (descLabel1_2) descLabel1_2.textContent = 'Age 1 and 2 years old';
+    } else {
+      // Normal Bike Regular
+      if (rowAdult) rowAdult.style.display = 'flex';
+      if (row8_11) row8_11.style.display = 'flex';
+      if (row6_7) row6_7.style.display = 'flex';
+      if (row3_5) row3_5.style.display = 'flex';
+      if (row1_2) row1_2.style.display = 'flex';
+
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults';
+      if (descLabelAdult) descLabelAdult.textContent = 'Age 12+ years';
+      if (nameLabel8_11) nameLabel8_11.textContent = 'Children';
+      if (descLabel8_11) descLabel8_11.textContent = 'Age 8 – 11 years old';
+      if (nameLabel6_7) nameLabel6_7.textContent = 'Children';
+      if (descLabel6_7) descLabel6_7.textContent = 'Age 6 – 7 years old';
+      if (nameLabel3_5) nameLabel3_5.textContent = 'Young Children';
+      if (descLabel3_5) descLabel3_5.textContent = 'Age 3, 4, 5 years old';
+      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants / Toddlers';
+      if (descLabel1_2) descLabel1_2.textContent = 'Age 1 – 2 years old';
+    }
+
+    // Read participant counts (ignore hidden rows)
+    const nAdult = parseInt(document.getElementById('guestAdult')?.value || '1', 10);
+    const n8_11 = (row8_11 && row8_11.style.display !== 'none') ? parseInt(document.getElementById('guest8_11')?.value || '0', 10) : 0;
+    const n6_7 = (row6_7 && row6_7.style.display !== 'none') ? parseInt(document.getElementById('guest6_7')?.value || '0', 10) : 0;
+    const n3_5 = (row3_5 && row3_5.style.display !== 'none') ? parseInt(document.getElementById('guest3_5')?.value || '0', 10) : 0;
+    const n1_2 = (row1_2 && row1_2.style.display !== 'none') ? parseInt(document.getElementById('guest1_2')?.value || '0', 10) : 0;
+
+    const totalGuests = nAdult + n8_11 + n6_7 + n3_5 + n1_2;
+
+    // Update pill badge
+    const pill = document.getElementById('calcTotalGuestsPill');
+    if (pill) {
+      pill.textContent = `${totalGuests} ${totalGuests > 1 ? 'Guests' : 'Guest'}`;
+    }
+
+    // Determine unit price per category
+    let pAdult = 600000;
+    let p8_11 = 0;
+    let p6_7 = 0;
+    let p3_5 = 0;
+    let p1_2 = 0;
+
+    if (comboPrice) {
+      pAdult = comboPrice;
+      p8_11 = comboPrice;
+      p6_7 = comboPrice;
+      p3_5 = comboPrice;
+      p1_2 = 0;
+    } else if (isEBike && !isSaving) {
+      // E-Bike Regular (Gambar 1)
+      if (selectedTier === 'private') {
+        pAdult = (totalGuests === 1 && nAdult === 1) ? 650000 : 600000;
+        p3_5 = 200000;
+        p1_2 = 50000;
+      } else {
+        // sharing
+        pAdult = 550000;
+        p3_5 = 150000;
+        p1_2 = 50000;
+      }
+    } else if (isEBike && isSaving) {
+      // E-Bike Saving (Gambar 3)
+      if (selectedTier === 'private') {
+        pAdult = 450000;
+        p1_2 = 50000;
+      } else {
+        // sharing
+        pAdult = 400000;
+        p1_2 = 50000;
+      }
+    } else if (!isEBike && isSaving) {
+      // Normal Bike Saving (Gambar 2)
+      if (selectedTier === 'private') {
+        pAdult = 400000;
+        p8_11 = 100000;
+        p6_7 = 75000;
+        p3_5 = 75000;
+        p1_2 = 50000;
+      } else {
+        // sharing
+        pAdult = 350000;
+        p8_11 = 100000;
+        p6_7 = 75000;
+        p3_5 = 75000;
+        p1_2 = 50000;
+      }
+    } else {
+      // Normal Bike Regular
+      if (selectedTier === 'private') {
+        pAdult = (totalGuests === 1 && nAdult === 1) ? 650000 : 600000;
+        p8_11 = 400000;
+        p6_7 = 300000;
+        p3_5 = 200000;
+        p1_2 = 50000;
+      } else {
+        // sharing
+        pAdult = 550000;
+        p8_11 = 350000;
+        p6_7 = 250000;
+        p3_5 = 150000;
+        p1_2 = 0; // Free
+      }
+    }
+
+    // Update row price labels
+    if (priceLabelAdult) {
+      priceLabelAdult.textContent = formatIDR(pAdult) + ((selectedTier === 'private' && !isSaving && !comboPrice && totalGuests === 1) ? ' (1 pax)' : '/pax');
+    }
+    if (priceLabel8_11) priceLabel8_11.textContent = formatIDR(p8_11) + '/pax';
+    if (priceLabel6_7) priceLabel6_7.textContent = formatIDR(p6_7) + '/pax';
+    if (priceLabel3_5) priceLabel3_5.textContent = formatIDR(p3_5) + '/pax';
+    if (priceLabel1_2) priceLabel1_2.textContent = p1_2 === 0 ? 'Free' : (formatIDR(p1_2) + (isEBike ? '' : '/pax'));
+
+    // Calculate costs
+    const costAdult = nAdult * pAdult;
+    const cost8_11 = n8_11 * p8_11;
+    const cost6_7 = n6_7 * p6_7;
+    const cost3_5 = n3_5 * p3_5;
+    const cost1_2 = n1_2 * p1_2;
+
+    const totalIDR = costAdult + cost8_11 + cost6_7 + cost3_5 + cost1_2;
+    const totalUSD = Math.round(totalIDR / USD_RATE);
+
+    // Update itemized breakdown in the calculation box
+    const listEl = document.getElementById('calcBreakdownList');
+    if (listEl) {
+      let html = '';
+      if (nAdult > 0) {
+        const titleAdult = nameLabelAdult?.textContent || 'Adults';
+        html += `<div class="calc-row"><span>${titleAdult} (${nAdult}x @ ${formatIDR(pAdult)}):</span><strong>${formatIDR(costAdult)}</strong></div>`;
+      }
+      if (n8_11 > 0) {
+        const title8_11 = nameLabel8_11?.textContent || 'Child (8-11 yo)';
+        html += `<div class="calc-row"><span>${title8_11} (${n8_11}x @ ${formatIDR(p8_11)}):</span><strong>${formatIDR(cost8_11)}</strong></div>`;
+      }
+      if (n6_7 > 0) {
+        const title6_7 = nameLabel6_7?.textContent || 'Child (6-7 yo)';
+        html += `<div class="calc-row"><span>${title6_7} (${n6_7}x @ ${formatIDR(p6_7)}):</span><strong>${formatIDR(cost6_7)}</strong></div>`;
+      }
+      if (n3_5 > 0) {
+        const title3_5 = nameLabel3_5?.textContent || 'Child (3-5 yo)';
+        html += `<div class="calc-row"><span>${title3_5} (${n3_5}x @ ${formatIDR(p3_5)}):</span><strong>${formatIDR(cost3_5)}</strong></div>`;
+      }
+      if (n1_2 > 0) {
+        const title1_2 = nameLabel1_2?.textContent || 'Infant (1-2 yo)';
+        html += `<div class="calc-row"><span>${title1_2} (${n1_2}x @ ${p1_2 === 0 ? 'Free' : formatIDR(p1_2)}):</span><strong>${p1_2 === 0 ? 'Free' : formatIDR(cost1_2)}</strong></div>`;
+      }
+      html += `<div class="calc-row" style="color: var(--text-muted); font-size: 0.82rem;"><span>Total participants:</span><strong>${totalGuests} ${totalGuests > 1 ? 'guests' : 'guest'}</strong></div>`;
+      listEl.innerHTML = html;
+    }
+
+    if (calcTotalIdr) calcTotalIdr.textContent = formatIDR(totalIDR);
+    if (calcTotalUsd) calcTotalUsd.textContent = `(Approx. ~$${totalUSD} USD)`;
   };
 
   // Open Modal logic
-  const openModal = (tourKey = 'Kintamani Downhill') => {
+  const openModal = (tourKey = 'Kintamani Downhill', tier = 'private') => {
+    // If tier was 'saving' from data attribute, select saving tour variant
+    if (tier === 'saving' && !tourKey.includes('(Saving)')) {
+      tourKey = `${tourKey} (Saving)`;
+    }
+
     if (modalTourSelect) {
       if (packageData[tourKey]) {
         modalTourSelect.value = tourKey;
-        modalTourTitle.textContent = `Book: ${packageData[tourKey].title}`;
       } else {
         modalTourSelect.value = 'Kintamani Downhill';
       }
+      if (modalTourTitle) {
+        modalTourTitle.textContent = `Book: ${packageData[modalTourSelect.value]?.title || tourKey}`;
+      }
     }
+
+    // Set tier radio
+    const targetTier = (tier === 'sharing') ? 'sharing' : 'private';
+    const radioTarget = document.querySelector(`input[name="modalTier"][value="${targetTier}"]`);
+    if (radioTarget) radioTarget.checked = true;
+
+    document.querySelectorAll('#bookingModal .radio-card').forEach(card => {
+      const input = card.querySelector('input');
+      if (input && input.value === targetTier) {
+        card.classList.add('selected');
+      } else {
+        card.classList.remove('selected');
+      }
+    });
+
     recalculateModal();
     modal.classList.add('open');
     document.body.classList.add('modal-open');
@@ -442,7 +790,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) {
       e.preventDefault();
       const tour = btn.getAttribute('data-tour') || 'Kintamani Downhill';
-      openModal(tour);
+      const tier = btn.getAttribute('data-tier') || 'regular';
+      openModal(tour, tier);
     }
   });
 
@@ -469,24 +818,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Stepper increment / decrement
-  if (stepDec && stepInc && modalGuestsInput) {
-    stepDec.addEventListener('click', () => {
-      let val = parseInt(modalGuestsInput.value, 10) || 1;
-      if (val > 1) {
-        modalGuestsInput.value = val - 1;
-        recalculateModal();
+  // Stepper increment / decrement for age categories
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.age-step-btn');
+    if (btn) {
+      e.preventDefault();
+      const targetId = btn.getAttribute('data-target');
+      const dir = btn.getAttribute('data-dir');
+      const input = document.getElementById(targetId);
+      if (input) {
+        let val = parseInt(input.value, 10) || 0;
+        const min = parseInt(input.getAttribute('min') || '0', 10);
+        const max = parseInt(input.getAttribute('max') || '50', 10);
+        if (dir === '+' && val < max) {
+          input.value = val + 1;
+          recalculateModal();
+        } else if (dir === '-' && val > min) {
+          // For adults: prevent reducing to 0 if no other guests are selected
+          if (targetId === 'guestAdult' && val === 1) {
+            const n8_11 = parseInt(document.getElementById('guest8_11')?.value || '0', 10);
+            const n6_7 = parseInt(document.getElementById('guest6_7')?.value || '0', 10);
+            const n3_5 = parseInt(document.getElementById('guest3_5')?.value || '0', 10);
+            const n1_2 = parseInt(document.getElementById('guest1_2')?.value || '0', 10);
+            if (n8_11 + n6_7 + n3_5 + n1_2 === 0) return;
+          }
+          input.value = val - 1;
+          recalculateModal();
+        }
       }
-    });
-
-    stepInc.addEventListener('click', () => {
-      let val = parseInt(modalGuestsInput.value, 10) || 1;
-      if (val < 50) {
-        modalGuestsInput.value = val + 1;
-        recalculateModal();
-      }
-    });
-  }
+    }
+  });
 
   // Tour select change
   if (modalTourSelect) {
@@ -500,48 +861,140 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Tier radio changes & visual styling
-  modalTierInputs.forEach(radio => {
-    radio.addEventListener('change', () => {
-      radioCards.forEach(card => card.classList.remove('selected'));
-      radio.closest('.radio-card').classList.add('selected');
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.name === 'modalTier') {
+      document.querySelectorAll('#bookingModal .radio-card').forEach(card => card.classList.remove('selected'));
+      const card = e.target.closest('.radio-card');
+      if (card) card.classList.add('selected');
       recalculateModal();
-    });
+    }
   });
 
-  // Submit WhatsApp Booking from Modal
-  if (btnSubmitModalBooking) {
-    btnSubmitModalBooking.addEventListener('click', () => {
-      const tourKey = modalTourSelect.value;
-      const tourName = packageData[tourKey] ? packageData[tourKey].title : tourKey;
-      let selectedTier = 'regular';
-      modalTierInputs.forEach(r => { if (r.checked) selectedTier = r.value; });
-      const tierLabel = selectedTier === 'regular' ? 'Regular (Inc. Lunch & Hotel Transfer)' : 'Saving (Ride Only)';
-      
-      const guests = modalGuestsInput.value;
-      const date = modalDate.value || 'Flexible';
-      const name = modalName.value.trim() || 'Guest';
-      const hotel = modalHotel.value.trim() || '-';
-      const totalCost = calcTotalIdr.textContent;
+  // Helper to extract current modal booking details
+  const getBookingDetails = () => {
+    const tourKey = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : 'Kintamani Downhill';
+    const pkg = packageData[tourKey] || {};
+    const tourName = pkg.title || tourKey;
+    let selectedTier = 'private';
+    const checkedRadio = document.querySelector('input[name="modalTier"]:checked');
+    if (checkedRadio) selectedTier = checkedRadio.value;
+    
+    const isSaving = !!pkg.isSaving;
+    let tierLabel = (selectedTier === 'private') 
+      ? 'PRIVATE (Without sharing other group)'
+      : 'SHARING (With a small group)';
+    if (isSaving) {
+      tierLabel += ' [Saving Package - Ride Only]';
+    } else if (!pkg.comboPrice) {
+      tierLabel += ' [Regular Package - Inc. Lunch & Hotel Transfer]';
+    }
 
-      const message = 
+    const row8_11 = document.getElementById('row8_11');
+    const row6_7 = document.getElementById('row6_7');
+    const row3_5 = document.getElementById('row3_5');
+    const row1_2 = document.getElementById('row1_2');
+
+    const nAdult = parseInt(document.getElementById('guestAdult')?.value || '1', 10);
+    const n8_11 = (row8_11 && row8_11.style.display !== 'none') ? parseInt(document.getElementById('guest8_11')?.value || '0', 10) : 0;
+    const n6_7 = (row6_7 && row6_7.style.display !== 'none') ? parseInt(document.getElementById('guest6_7')?.value || '0', 10) : 0;
+    const n3_5 = (row3_5 && row3_5.style.display !== 'none') ? parseInt(document.getElementById('guest3_5')?.value || '0', 10) : 0;
+    const n1_2 = (row1_2 && row1_2.style.display !== 'none') ? parseInt(document.getElementById('guest1_2')?.value || '0', 10) : 0;
+    const totalGuests = nAdult + n8_11 + n6_7 + n3_5 + n1_2;
+
+    const parts = [];
+    if (nAdult > 0) {
+      const lbl = document.getElementById('nameLabelAdult')?.textContent || 'Adults';
+      parts.push(`${lbl}: ${nAdult} pax`);
+    }
+    if (n8_11 > 0) {
+      const lbl = document.getElementById('nameLabel8_11')?.textContent || 'Child (8-11 yo)';
+      parts.push(`${lbl}: ${n8_11} pax`);
+    }
+    if (n6_7 > 0) {
+      const lbl = document.getElementById('nameLabel6_7')?.textContent || 'Child (6-7 yo)';
+      parts.push(`${lbl}: ${n6_7} pax`);
+    }
+    if (n3_5 > 0) {
+      const lbl = document.getElementById('nameLabel3_5')?.textContent || 'Child (3-5 yo)';
+      parts.push(`${lbl}: ${n3_5} pax`);
+    }
+    if (n1_2 > 0) {
+      const lbl = document.getElementById('nameLabel1_2')?.textContent || 'Infant (1-2 yo)';
+      parts.push(`${lbl}: ${n1_2} pax`);
+    }
+
+    const date = (modalDate && modalDate.value) ? modalDate.value : 'Flexible';
+    const name = (modalName && modalName.value.trim()) ? modalName.value.trim() : 'Guest';
+    const hotel = (modalHotel && modalHotel.value.trim()) ? modalHotel.value.trim() : '-';
+    const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 1.200.000';
+
+    return { tourKey, tourName, selectedTier, tierLabel, totalGuests, parts, date, name, hotel, totalCost };
+  };
+
+  // Submit via WhatsApp
+  const handleWhatsAppBooking = () => {
+    const b = getBookingDetails();
+    const partsList = b.parts.map(p => `   • ${p}`).join('\n');
+    const message = 
 `*NEW RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
-👤 *Name*: ${name}
-🚲 *Tour Package*: ${tourName}
-📦 *Package Tier*: ${tierLabel}
-📅 *Tour Date*: ${date}
-👥 *Number of Guests*: ${guests} ${guests > 1 ? 'Guests' : 'Guest'}
-🏨 *Hotel / Pickup Location*: ${hotel}
-💰 *Estimated Total*: ${totalCost}
+👤 *Name*: ${b.name}
+🚲 *Tour Package*: ${b.tourName}
+📦 *Package Tier*: ${b.tierLabel}
+📅 *Tour Date*: ${b.date}
+👥 *Total Guests*: ${b.totalGuests} Guests
+${partsList}
+🏨 *Hotel / Pickup Location*: ${b.hotel}
+💰 *Estimated Total*: ${b.totalCost}
 ---------------------------------------
 Hello Dewa Bike Tour Team, please check slot availability for the schedule above. Thank you! 🙏`;
 
-      const encodedMsg = encodeURIComponent(message);
-      const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMsg}`;
-      window.open(waUrl, '_blank');
-      closeModal();
-    });
-  }
+    const encodedMsg = encodeURIComponent(message);
+    const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMsg}`;
+    window.open(waUrl, '_blank');
+    closeModal();
+  };
+
+  // Submit via Email
+  const handleEmailBooking = () => {
+    const b = getBookingDetails();
+    const partsList = b.parts.map(p => `  * ${p}`).join('\n');
+    const subject = `New Tour Reservation: ${b.tourName} - ${b.name}`;
+    const body = 
+`Hello Dewa Bike Tour Team,
+
+I would like to book a tour with Dewa Bike Tour. Here are my booking details:
+
+- Lead Guest Name: ${b.name}
+- Tour Package: ${b.tourName}
+- Package Tier: ${b.tierLabel}
+- Tour Date: ${b.date}
+- Total Guests: ${b.totalGuests} Guests
+${partsList}
+- Hotel / Pickup Location: ${b.hotel}
+- Estimated Total Cost: ${b.totalCost}
+
+Please check slot availability and confirm my reservation.
+
+Thank you!
+Best regards,
+${b.name}`;
+
+    const mailtoUrl = `mailto:dewabiketour@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+    closeModal();
+  };
+
+  // Delegate click for WhatsApp & Email submit buttons in Modal
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#btnSubmitModalBooking')) {
+      e.preventDefault();
+      handleWhatsAppBooking();
+    } else if (e.target.closest('#btnSubmitModalEmail')) {
+      e.preventDefault();
+      handleEmailBooking();
+    }
+  });
 
   /* -------------------------------------------------------------
    * 6. QUICK CONTACT FORM (BOTTOM SECTION)
