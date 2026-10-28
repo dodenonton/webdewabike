@@ -2201,6 +2201,18 @@ button, input, select, textarea {
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
 }
 
+.social-icon-btn.tripadvisor:hover {
+  background: #00aa6c;
+  border-color: #00aa6c;
+  box-shadow: 0 4px 12px rgba(0, 170, 108, 0.45);
+}
+
+.social-icon-btn.googlemaps:hover {
+  background: #4285F4;
+  border-color: #4285F4;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.45);
+}
+
 .footer-links-col h4 {
   font-family: var(--font-heading);
   color: #ffffff;
