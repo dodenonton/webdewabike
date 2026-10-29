@@ -1902,6 +1902,8 @@ button, input, select, textarea {
 .form-group select, 
 .form-group textarea {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
@@ -1909,6 +1911,24 @@ button, input, select, textarea {
   color: var(--dark);
   outline: none;
   transition: var(--transition);
+}
+
+.form-group input[type="date"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 46px;
+  background-color: #ffffff;
+}
+
+.form-group input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+  line-height: normal;
+  margin: 0;
+  padding: 0;
 }
 
 .form-group input:not([type="radio"]):not([type="checkbox"]):focus, 
@@ -2238,7 +2258,8 @@ button, input, select, textarea {
   right: 1.25rem;
   background: #f1f5f9;
   border: none;
-  font-size: 1.5rem;
+  padding: 0;
+  margin: 0;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -2247,12 +2268,20 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   color: #64748b;
+  line-height: 1;
   transition: var(--transition);
+  z-index: 10;
 }
 
 .modal-close:hover {
   background-color: #e2e8f0;
   color: var(--dark);
+}
+
+.modal-close svg {
+  display: block;
+  pointer-events: none;
+  margin: auto;
 }
 
 .modal-header {
@@ -2349,6 +2378,108 @@ button, input, select, textarea {
   font-size: 0.78rem;
   color: var(--text-muted);
   line-height: 1.35;
+}
+
+.modal-card .form-group {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.modal-card input:not([type="radio"]):not([type="checkbox"]),
+.modal-card select,
+.modal-card textarea {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+.modal-card input[type="date"],
+.modal-card #modalDate,
+.modal-card #modalTime {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: 46px !important;
+  height: 46px !important;
+  background-color: #ffffff !important;
+  color: var(--dark) !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border) !important;
+  margin: 0 !important;
+}
+
+.modal-card .datetime-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+@media (max-width: 480px) {
+  .modal-card .datetime-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.modal-card input[type="date"]::-webkit-date-and-time-value,
+.modal-card #modalDate::-webkit-date-and-time-value {
+  text-align: left !important;
+  line-height: normal !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+.modal-card input.input-error,
+.modal-card select.input-error {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2) !important;
+}
+
+.bike-size-guide {
+  margin-top: 0.5rem;
+  background: #f7faf8;
+  border: 1px solid #d1e7dd;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.bike-size-guide.ebike-mode {
+  background: #fdfbf5;
+  border-color: #fce8b2;
+}
+
+.bike-size-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: #105b38;
+  margin-bottom: 0.35rem;
+  font-size: 0.86rem;
+}
+
+.bike-size-guide.ebike-mode .bike-size-header {
+  color: #b45f06;
+}
+
+.bike-size-hint {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .number-stepper {
@@ -2587,6 +2718,60 @@ button, input, select, textarea {
   gap: 0.75rem;
   margin-top: 1.5rem;
   width: 100%;
+}
+
+.btn-booking-now {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  border: 1.5px solid #0c4329 !important;
+  box-shadow: 0 4px 14px rgba(16, 91, 56, 0.28) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  padding: 0.95rem 1.25rem !important;
+  border-radius: var(--radius-sm) !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.btn-booking-now:hover {
+  background-color: #0c4329 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 91, 56, 0.38) !important;
+}
+
+.modal-secondary-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.modal-secondary-actions .btn {
+  padding: 0.8rem 0.65rem !important;
+  font-size: 0.84rem !important;
+  gap: 0.45rem !important;
+  text-align: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 540px) {
+  .modal-secondary-actions {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  .modal-secondary-actions .btn {
+    white-space: normal;
+    padding: 0.85rem 1rem !important;
+    font-size: 0.92rem !important;
+  }
 }
 
 .btn-whatsapp {
@@ -3098,12 +3283,40 @@ button, input, select, textarea {
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
+  .modal-card input:not([type="radio"]):not([type="checkbox"]),
+  .modal-card select,
+  .modal-card textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+  .modal-card input[type="date"],
+  .modal-card #modalDate {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    margin: 0 !important;
+  }
+  .modal-card input[type="date"]::-webkit-date-and-time-value,
+  .modal-card #modalDate::-webkit-date-and-time-value {
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
   .modal-close {
     top: 1rem !important;
     right: 1rem !important;
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 1.3rem !important;
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   .modal-header {
     margin-bottom: 1.15rem !important;

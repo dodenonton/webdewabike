@@ -255,6 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------------------------------------------------------------
    * 5. BOOKING MODAL & LIVE ESTIMATOR
    * ------------------------------------------------------------- */
+  // Google Apps Script Web App URL for Google Sheets & Email notifications
+  const GOOGLE_SHEETS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwbjBCkaDQPV8kjjuO78uR_lKJ0_6Sswa7MX9e5b_sQGNh-UNeMXlzgLjxM4l5EO_5nYw/exec';
+
   const ensureBookingModal = () => {
     let modalEl = document.getElementById('bookingModal');
     if (!modalEl) {
@@ -263,7 +266,12 @@ document.addEventListener('DOMContentLoaded', () => {
       modalEl.id = 'bookingModal';
       modalEl.innerHTML = `
     <div class="modal-card">
-      <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+      <button class="modal-close" id="modalClose" aria-label="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
       <div class="modal-header">
         <div class="section-tag">PRIVATE TOUR BOOKING FORM</div>
         <h3 id="modalTourTitle">Book Dewa Bike Tour</h3>
@@ -310,9 +318,15 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Tour Date</label>
-          <input type="date" id="modalDate" required>
+        <div class="datetime-row">
+          <div class="form-group">
+            <label for="modalDate">Tour Date</label>
+            <input type="date" id="modalDate" required>
+          </div>
+          <div class="form-group">
+            <label for="modalTime">Time</label>
+            <input type="text" id="modalTime" class="form-control" placeholder="e.g. 8:30 AM" value="8:30 AM" required>
+          </div>
         </div>
 
         <div class="form-group">
@@ -395,11 +409,39 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="form-group">
-          <label>Lead Guest Name</label>
-          <input type="text" id="modalName" placeholder="Your Name / Lead Guest">
+          <label>Lead Guest Name <span style="color:#e53e3e;">*</span></label>
+          <input type="text" id="modalName" placeholder="Your Name / Lead Guest" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email Address <span style="color:#e53e3e;">*</span></label>
+            <input type="email" id="modalEmail" placeholder="e.g. name@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Phone / WhatsApp / Telegram (+ ..) <span style="color:#e53e3e;">*</span></label>
+            <input type="tel" id="modalPhone" placeholder="e.g. +61 412 345 678" required>
+          </div>
         </div>
 
         <div class="form-group">
+          <label>Nationality <span style="color:#e53e3e;">*</span></label>
+          <input type="text" id="modalNationality" placeholder="e.g. Australia, Germany, Indonesia" required>
+        </div>
+
+        <div class="form-group">
+          <label>Rider Height(s) <span style="color:#e53e3e;">*</span></label>
+          <input type="text" id="modalHeight" placeholder="e.g. Rider 1: 175 cm, Rider 2: 162 cm" required>
+          <div class="bike-size-guide" id="bikeSizeGuide">
+            <div class="bike-size-header">
+              <span class="bike-icon">🚲</span>
+              <span id="bikeSizeTitle">Normal Bike Sizes: S to XL</span>
+            </div>
+            <span class="bike-size-hint" id="bikeSizeHint">Normal bikes are available in sizes S to XL. Please specify each rider's height so we can prepare the perfect bike frame.</span>
+          </div>
+        </div>
+
+        <div class="form-group" id="groupHotel">
           <label>Hotel Pickup / Special Requests</label>
           <input type="text" id="modalHotel" placeholder="Hotel Name or Pickup Location">
         </div>
@@ -408,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="price-calculation-box">
           <div class="calc-breakdown-items" id="calcBreakdownList">
             <div class="calc-row">
-              <span>Adults (2x @ Rp 600.000):</span>
+              <span>Adults (2x Rp 600.000):</span>
               <strong>Rp 1.200.000</strong>
             </div>
             <div class="calc-row" style="color: var(--text-muted); font-size: 0.82rem;">
@@ -426,16 +468,21 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- WhatsApp & Email Action Buttons -->
+        <!-- Booking Action Buttons -->
         <div class="modal-booking-actions">
-          <button type="button" class="btn btn-whatsapp btn-block btn-lg" id="btnSubmitModalBooking">
-            <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-            Confirm book on Whatsapp
+          <button type="button" class="btn btn-booking-now" id="btnSubmitModalDirect">
+            Booking Now
           </button>
-          <button type="button" class="btn btn-email btn-block btn-lg" id="btnSubmitModalEmail">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            Confirm book via Email
-          </button>
+          <div class="modal-secondary-actions">
+            <button type="button" class="btn btn-whatsapp" id="btnSubmitModalBooking">
+              <svg width="18" height="18" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+              <span>Confirm book on Whatsapp</span>
+            </button>
+            <button type="button" class="btn btn-email" id="btnSubmitModalEmail">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span>Confirm book via Email</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -458,6 +505,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const stepInc = document.getElementById('stepInc');
   const modalDate = document.getElementById('modalDate');
   const modalName = document.getElementById('modalName');
+  const modalEmail = document.getElementById('modalEmail');
+  const modalPhone = document.getElementById('modalPhone');
+  const modalNationality = document.getElementById('modalNationality');
+  const modalHeight = document.getElementById('modalHeight');
   const modalHotel = document.getElementById('modalHotel');
 
   const calcPricePerPerson = document.getElementById('calcPricePerPerson');
@@ -494,6 +545,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedTier = 'private';
     const checkedRadio = document.querySelector('input[name="modalTier"]:checked');
     if (checkedRadio) selectedTier = checkedRadio.value;
+
+    // Dynamic bike sizing guide based on isEBike
+    const bikeSizeGuide = document.getElementById('bikeSizeGuide');
+    const bikeSizeTitle = document.getElementById('bikeSizeTitle');
+    const bikeSizeHint = document.getElementById('bikeSizeHint');
+
+    if (bikeSizeGuide && bikeSizeTitle && bikeSizeHint) {
+      if (isEBike) {
+        bikeSizeGuide.classList.add('ebike-mode');
+        bikeSizeTitle.innerHTML = '⚡ E-Bike Sizes: S and M only';
+        bikeSizeHint.textContent = 'Electric bikes (E-Bikes) are available in sizes S and M only. Please specify each rider\'s height so we can prepare the perfect bike frame.';
+      } else {
+        bikeSizeGuide.classList.remove('ebike-mode');
+        bikeSizeTitle.innerHTML = '🚲 Normal Bike Sizes: S to XL';
+        bikeSizeHint.textContent = 'Normal bikes are available in sizes S to XL. Please specify each rider\'s height so we can prepare the perfect bike frame.';
+      }
+    }
+
+    // Toggle Hotel Pickup: Hidden for all Saving Packages, visible for Regular / Combo Packages
+    const groupHotel = document.getElementById('groupHotel');
+    if (groupHotel) {
+      groupHotel.style.display = isSaving ? 'none' : 'block';
+    }
 
     // References to row elements
     const rowAdult = document.getElementById('rowAdult');
@@ -705,23 +779,23 @@ document.addEventListener('DOMContentLoaded', () => {
       let html = '';
       if (nAdult > 0) {
         const titleAdult = nameLabelAdult?.textContent || 'Adults';
-        html += `<div class="calc-row"><span>${titleAdult} (${nAdult}x @ ${formatIDR(pAdult)}):</span><strong>${formatIDR(costAdult)}</strong></div>`;
+        html += `<div class="calc-row"><span>${titleAdult} (${nAdult}x ${formatIDR(pAdult)}):</span><strong>${formatIDR(costAdult)}</strong></div>`;
       }
       if (n8_11 > 0) {
         const title8_11 = nameLabel8_11?.textContent || 'Child (8-11 yo)';
-        html += `<div class="calc-row"><span>${title8_11} (${n8_11}x @ ${formatIDR(p8_11)}):</span><strong>${formatIDR(cost8_11)}</strong></div>`;
+        html += `<div class="calc-row"><span>${title8_11} (${n8_11}x ${formatIDR(p8_11)}):</span><strong>${formatIDR(cost8_11)}</strong></div>`;
       }
       if (n6_7 > 0) {
         const title6_7 = nameLabel6_7?.textContent || 'Child (6-7 yo)';
-        html += `<div class="calc-row"><span>${title6_7} (${n6_7}x @ ${formatIDR(p6_7)}):</span><strong>${formatIDR(cost6_7)}</strong></div>`;
+        html += `<div class="calc-row"><span>${title6_7} (${n6_7}x ${formatIDR(p6_7)}):</span><strong>${formatIDR(cost6_7)}</strong></div>`;
       }
       if (n3_5 > 0) {
         const title3_5 = nameLabel3_5?.textContent || 'Child (3-5 yo)';
-        html += `<div class="calc-row"><span>${title3_5} (${n3_5}x @ ${formatIDR(p3_5)}):</span><strong>${formatIDR(cost3_5)}</strong></div>`;
+        html += `<div class="calc-row"><span>${title3_5} (${n3_5}x ${formatIDR(p3_5)}):</span><strong>${formatIDR(cost3_5)}</strong></div>`;
       }
       if (n1_2 > 0) {
         const title1_2 = nameLabel1_2?.textContent || 'Infant (1-2 yo)';
-        html += `<div class="calc-row"><span>${title1_2} (${n1_2}x @ ${p1_2 === 0 ? 'Free' : formatIDR(p1_2)}):</span><strong>${p1_2 === 0 ? 'Free' : formatIDR(cost1_2)}</strong></div>`;
+        html += `<div class="calc-row"><span>${title1_2} (${n1_2}x ${p1_2 === 0 ? 'Free' : formatIDR(p1_2)}):</span><strong>${p1_2 === 0 ? 'Free' : formatIDR(cost1_2)}</strong></div>`;
       }
       html += `<div class="calc-row" style="color: var(--text-muted); font-size: 0.82rem;"><span>Total participants:</span><strong>${totalGuests} ${totalGuests > 1 ? 'guests' : 'guest'}</strong></div>`;
       listEl.innerHTML = html;
@@ -733,8 +807,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Open Modal logic
   const openModal = (tourKey = 'Kintamani Downhill', tier = 'private') => {
-    // If tier was 'saving' from data attribute, select saving tour variant
-    if (tier === 'saving' && !tourKey.includes('(Saving)')) {
+    // If on a saving package page, automatically ensure saving variant is selected
+    if (window.location.pathname.includes('saving-packages') && !tourKey.includes('(Saving)')) {
+      tourKey = `${tourKey} (Saving)`;
+      tier = 'saving';
+    } else if (tier === 'saving' && !tourKey.includes('(Saving)')) {
       tourKey = `${tourKey} (Saving)`;
     }
 
@@ -923,56 +1000,285 @@ document.addEventListener('DOMContentLoaded', () => {
       parts.push(`${lbl}: ${n1_2} pax`);
     }
 
-    const date = (modalDate && modalDate.value) ? modalDate.value : 'Flexible';
-    const name = (modalName && modalName.value.trim()) ? modalName.value.trim() : 'Guest';
-    const hotel = (modalHotel && modalHotel.value.trim()) ? modalHotel.value.trim() : '-';
-    const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 1.200.000';
+    let formattedDate = 'Flexible';
+    if (modalDate && modalDate.value) {
+      const dateParts = modalDate.value.split('-');
+      if (dateParts.length === 3) {
+        formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+      } else {
+        formattedDate = modalDate.value;
+      }
+    }
+    const modalTimeEl = document.getElementById('modalTime');
+    const selectedTime = (modalTimeEl && modalTimeEl.value.trim()) ? modalTimeEl.value.trim() : '8:30 AM';
+    const dateTime = (formattedDate !== 'Flexible') ? `${formattedDate} ${selectedTime}` : 'Flexible';
+    const date = formattedDate;
 
-    return { tourKey, tourName, selectedTier, tierLabel, totalGuests, parts, date, name, hotel, totalCost };
+    const name = (modalName && modalName.value.trim()) ? modalName.value.trim() : 'Guest';
+    const email = (modalEmail && modalEmail.value.trim()) ? modalEmail.value.trim() : '-';
+    const phone = (modalPhone && modalPhone.value.trim()) ? modalPhone.value.trim() : '-';
+    const nationality = (modalNationality && modalNationality.value.trim()) ? modalNationality.value.trim() : '-';
+    const elHeight = document.getElementById('modalHeight');
+    const riderHeight = (elHeight && elHeight.value.trim()) ? elHeight.value.trim() : '-';
+    const hotel = isSaving ? '' : ((modalHotel && modalHotel.value.trim()) ? modalHotel.value.trim() : '-');
+    const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 1.200.000';
+    const totalUsd = (calcTotalUsd && calcTotalUsd.textContent) ? calcTotalUsd.textContent.trim() : '';
+
+    return { tourKey, tourName, selectedTier, tierLabel, isSaving, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, totalCost, totalUsd };
+  };
+
+  // Validate required booking modal fields
+  const validateBookingForm = () => {
+    const elName = document.getElementById('modalName');
+    const elEmail = document.getElementById('modalEmail');
+    const elPhone = document.getElementById('modalPhone');
+    const elNationality = document.getElementById('modalNationality');
+    const elHeight = document.getElementById('modalHeight');
+    const elDate = document.getElementById('modalDate');
+    const elTime = document.getElementById('modalTime');
+
+    [elName, elEmail, elPhone, elNationality, elHeight, elDate, elTime].forEach(el => {
+      if (el) el.classList.remove('input-error');
+    });
+
+    const name = elName ? elName.value.trim() : '';
+    const email = elEmail ? elEmail.value.trim() : '';
+    const phone = elPhone ? elPhone.value.trim() : '';
+    const nationality = elNationality ? elNationality.value.trim() : '';
+    const height = elHeight ? elHeight.value.trim() : '';
+    const date = elDate ? elDate.value : '';
+    const timeVal = elTime ? elTime.value.trim() : '';
+
+    if (!name) {
+      if (elName) {
+        elName.classList.add('input-error');
+        elName.focus();
+      }
+      alert('Please enter your Full Name (Lead Guest).');
+      return false;
+    }
+
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      if (elEmail) {
+        elEmail.classList.add('input-error');
+        elEmail.focus();
+      }
+      alert('Please enter a valid Email Address.');
+      return false;
+    }
+
+    if (!phone || phone.length < 5) {
+      if (elPhone) {
+        elPhone.classList.add('input-error');
+        elPhone.focus();
+      }
+      alert('Please enter your Phone / WhatsApp / Telegram number.');
+      return false;
+    }
+
+    if (!nationality) {
+      if (elNationality) {
+        elNationality.classList.add('input-error');
+        elNationality.focus();
+      }
+      alert('Please enter your Nationality.');
+      return false;
+    }
+
+    if (!height) {
+      if (elHeight) {
+        elHeight.classList.add('input-error');
+        elHeight.focus();
+      }
+      alert('Please enter Rider Height(s) for bike sizing.');
+      return false;
+    }
+
+    if (!date) {
+      if (elDate) {
+        elDate.classList.add('input-error');
+        elDate.focus();
+      }
+      alert('Please select your preferred Tour Date.');
+      return false;
+    }
+
+    if (!timeVal) {
+      if (elTime) {
+        elTime.classList.add('input-error');
+        elTime.focus();
+      }
+      alert('Please enter your preferred Tour Time (e.g. 8:30 AM).');
+      return false;
+    }
+
+    return true;
+  };
+
+  // Build complete detail text for Google Sheets & Email Notification
+  const buildDetailString = (b, method) => {
+    const ageBreakdown = b.parts.length ? b.parts.map(p => `   • ${p}`).join('\n') : '   • Adults: 2 pax';
+    let str = `• Lead Guest Name: ${b.name}
+• Tour Package: ${b.tourName}
+• Total Guests: ${b.totalGuests} Guests
+${ageBreakdown}
+• Rider Height(s) & Bike Size: ${b.riderHeight}
+• Tour Date: ${b.dateTime}`;
+
+    if (!b.isSaving && b.hotel && b.hotel !== '-') {
+      str += `\n• Hotel Pickup / Special Requests: ${b.hotel}`;
+    }
+
+    str += `\n• Estimated Total Cost: ${b.totalCost} ${b.totalUsd}
+• Email Address: ${b.email}
+• Phone / WhatsApp / Telegram: ${b.phone}
+• Nationality: ${b.nationality}
+• Package Tier: ${b.tierLabel}
+• Booking Method: ${method}`;
+
+    return str;
+  };
+
+  // Send booking record to Google Sheets & Trigger Email Notification via Google Apps Script
+  const sendBookingToGoogleSheets = async (bookingData, method) => {
+    if (!GOOGLE_SHEETS_WEBAPP_URL || GOOGLE_SHEETS_WEBAPP_URL.includes('PASTE_YOUR_')) {
+      console.info('Google Sheets Web App URL is not yet configured in js/app.js. Skipping webhook post.');
+      return;
+    }
+
+    const detailText = buildDetailString(bookingData, method);
+    const now = new Date();
+    const dateFormatted = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timeFormatted = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const timestampStr = `${dateFormatted} ${timeFormatted} WITA`;
+
+    const payload = {
+      timestamp: timestampStr,
+      email: bookingData.email,
+      phone: bookingData.phone,
+      nationality: bookingData.nationality,
+      tourDate: bookingData.dateTime,
+      tourName: bookingData.tourName,
+      guestName: bookingData.name,
+      riderHeight: bookingData.riderHeight,
+      hotel: bookingData.isSaving ? 'Not Included (Saving Package)' : (bookingData.hotel || '-'),
+      totalGuests: bookingData.totalGuests || '1',
+      totalCost: `${bookingData.totalCost} ${bookingData.totalUsd}`,
+      method: method,
+      detail: detailText
+    };
+
+    try {
+      await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn('Google Sheets fetch warning:', err);
+    }
   };
 
   // Submit via WhatsApp
-  const handleWhatsAppBooking = () => {
+  const handleWhatsAppBooking = async () => {
+    if (!validateBookingForm()) return;
+
     const b = getBookingDetails();
+    const btn = document.getElementById('btnSubmitModalBooking');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.7';
+    }
+
+    // Send data to Google Sheets in background
+    try {
+      await sendBookingToGoogleSheets(b, 'Confirm book on WhatsApp');
+    } catch (e) {
+      // Continue even if network glitch
+    }
+
     const partsList = b.parts.map(p => `   • ${p}`).join('\n');
-    const message = 
+    let message = 
 `*NEW RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
-👤 *Name*: ${b.name}
+👤 *Lead Guest Name*: ${b.name}
 🚲 *Tour Package*: ${b.tourName}
-📦 *Package Tier*: ${b.tierLabel}
-📅 *Tour Date*: ${b.date}
 👥 *Total Guests*: ${b.totalGuests} Guests
 ${partsList}
-🏨 *Hotel / Pickup Location*: ${b.hotel}
-💰 *Estimated Total*: ${b.totalCost}
+📏 *Rider Height(s)*: ${b.riderHeight}
+📅 *Tour Date*: ${b.dateTime}`;
+
+    if (!b.isSaving && b.hotel && b.hotel !== '-') {
+      message += `\n🏨 *Hotel Pickup / Notes*: ${b.hotel}`;
+    }
+
+    message += `\n💰 *Estimated Total*: ${b.totalCost} ${b.totalUsd}
+---------------------------------------
+📧 *Email*: ${b.email}
+📞 *Phone / Telegram*: ${b.phone}
+🌍 *Nationality*: ${b.nationality}
+📦 *Package Tier*: ${b.tierLabel}
 ---------------------------------------
 Hello Dewa Bike Tour Team, please check slot availability for the schedule above. Thank you! 🙏`;
 
     const encodedMsg = encodeURIComponent(message);
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMsg}`;
     window.open(waUrl, '_blank');
+
+    if (btn) {
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
+      btn.innerHTML = origHtml;
+    }
     closeModal();
   };
 
   // Submit via Email
-  const handleEmailBooking = () => {
+  const handleEmailBooking = async () => {
+    if (!validateBookingForm()) return;
+
     const b = getBookingDetails();
+    const btn = document.getElementById('btnSubmitModalEmail');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.7';
+    }
+
+    // Send data to Google Sheets in background
+    try {
+      await sendBookingToGoogleSheets(b, 'Confirm book via Email');
+    } catch (e) {
+      // Continue
+    }
+
     const partsList = b.parts.map(p => `  * ${p}`).join('\n');
-    const subject = `New Tour Reservation: ${b.tourName} - ${b.name}`;
-    const body = 
+    const subject = `New Tour Reservation: ${b.tourName} - ${b.name} (${b.dateTime})`;
+    let body = 
 `Hello Dewa Bike Tour Team,
 
 I would like to book a tour with Dewa Bike Tour. Here are my booking details:
 
 - Lead Guest Name: ${b.name}
 - Tour Package: ${b.tourName}
-- Package Tier: ${b.tierLabel}
-- Tour Date: ${b.date}
 - Total Guests: ${b.totalGuests} Guests
 ${partsList}
-- Hotel / Pickup Location: ${b.hotel}
-- Estimated Total Cost: ${b.totalCost}
+- Rider Height(s) & Bike Size: ${b.riderHeight}
+- Tour Date: ${b.dateTime}`;
+
+    if (!b.isSaving && b.hotel && b.hotel !== '-') {
+      body += `\n- Hotel Pickup / Special Requests: ${b.hotel}`;
+    }
+
+    body += `\n- Estimated Total Cost: ${b.totalCost} ${b.totalUsd}
+- Email Address: ${b.email}
+- Phone / WhatsApp / Telegram: ${b.phone}
+- Nationality: ${b.nationality}
+- Package Tier: ${b.tierLabel}
 
 Please check slot availability and confirm my reservation.
 
@@ -982,12 +1288,51 @@ ${b.name}`;
 
     const mailtoUrl = `mailto:dewabiketour@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoUrl;
+
+    if (btn) {
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
+      btn.innerHTML = origHtml;
+    }
     closeModal();
   };
 
-  // Delegate click for WhatsApp & Email submit buttons in Modal
+  // Direct Booking submission ("Booking Now")
+  const handleDirectBooking = async () => {
+    if (!validateBookingForm()) return;
+
+    const b = getBookingDetails();
+    const btn = document.getElementById('btnSubmitModalDirect');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.75';
+      btn.innerHTML = '<span>Submitting Booking...</span>';
+    }
+
+    // Send booking data to Google Sheets & Apps Script
+    try {
+      await sendBookingToGoogleSheets(b, 'Booking Now (Web Direct)');
+    } catch (e) {
+      console.warn('Booking post error:', e);
+    }
+
+    if (btn) {
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
+      btn.innerHTML = origHtml;
+    }
+
+    alert('Someone will reconfirm your booking via WhatsApp or Email');
+    closeModal();
+  };
+
+  // Delegate click for Booking Now, WhatsApp & Email submit buttons in Modal
   document.addEventListener('click', (e) => {
-    if (e.target.closest('#btnSubmitModalBooking')) {
+    if (e.target.closest('#btnSubmitModalDirect')) {
+      e.preventDefault();
+      handleDirectBooking();
+    } else if (e.target.closest('#btnSubmitModalBooking')) {
       e.preventDefault();
       handleWhatsAppBooking();
     } else if (e.target.closest('#btnSubmitModalEmail')) {
@@ -1018,7 +1363,18 @@ ${b.name}`;
       const packageSel = document.getElementById('cPackageSelect').value;
       const notes = document.getElementById('cNotes').value.trim() || '-';
 
-      const message = 
+      const isIndonesian = document.documentElement.lang === 'id';
+
+      const message = isIndonesian ?
+`*KONSULTASI & RESERVASI - DEWA BIKE TOUR*
+---------------------------------------
+👤 *Nama*: ${name}
+📅 *Tanggal Tur*: ${date}
+👥 *Jumlah Peserta*: ${guests} Orang
+🚲 *Paket Tur*: ${packageSel}
+📝 *Catatan / Hotel*: ${notes}
+---------------------------------------
+Halo Dewa Bike Tour, mohon info ketersediaan slot untuk jadwal perjalanan saya di atas. Terima kasih!` :
 `*INQUIRY & BOOKING - DEWA BIKE TOUR*
 ---------------------------------------
 👤 *Name*: ${name}
