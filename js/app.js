@@ -2508,6 +2508,85 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
       return 'images/';
     };
 
+    let currentKeyIndex = 0;
+    let activeKeys = [];
+
+    const getAvailableKeys = () => {
+      const items = Array.from(document.querySelectorAll('.bike-sizing-item'));
+      const keys = items.map(el => el.getAttribute('data-bike-key')).filter(Boolean);
+      const uniqueKeys = Array.from(new Set(keys));
+      return uniqueKeys.length > 0 ? uniqueKeys : Object.keys(BIKE_PHOTOS_DATA);
+    };
+
+    const updateSlide = (index, direction = 0) => {
+      if (!activeKeys.length) activeKeys = getAvailableKeys();
+      if (!activeKeys.length) return;
+
+      if (index < 0) index = activeKeys.length - 1;
+      if (index >= activeKeys.length) index = 0;
+      currentKeyIndex = index;
+
+      const key = activeKeys[currentKeyIndex];
+      const data = BIKE_PHOTOS_DATA[key];
+      if (!data) return;
+
+      const basePath = getImagesPath();
+      const imgEl = document.getElementById('bikePhotoImg');
+      const titleEl = document.getElementById('bikePhotoTitle');
+      const subtitleEl = document.getElementById('bikePhotoSubtitle');
+      const descEl = document.getElementById('bikePhotoDesc');
+      const counterEl = document.getElementById('bikePhotoCounter');
+      const dotsEl = document.getElementById('bikePhotoDots');
+      const prevBtn = document.getElementById('bikePhotoPrev');
+      const nextBtn = document.getElementById('bikePhotoNext');
+
+      const isMulti = activeKeys.length > 1;
+
+      if (counterEl) {
+        counterEl.textContent = `${currentKeyIndex + 1} / ${activeKeys.length}`;
+        counterEl.style.display = isMulti ? 'block' : 'none';
+      }
+
+      if (dotsEl) {
+        if (isMulti) {
+          dotsEl.style.display = 'flex';
+          dotsEl.innerHTML = activeKeys.map((k, i) => `
+            <button type="button" class="bike-popup-dot ${i === currentKeyIndex ? 'active' : ''}" data-index="${i}" aria-label="Go to photo ${i + 1}"></button>
+          `).join('');
+        } else {
+          dotsEl.style.display = 'none';
+        }
+      }
+
+      if (prevBtn) prevBtn.style.display = isMulti ? 'flex' : 'none';
+      if (nextBtn) nextBtn.style.display = isMulti ? 'flex' : 'none';
+
+      if (imgEl) {
+        if (direction !== 0) {
+          imgEl.style.opacity = '0.35';
+          imgEl.style.transform = direction > 0 ? 'translateX(12px)' : 'translateX(-12px)';
+          setTimeout(() => {
+            imgEl.src = basePath + data.file;
+            imgEl.alt = data.title;
+            imgEl.style.opacity = '1';
+            imgEl.style.transform = 'none';
+          }, 110);
+        } else {
+          imgEl.src = basePath + data.file;
+          imgEl.alt = data.title;
+          imgEl.style.opacity = '1';
+          imgEl.style.transform = 'none';
+        }
+      }
+
+      if (titleEl) titleEl.textContent = data.title;
+      if (subtitleEl) subtitleEl.textContent = data.subtitle;
+      if (descEl) descEl.textContent = data.desc;
+    };
+
+    const nextSlide = () => updateSlide(currentKeyIndex + 1, 1);
+    const prevSlide = () => updateSlide(currentKeyIndex - 1, -1);
+
     const ensureModal = () => {
       let modal = document.getElementById('bikePhotoModal');
       if (!modal) {
@@ -2524,8 +2603,20 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
             </button>
-            <div class="bike-popup-img-wrap">
+            <div class="bike-popup-img-wrap" id="bikePhotoImgWrap">
+              <span class="bike-popup-counter" id="bikePhotoCounter">1 / 5</span>
+              <button type="button" class="bike-popup-nav prev" id="bikePhotoPrev" aria-label="Previous bike photo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button type="button" class="bike-popup-nav next" id="bikePhotoNext" aria-label="Next bike photo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
               <img id="bikePhotoImg" src="" alt="Bike photo" loading="lazy">
+              <div class="bike-popup-dots" id="bikePhotoDots"></div>
             </div>
             <div class="bike-popup-info">
               <span class="bike-popup-tag">BIKE &amp; SEATING SPECIFICATION</span>
@@ -2535,29 +2626,62 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
             </div>
           </div>
         `;
+        // Prevent background scrolling on touch or mouse wheel
+        modal.addEventListener('wheel', (e) => {
+          if (!e.target.closest('.bike-popup-card')) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+
+        modal.addEventListener('touchmove', (e) => {
+          if (!e.target.closest('.bike-popup-card')) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+
+        // Touch swipe gestures for sliding photos
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        modal.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches[0]) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+          }
+        }, { passive: true });
+
+        modal.addEventListener('touchend', (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            const deltaX = e.changedTouches[0].clientX - touchStartX;
+            const deltaY = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+              if (deltaX < 0) {
+                nextSlide();
+              } else {
+                prevSlide();
+              }
+            }
+          }
+        }, { passive: true });
+
         document.body.appendChild(modal);
       }
       return modal;
     };
 
     const openModal = (key) => {
-      const data = BIKE_PHOTOS_DATA[key];
-      if (!data) return;
+      activeKeys = getAvailableKeys();
+      const foundIdx = activeKeys.indexOf(key);
+      currentKeyIndex = foundIdx !== -1 ? foundIdx : 0;
+
       const modal = ensureModal();
-      const basePath = getImagesPath();
+      updateSlide(currentKeyIndex, 0);
 
-      const imgEl = document.getElementById('bikePhotoImg');
-      const titleEl = document.getElementById('bikePhotoTitle');
-      const subtitleEl = document.getElementById('bikePhotoSubtitle');
-      const descEl = document.getElementById('bikePhotoDesc');
-
-      if (imgEl) {
-        imgEl.src = basePath + data.file;
-        imgEl.alt = data.title;
-      }
-      if (titleEl) titleEl.textContent = data.title;
-      if (subtitleEl) subtitleEl.textContent = data.subtitle;
-      if (descEl) descEl.textContent = data.desc;
+      // Lock body and html scroll
+      document.body.classList.add('modal-open');
+      document.documentElement.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
 
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
@@ -2569,6 +2693,12 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
       }
+
+      // Unlock body and html scroll
+      document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
 
     document.addEventListener('click', (e) => {
@@ -2582,24 +2712,66 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
       if (e.target.closest('#bikePhotoClose') || e.target.closest('#bikePhotoBackdrop')) {
         e.preventDefault();
         closeModal();
+        return;
+      }
+      if (e.target.closest('#bikePhotoNext')) {
+        e.preventDefault();
+        nextSlide();
+        return;
+      }
+      if (e.target.closest('#bikePhotoPrev')) {
+        e.preventDefault();
+        prevSlide();
+        return;
+      }
+      const dot = e.target.closest('.bike-popup-dot');
+      if (dot) {
+        e.preventDefault();
+        const idx = parseInt(dot.getAttribute('data-index'), 10);
+        if (!isNaN(idx)) updateSlide(idx, idx > currentKeyIndex ? 1 : -1);
+        return;
       }
     });
 
     document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('bikePhotoModal');
+      const isActive = modal && modal.classList.contains('active');
+      if (!isActive) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const item = document.activeElement ? document.activeElement.closest('.bike-sizing-item') : null;
+          if (item) {
+            e.preventDefault();
+            const key = item.getAttribute('data-bike-key');
+            if (key) openModal(key);
+          }
+        }
+        return;
+      }
+
       if (e.key === 'Escape') {
-        const modal = document.getElementById('bikePhotoModal');
-        if (modal && modal.classList.contains('active')) {
-          closeModal();
-        }
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        const item = document.activeElement ? document.activeElement.closest('.bike-sizing-item') : null;
-        if (item) {
-          e.preventDefault();
-          const key = item.getAttribute('data-bike-key');
-          if (key) openModal(key);
-        }
+        e.preventDefault();
+        closeModal();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
       }
     });
+
+    // Preload images and pre-initialize modal if page has bike sizing items
+    if (document.querySelector('.bike-sizing-item')) {
+      ensureModal();
+      const basePath = getImagesPath();
+      Object.keys(BIKE_PHOTOS_DATA).forEach((k) => {
+        const d = BIKE_PHOTOS_DATA[k];
+        if (d && d.file) {
+          const preloadImg = new Image();
+          preloadImg.src = basePath + d.file;
+        }
+      });
+    }
   };
 
   initTourSlider();

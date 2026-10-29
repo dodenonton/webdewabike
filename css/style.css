@@ -5713,37 +5713,54 @@ button, input, select, textarea {
   justify-content: center !important;
   padding: 16px !important;
   box-sizing: border-box !important;
-  opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
-  transition: opacity 0.25s ease, visibility 0.25s ease !important;
+  overscroll-behavior: contain !important;
+  touch-action: none !important;
+  transition: visibility 0.35s ease !important;
 }
 
 .bike-popup-modal.active {
-  opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
+  transition: visibility 0s 0s !important;
 }
 
 .bike-popup-backdrop {
   position: absolute !important;
   inset: 0 !important;
-  background: rgba(15, 23, 42, 0.65) !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.65) 0%, rgba(10, 15, 26, 0.82) 100%) !important;
+  backdrop-filter: blur(12px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
+  -webkit-transform: translateZ(0) !important;
+  transform: translateZ(0) !important;
+  opacity: 0 !important;
+  overscroll-behavior: contain !important;
+  touch-action: none !important;
+  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.bike-popup-modal.active .bike-popup-backdrop {
+  opacity: 1 !important;
 }
 
 .bike-popup-card {
   position: relative !important;
   z-index: 2 !important;
   width: 100% !important;
-  max-width: 540px !important;
+  max-width: 520px !important;
   background: #ffffff !important;
   border-radius: 20px !important;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
   overflow: hidden !important;
-  transform: scale(0.92) translateY(12px) !important;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  touch-action: auto !important;
+  opacity: 0 !important;
+  transform: scale(0.92) translateY(16px) !important;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.38s cubic-bezier(0.16, 1, 0.3, 1) !important;
   display: flex !important;
   flex-direction: column !important;
   max-height: 90vh !important;
@@ -5751,6 +5768,7 @@ button, input, select, textarea {
 }
 
 .bike-popup-modal.active .bike-popup-card {
+  opacity: 1 !important;
   transform: scale(1) translateY(0) !important;
 }
 
@@ -5779,6 +5797,7 @@ button, input, select, textarea {
 }
 
 .bike-popup-img-wrap {
+  position: relative !important;
   width: 100% !important;
   height: 340px !important;
   background: #0f172a !important;
@@ -5786,6 +5805,7 @@ button, input, select, textarea {
   align-items: center !important;
   justify-content: center !important;
   overflow: hidden !important;
+  user-select: none !important;
 }
 
 .bike-popup-img-wrap img {
@@ -5793,7 +5813,107 @@ button, input, select, textarea {
   height: 100% !important;
   object-fit: cover !important;
   display: block !important;
-  transition: transform 0.3s ease !important;
+  transition: opacity 0.22s ease, transform 0.22s ease !important;
+  pointer-events: none !important;
+}
+
+/* Slide Nav Arrows */
+.bike-popup-nav {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 15 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s, transform 0.2s, border-color 0.2s !important;
+  outline: none !important;
+  padding: 0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.bike-popup-nav:hover {
+  background: #105b38 !important;
+  border-color: #ffffff !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+.bike-popup-nav:active {
+  transform: translateY(-50%) scale(0.95) !important;
+}
+
+.bike-popup-nav.prev {
+  left: 12px !important;
+}
+
+.bike-popup-nav.next {
+  right: 12px !important;
+}
+
+/* Slide Counter */
+.bike-popup-counter {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 15 !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  color: #ffffff !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  pointer-events: none !important;
+}
+
+/* Slide Dots */
+.bike-popup-dots {
+  position: absolute !important;
+  bottom: 12px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 15 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  padding: 4px 8px !important;
+  border-radius: 999px !important;
+}
+
+.bike-popup-dot {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  transition: width 0.22s ease, background-color 0.22s ease !important;
+}
+
+.bike-popup-dot:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.bike-popup-dot.active {
+  width: 20px !important;
+  background: #ffffff !important;
 }
 
 .bike-popup-info {
@@ -5839,6 +5959,16 @@ button, input, select, textarea {
   }
   .bike-popup-img-wrap {
     height: 250px !important;
+  }
+  .bike-popup-nav {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .bike-popup-nav.prev {
+    left: 8px !important;
+  }
+  .bike-popup-nav.next {
+    right: 8px !important;
   }
   .bike-popup-info {
     padding: 1rem 1.15rem !important;
