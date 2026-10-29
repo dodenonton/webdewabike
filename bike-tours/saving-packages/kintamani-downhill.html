@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../../images/logo.png">
   <link rel="apple-touch-icon" href="../../images/logo.png">
-  <link rel="stylesheet" href="../../css/style.css?v=83">
+  <link rel="stylesheet" href="../../css/style.css?v=89">
   <link rel="canonical" href="https://www.dewabike.com/bike-tours/saving-packages/kintamani-downhill">
   <script type="application/ld+json">
 {
@@ -313,14 +313,55 @@
 
           <p>On this tour, you can enjoy the breathtaking view of Mount Batur, with <strong>80% of the route being downhill</strong>. Lunch and transportation are not included. For <strong>Saving Package</strong>, we don't go to the Batur volcano view, because there an entrance ticket Rp. 50.000/person and you can come there by your own transport. We will start before the view point.</p>
 
-          <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; margin: 1.25rem 0;">
-            <h4 style="margin-bottom: 0.5rem; color: var(--dark);">Sizing & Bikes:</h4>
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem;">
-              <li>• Childseat age 1 - 4. Adults bike size for M - XL</li>
-              <li>• Backseat age 5 - 7. Size bike only for M</li>
-              <li>• Small bike for min height 120cm, lower than 120cm can use a backseat</li>
-              <li>• Small bike for min height 135cm</li>
-              <li>• Adults bike, size from S - XL</li>
+          <div class="bike-sizing-card">
+            <div class="bike-sizing-header">
+              <span class="bike-sizing-icon">🚲</span>
+              <div>
+                <h4 class="bike-sizing-title">Sizing &amp; Bikes:</h4>
+                <span class="bike-sizing-hint">Click any option below to view real photos</span>
+              </div>
+            </div>
+            <ul class="bike-sizing-list">
+              <li class="bike-sizing-item" data-bike-key="childseat" role="button" tabindex="0">
+                <span class="bike-sizing-bullet">•</span>
+                <span class="bike-sizing-text">Childseat age 1 - 4. Adults bike size for M - XL</span>
+                <span class="bike-photo-badge">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <span>View Photo</span>
+                </span>
+              </li>
+              <li class="bike-sizing-item" data-bike-key="backseat" role="button" tabindex="0">
+                <span class="bike-sizing-bullet">•</span>
+                <span class="bike-sizing-text">Backseat age 5 - 7. Size bike only for M</span>
+                <span class="bike-photo-badge">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <span>View Photo</span>
+                </span>
+              </li>
+              <li class="bike-sizing-item" data-bike-key="small120" role="button" tabindex="0">
+                <span class="bike-sizing-bullet">•</span>
+                <span class="bike-sizing-text">Small bike for min height 120cm, lower than 120cm can use a backseat</span>
+                <span class="bike-photo-badge">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <span>View Photo</span>
+                </span>
+              </li>
+              <li class="bike-sizing-item" data-bike-key="small135" role="button" tabindex="0">
+                <span class="bike-sizing-bullet">•</span>
+                <span class="bike-sizing-text">Small bike for min height 135cm</span>
+                <span class="bike-photo-badge">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <span>View Photo</span>
+                </span>
+              </li>
+              <li class="bike-sizing-item" data-bike-key="adults" role="button" tabindex="0">
+                <span class="bike-sizing-bullet">•</span>
+                <span class="bike-sizing-text">Adults bike, size from S - XL</span>
+                <span class="bike-photo-badge">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <span>View Photo</span>
+                </span>
+              </li>
             </ul>
           </div>
 
@@ -527,6 +568,6 @@
     </div>
   </a>
 
-  <script src="../../js/app.js?v=43"></script>
+  <script src="../../js/app.js?v=49"></script>
 </body>
 </html>

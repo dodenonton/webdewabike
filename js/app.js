@@ -324,8 +324,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <input type="date" id="modalDate" required>
           </div>
           <div class="form-group">
-            <label for="modalTime">Time</label>
-            <input type="text" id="modalTime" class="form-control" placeholder="e.g. 8:30 AM" value="8:30 AM" required>
+            <label for="modalTime" id="labelModalTime">Preferred Pick-Up Time</label>
+            <div class="time-trigger-box" id="timeTriggerBox" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Select preferred pick-up time">
+              <span class="time-trigger-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </span>
+              <input type="text" id="modalTime" class="time-trigger-input" placeholder="e.g. 08:30 AM" value="08:30 AM" readonly required>
+            </div>
           </div>
         </div>
 
@@ -563,10 +571,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Toggle Hotel Pickup: Hidden for all Saving Packages, visible for Regular / Combo Packages
+    // Toggle Hotel Pickup & Time Label: Hidden for all Saving Packages, visible for Regular / Combo Packages
     const groupHotel = document.getElementById('groupHotel');
     if (groupHotel) {
       groupHotel.style.display = isSaving ? 'none' : 'block';
+    }
+    const labelModalTime = document.getElementById('labelModalTime');
+    if (labelModalTime) {
+      labelModalTime.textContent = isSaving ? 'Preferred Tour Time' : 'Preferred Pick-Up Time';
     }
 
     // References to row elements
@@ -1010,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     const modalTimeEl = document.getElementById('modalTime');
-    const selectedTime = (modalTimeEl && modalTimeEl.value.trim()) ? modalTimeEl.value.trim() : '8:30 AM';
+    const selectedTime = (modalTimeEl && modalTimeEl.value.trim()) ? modalTimeEl.value.trim() : '08:30 AM';
     const dateTime = (formattedDate !== 'Flexible') ? `${formattedDate} ${selectedTime}` : 'Flexible';
     const date = formattedDate;
 
@@ -1108,7 +1120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elTime.classList.add('input-error');
         elTime.focus();
       }
-      alert('Please enter your preferred Tour Time (e.g. 8:30 AM).');
+      alert('Please enter your preferred Tour Time (e.g. 08:30 AM).');
       return false;
     }
 
@@ -1338,6 +1350,252 @@ ${b.name}`;
     } else if (e.target.closest('#btnSubmitModalEmail')) {
       e.preventDefault();
       handleEmailBooking();
+    }
+  });
+
+  /* -------------------------------------------------------------
+   * 5B. CUSTOM WHEEL TIME PICKER (iOS Style with AM/PM)
+   * ------------------------------------------------------------- */
+  const WHEEL_ITEM_HEIGHT = 44;
+  let tempHour = '08';
+  let tempMinute = '30';
+  let tempPeriod = 'AM';
+
+  const ensureTimePickerModal = () => {
+    let overlay = document.getElementById('timePickerOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'time-picker-overlay';
+      overlay.id = 'timePickerOverlay';
+      overlay.setAttribute('aria-hidden', 'true');
+
+      let hoursHtml = '<div class="wheel-spacer"></div><div class="wheel-spacer"></div>';
+      for (let h = 1; h <= 12; h++) {
+        const val = h < 10 ? `0${h}` : `${h}`;
+        hoursHtml += `<div class="wheel-item" data-value="${val}">${val}</div>`;
+      }
+      hoursHtml += '<div class="wheel-spacer"></div><div class="wheel-spacer"></div>';
+
+      let minutesHtml = '<div class="wheel-spacer"></div><div class="wheel-spacer"></div>';
+      for (let m = 0; m < 60; m++) {
+        const val = m < 10 ? `0${m}` : `${m}`;
+        minutesHtml += `<div class="wheel-item" data-value="${val}">${val}</div>`;
+      }
+      minutesHtml += '<div class="wheel-spacer"></div><div class="wheel-spacer"></div>';
+
+      let periodHtml = '<div class="wheel-spacer"></div><div class="wheel-spacer"></div>';
+      periodHtml += '<div class="wheel-item" data-value="AM">AM</div>';
+      periodHtml += '<div class="wheel-item" data-value="PM">PM</div>';
+      periodHtml += '<div class="wheel-spacer"></div><div class="wheel-spacer"></div>';
+
+      overlay.innerHTML = `
+        <div class="time-picker-backdrop" id="timePickerBackdrop"></div>
+        <div class="time-picker-card" role="dialog" aria-modal="true" aria-label="Select Preferred Pick-Up Time">
+          <div class="time-picker-highlight"></div>
+          <div class="time-picker-wheels">
+            <div class="time-wheel-col" id="wheelColHour" data-type="hour" tabindex="0">
+              ${hoursHtml}
+            </div>
+            <div class="time-wheel-col" id="wheelColMinute" data-type="minute" tabindex="0">
+              ${minutesHtml}
+            </div>
+            <div class="time-wheel-col time-wheel-period" id="wheelColPeriod" data-type="period" tabindex="0">
+              ${periodHtml}
+            </div>
+          </div>
+          <div class="time-picker-fade-top"></div>
+          <div class="time-picker-fade-bottom"></div>
+          <div class="time-picker-footer">
+            <button type="button" class="btn-time-reset" id="btnTimePickerReset">
+              Reset
+            </button>
+            <button type="button" class="btn-time-confirm" id="btnTimePickerConfirm" aria-label="Confirm time">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      // Attach scroll listeners to the 3 columns
+      ['wheelColHour', 'wheelColMinute', 'wheelColPeriod'].forEach(id => {
+        const col = document.getElementById(id);
+        if (col) {
+          let timer = null;
+          col.addEventListener('scroll', () => {
+            const type = col.getAttribute('data-type');
+            updateColumnSelection(col, type);
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              updateColumnSelection(col, type);
+            }, 50);
+          }, { passive: true });
+        }
+      });
+    }
+    return overlay;
+  };
+
+  const parseCurrentTime = (timeStr) => {
+    const s = (timeStr || '').trim();
+    const match = s.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+    if (match) {
+      let h = parseInt(match[1], 10);
+      const m = parseInt(match[2], 10);
+      let p = (match[3] || 'AM').toUpperCase();
+      if (h === 0) {
+        h = 12;
+      } else if (h > 12) {
+        h = h - 12;
+        p = 'PM';
+      }
+      const hourStr = h < 10 ? `0${h}` : `${h}`;
+      const minuteStr = m < 10 ? `0${m}` : `${m}`;
+      return { hour: hourStr, minute: minuteStr, period: p };
+    }
+    return { hour: '08', minute: '30', period: 'AM' };
+  };
+
+  const updateColumnSelection = (col, type) => {
+    if (!col) return;
+    const scrollTop = col.scrollTop;
+    const index = Math.max(0, Math.round(scrollTop / WHEEL_ITEM_HEIGHT));
+    const items = col.querySelectorAll('.wheel-item');
+    items.forEach((item, idx) => {
+      if (idx === index) {
+        item.classList.add('selected');
+        const val = item.getAttribute('data-value');
+        if (type === 'hour') tempHour = val;
+        else if (type === 'minute') tempMinute = val;
+        else if (type === 'period') tempPeriod = val;
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+  };
+
+  const scrollToValue = (col, targetValue, behavior = 'auto') => {
+    if (!col) return;
+    const items = col.querySelectorAll('.wheel-item');
+    let targetIndex = 0;
+    items.forEach((item, idx) => {
+      if (item.getAttribute('data-value') === targetValue) {
+        targetIndex = idx;
+      }
+    });
+    col.scrollTo({ top: targetIndex * WHEEL_ITEM_HEIGHT, behavior: behavior });
+    items.forEach((item, idx) => {
+      if (idx === targetIndex) {
+        item.classList.add('selected');
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+  };
+
+  const openTimePicker = () => {
+    const overlay = ensureTimePickerModal();
+    const inputEl = document.getElementById('modalTime');
+    const triggerBox = document.getElementById('timeTriggerBox');
+    if (triggerBox) triggerBox.setAttribute('aria-expanded', 'true');
+
+    const parsed = parseCurrentTime(inputEl ? inputEl.value : '08:30 AM');
+    tempHour = parsed.hour;
+    tempMinute = parsed.minute;
+    tempPeriod = parsed.period;
+
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+
+    const colHour = document.getElementById('wheelColHour');
+    const colMinute = document.getElementById('wheelColMinute');
+    const colPeriod = document.getElementById('wheelColPeriod');
+
+    setTimeout(() => {
+      if (colHour) scrollToValue(colHour, tempHour, 'auto');
+      if (colMinute) scrollToValue(colMinute, tempMinute, 'auto');
+      if (colPeriod) scrollToValue(colPeriod, tempPeriod, 'auto');
+    }, 20);
+  };
+
+  const closeTimePicker = () => {
+    const overlay = document.getElementById('timePickerOverlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+    const triggerBox = document.getElementById('timeTriggerBox');
+    if (triggerBox) {
+      triggerBox.setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  const confirmTimePicker = () => {
+    const formatted = `${tempHour}:${tempMinute} ${tempPeriod}`;
+    const inputEl = document.getElementById('modalTime');
+    if (inputEl) {
+      inputEl.value = formatted;
+      inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+      inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    closeTimePicker();
+  };
+
+  const resetTimePicker = () => {
+    tempHour = '08';
+    tempMinute = '30';
+    tempPeriod = 'AM';
+    const colHour = document.getElementById('wheelColHour');
+    const colMinute = document.getElementById('wheelColMinute');
+    const colPeriod = document.getElementById('wheelColPeriod');
+    if (colHour) scrollToValue(colHour, '08', 'smooth');
+    if (colMinute) scrollToValue(colMinute, '30', 'smooth');
+    if (colPeriod) scrollToValue(colPeriod, 'AM', 'smooth');
+  };
+
+  // Event delegations for Wheel Time Picker
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#timeTriggerBox') || e.target.closest('#modalTime')) {
+      e.preventDefault();
+      openTimePicker();
+    } else if (e.target.closest('#timePickerBackdrop')) {
+      closeTimePicker();
+    } else if (e.target.closest('#btnTimePickerReset')) {
+      e.preventDefault();
+      resetTimePicker();
+    } else if (e.target.closest('#btnTimePickerConfirm')) {
+      e.preventDefault();
+      confirmTimePicker();
+    } else {
+      const wheelItem = e.target.closest('.wheel-item');
+      if (wheelItem) {
+        const col = wheelItem.closest('.time-wheel-col');
+        if (col) {
+          const items = Array.from(col.querySelectorAll('.wheel-item'));
+          const idx = items.indexOf(wheelItem);
+          if (idx !== -1) {
+            col.scrollTo({ top: idx * WHEEL_ITEM_HEIGHT, behavior: 'smooth' });
+          }
+        }
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const overlay = document.getElementById('timePickerOverlay');
+    if (overlay && overlay.classList.contains('active')) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeTimePicker();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmTimePicker();
+      }
+    } else if (e.target.closest('#timeTriggerBox') && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      openTimePicker();
     }
   });
 
@@ -2188,9 +2446,166 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
     });
   }
 
+  /* -------------------------------------------------------------
+   * 11B. BIKE SIZING PHOTO POPUP MODAL
+   * ------------------------------------------------------------- */
+  const initBikePhotoModal = () => {
+    const BIKE_PHOTOS_DATA = {
+      childseat: {
+        file: 'bike-childseat.jpg',
+        title: 'Childseat (Age 1 – 4 Years)',
+        subtitle: 'Front mounted childseat on bike (Size M – XL / E-Bike)',
+        desc: 'Comfortable and safe front childseat equipped with footrests and safety harness, allowing your toddler (1 to 4 years old) to securely enjoy the ride with parents.'
+      },
+      backseat: {
+        file: 'bike-backseat.jpg',
+        title: 'Backseat (Age 5 – 7 Years)',
+        subtitle: 'Rear child seat on adult bike (Size M only)',
+        desc: 'Sturdy rear seat carrier with safety handle and footpegs, specifically designed for kids aged 5–7 years to ride safely behind an adult.'
+      },
+      small120: {
+        file: 'bike-small-120cm.jpg',
+        title: 'Small Bike (Min Height 120 cm)',
+        subtitle: 'Junior mountain bike for riders 120 cm and taller',
+        desc: 'Lightweight junior mountain bike with front suspension and child-proportioned brakes. Lower than 120 cm can comfortably use a backseat.'
+      },
+      small135: {
+        file: 'bike-small-135cm.jpg',
+        title: 'Small Bike (Min Height 135 cm)',
+        subtitle: 'Youth mountain bike for riders 135 cm and taller',
+        desc: 'Youth performance mountain bike with front suspension fork and Shimano gearing, perfectly fitted for older children and pre-teens at least 135 cm tall.'
+      },
+      adults: {
+        file: 'bike-adults.jpg',
+        title: 'Adults Bike (Sizes S – XL)',
+        subtitle: 'Hardtail mountain bike with Shimano gears & hydraulic disc brakes',
+        desc: 'High-quality adult mountain bikes available in full frame sizes from S to XL. Regularly serviced and safety checked by our in-house mechanics.'
+      },
+      ebike: {
+        file: 'gallery-home-3.jpg',
+        title: 'E-Bike (Sizes S – M)',
+        subtitle: 'Electric assist bicycle (Min height 150 cm)',
+        desc: 'Comfortable and easy-to-ride electric bicycle featuring smooth pedal assistance, front suspension, and reliable disc brakes. Perfect for riding effortlessly through rice fields and village roads. Minimum rider height 150 cm.'
+      }
+    };
+
+    const getImagesPath = () => {
+      const sample = document.querySelector('img[src*="images/"]');
+      if (sample) {
+        const src = sample.getAttribute('src');
+        const idx = src.indexOf('images/');
+        if (idx !== -1) {
+          return src.substring(0, idx) + 'images/';
+        }
+      }
+      const path = window.location.pathname;
+      if (path.includes('/regular-packages/') || path.includes('/saving-packages/') || path.includes('/combination-tours/') || path.includes('/other-activities/')) {
+        return '../../images/';
+      }
+      if (path.includes('/bike-tours/') || path.includes('/other-tours/') || path.includes('/about/')) {
+        return '../images/';
+      }
+      return 'images/';
+    };
+
+    const ensureModal = () => {
+      let modal = document.getElementById('bikePhotoModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.className = 'bike-popup-modal';
+        modal.id = 'bikePhotoModal';
+        modal.setAttribute('aria-hidden', 'true');
+        modal.innerHTML = `
+          <div class="bike-popup-backdrop" id="bikePhotoBackdrop"></div>
+          <div class="bike-popup-card" role="dialog" aria-modal="true" aria-labelledby="bikePhotoTitle">
+            <button type="button" class="bike-popup-close" id="bikePhotoClose" aria-label="Close photo">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <div class="bike-popup-img-wrap">
+              <img id="bikePhotoImg" src="" alt="Bike photo" loading="lazy">
+            </div>
+            <div class="bike-popup-info">
+              <span class="bike-popup-tag">BIKE &amp; SEATING SPECIFICATION</span>
+              <h3 id="bikePhotoTitle"></h3>
+              <p class="bike-popup-subtitle" id="bikePhotoSubtitle"></p>
+              <p class="bike-popup-desc" id="bikePhotoDesc"></p>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+      return modal;
+    };
+
+    const openModal = (key) => {
+      const data = BIKE_PHOTOS_DATA[key];
+      if (!data) return;
+      const modal = ensureModal();
+      const basePath = getImagesPath();
+
+      const imgEl = document.getElementById('bikePhotoImg');
+      const titleEl = document.getElementById('bikePhotoTitle');
+      const subtitleEl = document.getElementById('bikePhotoSubtitle');
+      const descEl = document.getElementById('bikePhotoDesc');
+
+      if (imgEl) {
+        imgEl.src = basePath + data.file;
+        imgEl.alt = data.title;
+      }
+      if (titleEl) titleEl.textContent = data.title;
+      if (subtitleEl) subtitleEl.textContent = data.subtitle;
+      if (descEl) descEl.textContent = data.desc;
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+    };
+
+    const closeModal = () => {
+      const modal = document.getElementById('bikePhotoModal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+    };
+
+    document.addEventListener('click', (e) => {
+      const item = e.target.closest('.bike-sizing-item');
+      if (item) {
+        e.preventDefault();
+        const key = item.getAttribute('data-bike-key');
+        if (key) openModal(key);
+        return;
+      }
+      if (e.target.closest('#bikePhotoClose') || e.target.closest('#bikePhotoBackdrop')) {
+        e.preventDefault();
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('bikePhotoModal');
+        if (modal && modal.classList.contains('active')) {
+          closeModal();
+        }
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        const item = document.activeElement ? document.activeElement.closest('.bike-sizing-item') : null;
+        if (item) {
+          e.preventDefault();
+          const key = item.getAttribute('data-bike-key');
+          if (key) openModal(key);
+        }
+      }
+    });
+  };
+
   initTourSlider();
   initFacilityModal();
   initTeamModal();
   initGalleryLightbox();
+  initBikePhotoModal();
 });
 

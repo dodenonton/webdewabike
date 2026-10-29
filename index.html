@@ -33,7 +33,7 @@
   <!-- Main Stylesheet -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=83">
+  <link rel="stylesheet" href="css/style.css?v=89">
   <link rel="canonical" href="https://www.dewabike.com/">
 
   <!-- Schema.org Structured Data (JSON-LD) for LocalBusiness & TourOperator -->
@@ -249,7 +249,7 @@
           Dewa Bike offers the best way to experience an Ubud bicycle tour. We offer a variety of cycling tour packages that will ensure you thoroughly enjoy your vacation time in Bali.
         </p>
         
-        <h3 style="font-family: var(--font-heading); margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--primary);">We have 2 different trip:</h3>
+        <h3 style="font-family: var(--font-heading); margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--primary);">We have 2 different trips:</h3>
         
         <div class="feature-bullets">
           <div class="f-bullet">
@@ -263,7 +263,7 @@
             <div class="f-bullet-icon">🌾</div>
             <div>
               <strong>2. Trip in Ubud Countryside (Normal Bike & E-Bike)</strong>
-              <p>Combination of uphill, downhill, flat, small road, rice fields. Go to start point 15 - 20 minutes from Ubud. The uphill and downhill are not steep. We will ride for 12 km, this trip is more exercise. For e-bike min height 150cm.</p>
+              <p>Combination of uphill, downhill, flat, small road, rice fields. Go to start point around 30 minutes from Ubud Center. The uphill and downhill are not steep. We will ride for 12 km, this trip is more exercise. For e-bike min height 150cm.</p>
             </div>
           </div>
         </div>
@@ -703,8 +703,16 @@
             <input type="date" id="modalDate" required>
           </div>
           <div class="form-group">
-            <label for="modalTime">Time</label>
-            <input type="text" id="modalTime" class="form-control" placeholder="e.g. 8:30 AM" value="8:30 AM" required>
+            <label for="modalTime" id="labelModalTime">Preferred Pick-Up Time</label>
+            <div class="time-trigger-box" id="timeTriggerBox" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Select preferred pick-up time">
+              <span class="time-trigger-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </span>
+              <input type="text" id="modalTime" class="time-trigger-input" placeholder="e.g. 08:30 AM" value="08:30 AM" readonly required>
+            </div>
           </div>
         </div>
 
@@ -900,6 +908,6 @@
   </div>
 
   <!-- Main JavaScript File -->
-  <script src="js/app.js?v=43"></script>
+  <script src="js/app.js?v=49"></script>
 </body>
 </html>

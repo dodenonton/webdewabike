@@ -2397,8 +2397,7 @@ button, input, select, textarea {
 }
 
 .modal-card input[type="date"],
-.modal-card #modalDate,
-.modal-card #modalTime {
+.modal-card #modalDate {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
@@ -2416,6 +2415,283 @@ button, input, select, textarea {
   border-radius: var(--radius-md) !important;
   border: 1px solid var(--border) !important;
   margin: 0 !important;
+}
+
+/* Time Trigger Box (Styled like goatbali screenshot) */
+.time-trigger-box {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 46px !important;
+  height: 46px !important;
+  padding: 0 14px !important;
+  background-color: #ffffff !important;
+  border: 1.5px solid #00a699 !important;
+  border-radius: var(--radius-md, 10px) !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease !important;
+  user-select: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.time-trigger-box:hover {
+  border-color: #00877c !important;
+}
+
+.time-trigger-box:focus-visible,
+.time-trigger-box:focus-within {
+  outline: none !important;
+  border-color: #00a699 !important;
+  box-shadow: 0 0 0 3px rgba(0, 166, 153, 0.18) !important;
+}
+
+.time-trigger-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #00a699 !important;
+  flex-shrink: 0 !important;
+}
+
+.time-trigger-icon svg {
+  display: block;
+}
+
+.modal-card .time-trigger-input,
+.time-trigger-input {
+  border: none !important;
+  background: transparent !important;
+  color: var(--dark, #1e293b) !important;
+  font-family: inherit !important;
+  font-size: 0.98rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  min-height: unset !important;
+  height: auto !important;
+  outline: none !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+/* Time Picker Overlay Modal (iOS Style with AM/PM) */
+.time-picker-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100020 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.22s ease, visibility 0.22s ease !important;
+}
+
+.time-picker-overlay.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.time-picker-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+}
+
+.time-picker-card {
+  position: relative !important;
+  z-index: 2 !important;
+  width: 100% !important;
+  max-width: 310px !important;
+  background: #50555a !important;
+  background: linear-gradient(180deg, #575d63 0%, #4a4f54 100%) !important;
+  border-radius: 26px !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.38) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  padding: 20px 18px 18px !important;
+  box-sizing: border-box !important;
+  transform: scale(0.92) translateY(8px) !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  overflow: hidden !important;
+  user-select: none !important;
+}
+
+.time-picker-overlay.active .time-picker-card {
+  transform: scale(1) translateY(0) !important;
+}
+
+/* Highlight Bar in Center */
+.time-picker-highlight {
+  position: absolute !important;
+  top: 108px !important;
+  left: 14px !important;
+  right: 14px !important;
+  height: 44px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 14px !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* Wheels Container */
+.time-picker-wheels {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 220px !important;
+  position: relative !important;
+  z-index: 3 !important;
+  gap: 4px !important;
+}
+
+/* Each Wheel Column */
+.time-wheel-col {
+  flex: 1 !important;
+  height: 220px !important;
+  overflow-y: scroll !important;
+  scroll-snap-type: y mandatory !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch !important;
+  outline: none !important;
+  position: relative !important;
+}
+
+.time-wheel-col::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.time-wheel-col.time-wheel-period {
+  flex: 0.9 !important;
+}
+
+/* Items in Columns */
+.wheel-item {
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.25rem !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.42) !important;
+  scroll-snap-align: center !important;
+  cursor: pointer !important;
+  transition: color 0.12s ease, font-size 0.12s ease, font-weight 0.12s ease !important;
+}
+
+.wheel-item.selected {
+  color: #ffffff !important;
+  font-size: 1.55rem !important;
+  font-weight: 700 !important;
+}
+
+.time-wheel-period .wheel-item {
+  font-size: 1.1rem !important;
+}
+
+.time-wheel-period .wheel-item.selected {
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+}
+
+/* Spacers */
+.wheel-spacer {
+  height: 44px !important;
+  flex-shrink: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Fading Gradients */
+.time-picker-fade-top {
+  position: absolute !important;
+  top: 20px !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 72px !important;
+  background: linear-gradient(180deg, #53585e 0%, rgba(83, 88, 94, 0) 100%) !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+
+.time-picker-fade-bottom {
+  position: absolute !important;
+  bottom: 74px !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 72px !important;
+  background: linear-gradient(0deg, #4c5156 0%, rgba(76, 81, 86, 0) 100%) !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+
+/* Footer Action Buttons */
+.time-picker-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-top: 14px !important;
+  position: relative !important;
+  z-index: 5 !important;
+  padding: 0 4px !important;
+}
+
+.btn-time-reset {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: 10px 22px !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background 0.18s ease, transform 0.12s ease !important;
+  outline: none !important;
+}
+
+.btn-time-reset:hover {
+  background: rgba(255, 255, 255, 0.32) !important;
+}
+
+.btn-time-reset:active {
+  transform: scale(0.95) !important;
+}
+
+.btn-time-confirm {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.45) !important;
+  transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease !important;
+  outline: none !important;
+}
+
+.btn-time-confirm:hover {
+  background: #2563eb !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.6) !important;
+}
+
+.btn-time-confirm:active {
+  transform: scale(0.94) !important;
 }
 
 .modal-card .datetime-row {
@@ -5312,3 +5588,263 @@ button, input, select, textarea {
     padding: 0.2rem 0.45rem !important;
   }
 }
+
+/* =============================================================
+   BIKE SIZING INTERACTIVE CARD & PHOTO POPUP
+   ============================================================= */
+.bike-sizing-card {
+  background: #f8fafc !important;
+  border: 1px solid var(--border, #e2e8f0) !important;
+  border-radius: var(--radius-lg, 14px) !important;
+  padding: 1.25rem 1.35rem !important;
+  margin: 1.35rem 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+}
+
+.bike-sizing-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 0.85rem !important;
+  padding-bottom: 0.65rem !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.bike-sizing-icon {
+  font-size: 1.5rem !important;
+  line-height: 1 !important;
+}
+
+.bike-sizing-title {
+  margin: 0 !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: var(--dark, #1e293b) !important;
+  line-height: 1.2 !important;
+}
+
+.bike-sizing-hint {
+  font-size: 0.78rem !important;
+  color: #16a34a !important;
+  font-weight: 600 !important;
+  display: block !important;
+  margin-top: 2px !important;
+}
+
+.bike-sizing-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+}
+
+.bike-sizing-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 0.55rem 0.75rem !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  user-select: none !important;
+}
+
+.bike-sizing-item:hover {
+  border-color: #105b38 !important;
+  background: #f0fdf4 !important;
+  transform: translateX(3px) !important;
+  box-shadow: 0 2px 6px rgba(16, 91, 56, 0.08) !important;
+}
+
+.bike-sizing-item:focus-visible {
+  outline: 2px solid #105b38 !important;
+  outline-offset: 1px !important;
+}
+
+.bike-sizing-bullet {
+  color: #105b38 !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+.bike-sizing-text {
+  flex: 1 !important;
+  font-size: 0.9rem !important;
+  color: #334155 !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+}
+
+.bike-photo-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  background: #ecfdf5 !important;
+  color: #15803d !important;
+  border: 1px solid #bbf7d0 !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  flex-shrink: 0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.bike-sizing-item:hover .bike-photo-badge {
+  background: #105b38 !important;
+  color: #ffffff !important;
+  border-color: #105b38 !important;
+}
+
+/* Photo Popup Modal */
+.bike-popup-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100030 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.25s ease, visibility 0.25s ease !important;
+}
+
+.bike-popup-modal.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.bike-popup-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+.bike-popup-card {
+  position: relative !important;
+  z-index: 2 !important;
+  width: 100% !important;
+  max-width: 540px !important;
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35) !important;
+  overflow: hidden !important;
+  transform: scale(0.92) translateY(12px) !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 90vh !important;
+  max-height: 90dvh !important;
+}
+
+.bike-popup-modal.active .bike-popup-card {
+  transform: scale(1) translateY(0) !important;
+}
+
+.bike-popup-close {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 10 !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background 0.2s, transform 0.15s !important;
+  outline: none !important;
+}
+
+.bike-popup-close:hover {
+  background: rgba(0, 0, 0, 0.8) !important;
+  transform: scale(1.08) !important;
+}
+
+.bike-popup-img-wrap {
+  width: 100% !important;
+  height: 340px !important;
+  background: #0f172a !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.bike-popup-img-wrap img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  transition: transform 0.3s ease !important;
+}
+
+.bike-popup-info {
+  padding: 1.25rem 1.5rem !important;
+  background: #ffffff !important;
+  overflow-y: auto !important;
+}
+
+.bike-popup-tag {
+  display: inline-block !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  color: #105b38 !important;
+  text-transform: uppercase !important;
+  margin-bottom: 0.35rem !important;
+}
+
+.bike-popup-info h3 {
+  margin: 0 0 0.25rem 0 !important;
+  font-size: 1.25rem !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+.bike-popup-subtitle {
+  font-size: 0.9rem !important;
+  color: #16a34a !important;
+  font-weight: 600 !important;
+  margin: 0 0 0.5rem 0 !important;
+}
+
+.bike-popup-desc {
+  font-size: 0.88rem !important;
+  color: #475569 !important;
+  line-height: 1.55 !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 600px) {
+  .bike-popup-card {
+    max-width: 95% !important;
+  }
+  .bike-popup-img-wrap {
+    height: 250px !important;
+  }
+  .bike-popup-info {
+    padding: 1rem 1.15rem !important;
+  }
+  .bike-popup-info h3 {
+    font-size: 1.1rem !important;
+  }
+}
+
