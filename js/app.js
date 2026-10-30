@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
             <label style="margin: 0; font-weight: 600;">Number of Guests by Age</label>
-            <span class="total-guests-pill" id="calcTotalGuestsPill">2 Guests</span>
+            <span class="total-guests-pill" id="calcTotalGuestsPill">1 Guest</span>
           </div>
 
           <div class="age-category-list">
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <div class="number-stepper compact">
                 <button type="button" class="age-step-btn" data-target="guestAdult" data-dir="-">&minus;</button>
-                <input type="number" id="guestAdult" value="2" min="1" max="50" readonly>
+                <input type="number" id="guestAdult" value="1" min="1" max="50" readonly>
                 <button type="button" class="age-step-btn" data-target="guestAdult" data-dir="+">&plus;</button>
               </div>
             </div>
@@ -450,28 +450,33 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="form-group" id="groupHotel">
-          <label>Hotel Pickup / Special Requests</label>
+          <label>Hotel Pickup</label>
           <input type="text" id="modalHotel" placeholder="Hotel Name or Pickup Location">
+        </div>
+
+        <div class="form-group" id="groupMessage">
+          <label>Message / Special Requests</label>
+          <input type="text" id="modalMessage" placeholder="e.g. Dietary requirements, vegetarian lunch, or special requests">
         </div>
 
         <!-- Live Price Calculation Box -->
         <div class="price-calculation-box">
           <div class="calc-breakdown-items" id="calcBreakdownList">
             <div class="calc-row">
-              <span>Adults (2x Rp 600.000):</span>
-              <strong>Rp 1.200.000</strong>
+              <span>Adults (1x Rp 600.000):</span>
+              <strong>Rp 600.000</strong>
             </div>
             <div class="calc-row" style="color: var(--text-muted); font-size: 0.82rem;">
               <span>Total participants:</span>
-              <strong>2 guests</strong>
+              <strong>1 guest</strong>
             </div>
           </div>
           <div class="calc-divider"></div>
           <div class="calc-row total-row">
             <span>Estimated Total Cost:</span>
             <div>
-              <span class="total-idr" id="calcTotalIdr">Rp 1.200.000</span>
-              <span class="total-usd" id="calcTotalUsd">(Approx. ~$77 USD)</span>
+              <span class="total-idr" id="calcTotalIdr">Rp 600.000</span>
+              <span class="total-usd" id="calcTotalUsd">(Approx. ~$39 USD)</span>
             </div>
           </div>
         </div>
@@ -518,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalNationality = document.getElementById('modalNationality');
   const modalHeight = document.getElementById('modalHeight');
   const modalHotel = document.getElementById('modalHotel');
+  const modalMessage = document.getElementById('modalMessage');
 
   const calcPricePerPerson = document.getElementById('calcPricePerPerson');
   const calcGuestCount = document.getElementById('calcGuestCount');
@@ -1033,10 +1039,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const elHeight = document.getElementById('modalHeight');
     const riderHeight = (elHeight && elHeight.value.trim()) ? elHeight.value.trim() : '-';
     const hotel = isSaving ? '' : ((modalHotel && modalHotel.value.trim()) ? modalHotel.value.trim() : '-');
+    const elMessage = document.getElementById('modalMessage');
+    const specialRequests = (elMessage && elMessage.value.trim()) ? elMessage.value.trim() : '-';
     const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 1.200.000';
     const totalUsd = (calcTotalUsd && calcTotalUsd.textContent) ? calcTotalUsd.textContent.trim() : '';
 
-    return { tourKey, tourName, selectedTier, tierLabel, isSaving, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, totalCost, totalUsd };
+    return { tourKey, tourName, selectedTier, tierLabel, isSaving, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, specialRequests, totalCost, totalUsd };
   };
 
   // Validate required booking modal fields
@@ -1129,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Build complete detail text for Google Sheets & Email Notification
   const buildDetailString = (b, method) => {
-    const ageBreakdown = b.parts.length ? b.parts.map(p => `   • ${p}`).join('\n') : '   • Adults: 2 pax';
+    const ageBreakdown = b.parts.length ? b.parts.map(p => `   • ${p}`).join('\n') : '   • Adults: 1 pax';
     let str = `• Lead Guest Name: ${b.name}
 • Tour Package: ${b.tourName}
 • Total Guests: ${b.totalGuests} Guests
@@ -1138,7 +1146,11 @@ ${ageBreakdown}
 • Tour Date: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
-      str += `\n• Hotel Pickup / Special Requests: ${b.hotel}`;
+      str += `\n• Hotel Pickup: ${b.hotel}`;
+    }
+
+    if (b.specialRequests && b.specialRequests !== '-') {
+      str += `\n• Message / Special Requests: ${b.specialRequests}`;
     }
 
     str += `\n• Estimated Total Cost: ${b.totalCost} ${b.totalUsd}
@@ -1164,6 +1176,11 @@ ${ageBreakdown}
     const timeFormatted = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const timestampStr = `${dateFormatted} ${timeFormatted} WITA`;
 
+    let hotelCombined = bookingData.isSaving ? 'Not Included (Saving Package)' : (bookingData.hotel || '-');
+    if (bookingData.specialRequests && bookingData.specialRequests !== '-') {
+      hotelCombined = (hotelCombined === '-' || !hotelCombined) ? `Notes: ${bookingData.specialRequests}` : `${hotelCombined} (Notes: ${bookingData.specialRequests})`;
+    }
+
     const payload = {
       timestamp: timestampStr,
       email: bookingData.email,
@@ -1173,7 +1190,8 @@ ${ageBreakdown}
       tourName: bookingData.tourName,
       guestName: bookingData.name,
       riderHeight: bookingData.riderHeight,
-      hotel: bookingData.isSaving ? 'Not Included (Saving Package)' : (bookingData.hotel || '-'),
+      hotel: hotelCombined,
+      specialRequests: bookingData.specialRequests || '-',
       totalGuests: bookingData.totalGuests || '1',
       totalCost: `${bookingData.totalCost} ${bookingData.totalUsd}`,
       method: method,
@@ -1225,7 +1243,11 @@ ${partsList}
 📅 *Tour Date*: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
-      message += `\n🏨 *Hotel Pickup / Notes*: ${b.hotel}`;
+      message += `\n🏨 *Hotel Pickup*: ${b.hotel}`;
+    }
+
+    if (b.specialRequests && b.specialRequests !== '-') {
+      message += `\n📝 *Special Requests*: ${b.specialRequests}`;
     }
 
     message += `\n💰 *Estimated Total*: ${b.totalCost} ${b.totalUsd}
@@ -1283,7 +1305,11 @@ ${partsList}
 - Tour Date: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
-      body += `\n- Hotel Pickup / Special Requests: ${b.hotel}`;
+      body += `\n- Hotel Pickup: ${b.hotel}`;
+    }
+
+    if (b.specialRequests && b.specialRequests !== '-') {
+      body += `\n- Message / Special Requests: ${b.specialRequests}`;
     }
 
     body += `\n- Estimated Total Cost: ${b.totalCost} ${b.totalUsd}
@@ -1417,6 +1443,20 @@ ${b.name}`;
           </div>
         </div>
       `;
+
+      // Prevent scrolling the underlying booking modal on touch/wheel
+      overlay.addEventListener('wheel', (e) => {
+        if (!e.target.closest('.time-picker-card')) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      overlay.addEventListener('touchmove', (e) => {
+        if (!e.target.closest('.time-picker-card')) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
       document.body.appendChild(overlay);
 
       // Attach scroll listeners to the 3 columns
@@ -1495,13 +1535,16 @@ ${b.name}`;
     });
   };
 
-  const openTimePicker = () => {
-    const overlay = ensureTimePickerModal();
-    const inputEl = document.getElementById('modalTime');
-    const triggerBox = document.getElementById('timeTriggerBox');
-    if (triggerBox) triggerBox.setAttribute('aria-expanded', 'true');
+  let activeTimeTargetInput = null;
+  let activeTimeTriggerBox = null;
 
-    const parsed = parseCurrentTime(inputEl ? inputEl.value : '08:30 AM');
+  const openTimePicker = (targetInput = null, triggerBox = null) => {
+    activeTimeTargetInput = targetInput || document.getElementById('modalTime');
+    activeTimeTriggerBox = triggerBox || (activeTimeTargetInput && activeTimeTargetInput.id === 'cTime' ? document.getElementById('cTimeTriggerBox') : document.getElementById('timeTriggerBox'));
+    const overlay = ensureTimePickerModal();
+    if (activeTimeTriggerBox) activeTimeTriggerBox.setAttribute('aria-expanded', 'true');
+
+    const parsed = parseCurrentTime(activeTimeTargetInput ? activeTimeTargetInput.value : '08:30 AM');
     tempHour = parsed.hour;
     tempMinute = parsed.minute;
     tempPeriod = parsed.period;
@@ -1526,15 +1569,22 @@ ${b.name}`;
       overlay.classList.remove('active');
       overlay.setAttribute('aria-hidden', 'true');
     }
+    if (activeTimeTriggerBox) {
+      activeTimeTriggerBox.setAttribute('aria-expanded', 'false');
+    }
     const triggerBox = document.getElementById('timeTriggerBox');
     if (triggerBox) {
       triggerBox.setAttribute('aria-expanded', 'false');
+    }
+    const cTriggerBox = document.getElementById('cTimeTriggerBox');
+    if (cTriggerBox) {
+      cTriggerBox.setAttribute('aria-expanded', 'false');
     }
   };
 
   const confirmTimePicker = () => {
     const formatted = `${tempHour}:${tempMinute} ${tempPeriod}`;
-    const inputEl = document.getElementById('modalTime');
+    const inputEl = activeTimeTargetInput || document.getElementById('modalTime');
     if (inputEl) {
       inputEl.value = formatted;
       inputEl.dispatchEvent(new Event('change', { bubbles: true }));
@@ -1557,9 +1607,15 @@ ${b.name}`;
 
   // Event delegations for Wheel Time Picker
   document.addEventListener('click', (e) => {
-    if (e.target.closest('#timeTriggerBox') || e.target.closest('#modalTime')) {
+    const modalTrigger = e.target.closest('#timeTriggerBox') || e.target.closest('#modalTime');
+    const contactTrigger = e.target.closest('#cTimeTriggerBox') || e.target.closest('#cTime');
+
+    if (modalTrigger) {
       e.preventDefault();
-      openTimePicker();
+      openTimePicker(document.getElementById('modalTime'), document.getElementById('timeTriggerBox'));
+    } else if (contactTrigger) {
+      e.preventDefault();
+      openTimePicker(document.getElementById('cTime'), document.getElementById('cTimeTriggerBox'));
     } else if (e.target.closest('#timePickerBackdrop')) {
       closeTimePicker();
     } else if (e.target.closest('#btnTimePickerReset')) {
@@ -1595,12 +1651,19 @@ ${b.name}`;
       }
     } else if (e.target.closest('#timeTriggerBox') && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
-      openTimePicker();
+      openTimePicker(document.getElementById('modalTime'), document.getElementById('timeTriggerBox'));
+    } else if (e.target.closest('#cTimeTriggerBox') && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      openTimePicker(document.getElementById('cTime'), document.getElementById('cTimeTriggerBox'));
     }
   });
 
+  if (document.getElementById('timeTriggerBox') || document.getElementById('modalTime') || document.getElementById('cTimeTriggerBox') || document.getElementById('cTime')) {
+    ensureTimePickerModal();
+  }
+
   /* -------------------------------------------------------------
-   * 6. QUICK CONTACT FORM (BOTTOM SECTION)
+   * 6. QUICK CONTACT FORM (BOTTOM SECTION & CONTACT PAGE)
    * ------------------------------------------------------------- */
   const quickContactForm = document.getElementById('quickContactForm');
   if (quickContactForm) {
@@ -1613,38 +1676,169 @@ ${b.name}`;
       cDateInput.min = new Date().toISOString().split('T')[0];
     }
 
-    quickContactForm.addEventListener('submit', (e) => {
+    quickContactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById('cName').value.trim();
-      const date = document.getElementById('cDate').value;
-      const guests = document.getElementById('cGuests').value;
-      const packageSel = document.getElementById('cPackageSelect').value;
-      const notes = document.getElementById('cNotes').value.trim() || '-';
 
-      const isIndonesian = document.documentElement.lang === 'id';
+      const elName = document.getElementById('cName');
+      const elEmail = document.getElementById('cEmail');
+      const elPhone = document.getElementById('cPhone');
+      const elNationality = document.getElementById('cNationality');
+      const elDate = document.getElementById('cDate');
+      const elTime = document.getElementById('cTime');
+      const elGuests = document.getElementById('cGuests');
+      const elPackage = document.getElementById('cPackageSelect');
+      const elHotel = document.getElementById('cHotel');
+      const elNotes = document.getElementById('cNotes');
+      const btn = document.getElementById('btnQuickContactSubmit');
 
-      const message = isIndonesian ?
-`*KONSULTASI & RESERVASI - DEWA BIKE TOUR*
----------------------------------------
-👤 *Nama*: ${name}
-📅 *Tanggal Tur*: ${date}
-👥 *Jumlah Peserta*: ${guests} Orang
-🚲 *Paket Tur*: ${packageSel}
-📝 *Catatan / Hotel*: ${notes}
----------------------------------------
-Halo Dewa Bike Tour, mohon info ketersediaan slot untuk jadwal perjalanan saya di atas. Terima kasih!` :
-`*INQUIRY & BOOKING - DEWA BIKE TOUR*
+      const name = elName ? elName.value.trim() : '';
+      const email = elEmail ? elEmail.value.trim() : '';
+      const phone = elPhone ? elPhone.value.trim() : '';
+      const nationality = elNationality ? elNationality.value.trim() : '';
+      const date = elDate ? elDate.value : '';
+      const timeVal = elTime ? elTime.value.trim() : '08:30 AM';
+      const guests = elGuests ? (elGuests.value || '1') : '1';
+      const packageSel = elPackage ? elPackage.value : 'Kintamani Downhill (Regular)';
+      const hotel = elHotel ? elHotel.value.trim() : '';
+      const notes = elNotes ? elNotes.value.trim() : '';
+
+      // Validation
+      if (!name) {
+        alert('Please enter your Full Name.');
+        if (elName) elName.focus();
+        return;
+      }
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        alert('Please enter a valid Email Address.');
+        if (elEmail) elEmail.focus();
+        return;
+      }
+      if (!phone || phone.length < 5) {
+        alert('Please enter your Phone / WhatsApp / Telegram number.');
+        if (elPhone) elPhone.focus();
+        return;
+      }
+      if (!nationality) {
+        alert('Please enter your Nationality.');
+        if (elNationality) elNationality.focus();
+        return;
+      }
+      if (!date) {
+        alert('Please select your preferred Tour Date.');
+        if (elDate) elDate.focus();
+        return;
+      }
+      if (!timeVal) {
+        alert('Please select your preferred Tour Time.');
+        return;
+      }
+
+      const origBtnHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.75';
+        btn.innerHTML = '<span>Saving & Opening WhatsApp...</span>';
+      }
+
+      // Format date for readable display
+      let formattedDate = date;
+      const parsedDate = new Date(date + 'T00:00:00');
+      if (!isNaN(parsedDate.getTime())) {
+        formattedDate = parsedDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      }
+      const dateTime = `${formattedDate} ${timeVal}`;
+
+      // Build Combined Hotel / Notes for spreadsheet
+      let hotelCombined = hotel ? (notes ? `${hotel} (Notes: ${notes})` : hotel) : (notes || '-');
+
+      // Build detail text for Google Sheets & Email
+      let detailText = 
+`• Lead Guest Name: ${name}
+• Tour Package: ${packageSel}
+• Total Guests: ${guests} Guests
+• Tour Date: ${dateTime}`;
+
+      if (hotel && hotel !== '-') {
+        detailText += `\n• Hotel Pickup: ${hotel}`;
+      }
+      if (notes && notes !== '-') {
+        detailText += `\n• Message / Special Requests: ${notes}`;
+      }
+
+      detailText += `
+• Email Address: ${email}
+• Phone / WhatsApp / Telegram: ${phone}
+• Nationality: ${nationality}
+• Booking Method: Quick Inquiry (Contact Page)`;
+
+      const now = new Date();
+      const dateNowFormatted = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const timeNowFormatted = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const timestampStr = `${dateNowFormatted} ${timeNowFormatted} WITA`;
+
+      const payload = {
+        timestamp: timestampStr,
+        email: email,
+        phone: phone,
+        nationality: nationality,
+        tourDate: dateTime,
+        tourName: packageSel,
+        guestName: name,
+        riderHeight: '-',
+        hotel: hotelCombined,
+        specialRequests: notes || '-',
+        totalGuests: `${guests} Guests`,
+        totalCost: '-',
+        method: 'Quick Inquiry (WhatsApp)',
+        detail: detailText
+      };
+
+      // 1. Post to the same Google Spreadsheet Web App as booking modal
+      try {
+        await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.warn('Google Sheets fetch warning:', err);
+      }
+
+      // 2. Format WhatsApp Message
+      let message = 
+`*INQUIRY & RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
 👤 *Name*: ${name}
-📅 *Tour Date*: ${date}
-👥 *Guests*: ${guests}
+📧 *Email*: ${email}
+📞 *Phone / Telegram*: ${phone}
+🌍 *Nationality*: ${nationality}
 🚲 *Package*: ${packageSel}
-📝 *Notes / Hotel*: ${notes}
+👥 *Guests*: ${guests} Guests
+📅 *Tour Date*: ${formattedDate}
+⏰ *Time*: ${timeVal}`;
+
+      if (hotel && hotel !== '-') {
+        message += `\n🏨 *Hotel Pickup*: ${hotel}`;
+      }
+      if (notes && notes !== '-') {
+        message += `\n📝 *Special Requests*: ${notes}`;
+      }
+
+      message += `
 ---------------------------------------
-Hello Dewa Bike Tour, please confirm package availability and details for my trip above.`;
+Hello Dewa Bike Tour, please check slot availability and confirm details for my trip above. Thank you! 🙏`;
 
       const encoded = encodeURIComponent(message);
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
+
+      if (btn) {
+        btn.disabled = false;
+        btn.style.opacity = '';
+        btn.innerHTML = origBtnHtml;
+      }
     });
   }
 
@@ -2454,7 +2648,7 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
       childseat: {
         file: 'bike-childseat.jpg',
         title: 'Childseat (Age 1 – 4 Years)',
-        subtitle: 'Front mounted childseat on bike (Size M – XL / E-Bike)',
+        subtitle: 'Front mounted childseat on E-Bike',
         desc: 'Comfortable and safe front childseat equipped with footrests and safety harness, allowing your toddler (1 to 4 years old) to securely enjoy the ride with parents.'
       },
       backseat: {
@@ -2580,7 +2774,12 @@ Hello Dewa Bike Tour, please confirm package availability and details for my tri
       }
 
       if (titleEl) titleEl.textContent = data.title;
-      if (subtitleEl) subtitleEl.textContent = data.subtitle;
+      let subtitleText = data.subtitle;
+      if (key === 'childseat') {
+        const isEBikePage = activeKeys.includes('ebike') || window.location.pathname.includes('e-bike');
+        subtitleText = isEBikePage ? 'Front mounted childseat on E-Bike' : 'Front mounted childseat on adult bike (Size M – XL)';
+      }
+      if (subtitleEl) subtitleEl.textContent = subtitleText;
       if (descEl) descEl.textContent = data.desc;
     };
 

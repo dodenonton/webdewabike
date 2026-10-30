@@ -618,6 +618,42 @@ button, input, select, textarea {
   object-position: center 15%;
 }
 
+.founder-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.founder-card-header .founder-avatar {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0.85rem;
+}
+
+.founder-card-header h3 {
+  text-align: center;
+  margin: 0 0 0.35rem 0;
+  font-size: 1.35rem;
+  color: var(--dark);
+}
+
+.founder-card-role {
+  font-weight: 600;
+  margin-bottom: 0;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.founder-card-desc {
+  text-align: justify !important;
+  text-justify: inter-word;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 /* Clickable Team Avatars */
 .clickable-team-avatar {
   cursor: pointer;
@@ -2488,24 +2524,35 @@ button, input, select, textarea {
   justify-content: center !important;
   padding: 16px !important;
   box-sizing: border-box !important;
-  opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
-  transition: opacity 0.22s ease, visibility 0.22s ease !important;
+  overscroll-behavior: contain !important;
+  touch-action: none !important;
+  transition: visibility 0.35s ease !important;
 }
 
 .time-picker-overlay.active {
-  opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
+  transition: visibility 0s 0s !important;
 }
 
 .time-picker-backdrop {
   position: absolute !important;
   inset: 0 !important;
-  background: rgba(15, 23, 42, 0.45) !important;
-  backdrop-filter: blur(3px) !important;
-  -webkit-backdrop-filter: blur(3px) !important;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.45) 0%, rgba(10, 15, 26, 0.7) 100%) !important;
+  backdrop-filter: blur(10px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(160%) !important;
+  -webkit-transform: translateZ(0) !important;
+  transform: translateZ(0) !important;
+  opacity: 0 !important;
+  overscroll-behavior: contain !important;
+  touch-action: none !important;
+  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.time-picker-overlay.active .time-picker-backdrop {
+  opacity: 1 !important;
 }
 
 .time-picker-card {
@@ -2516,17 +2563,20 @@ button, input, select, textarea {
   background: #50555a !important;
   background: linear-gradient(180deg, #575d63 0%, #4a4f54 100%) !important;
   border-radius: 26px !important;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.38) !important;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.18) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   padding: 20px 18px 18px !important;
   box-sizing: border-box !important;
-  transform: scale(0.92) translateY(8px) !important;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
   overflow: hidden !important;
   user-select: none !important;
+  opacity: 0 !important;
+  transform: scale(0.9) translateY(14px) !important;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.38s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .time-picker-overlay.active .time-picker-card {
+  opacity: 1 !important;
   transform: scale(1) translateY(0) !important;
 }
 

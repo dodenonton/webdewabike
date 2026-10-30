@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=93">
+  <link rel="stylesheet" href="css/style.css?v=96">
   <link rel="canonical" href="https://www.dewabike.com/contact">
   <script type="application/ld+json">
   {
@@ -30,7 +30,7 @@
     "url": "https://www.dewabike.com/contact",
     "telephone": "+6281339545689",
     "email": "dewabiketour@gmail.com",
-    "hasMap": "https://maps.app.goo.gl/HbVcrYvH6NE9Qw1t7",
+    "hasMap": "https://maps.app.goo.gl/wpodeDthnAYynYzd8",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Jl. Arjuna, Br. Abianseka No. 16, Mas",
@@ -204,19 +204,51 @@
 
         <form id="quickContactForm" class="contact-form">
           <div class="form-group">
-            <label for="cName">Your Full Name</label>
+            <label for="cName">Your Full Name <span style="color:#e53e3e;">*</span></label>
             <input type="text" id="cName" placeholder="e.g. John Smith" required>
           </div>
+
           <div class="form-row">
             <div class="form-group">
-              <label for="cDate">Preferred Tour Date</label>
+              <label for="cEmail">Email Address <span style="color:#e53e3e;">*</span></label>
+              <input type="email" id="cEmail" placeholder="e.g. name@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="cPhone">Phone / WhatsApp / Telegram (+ ..) <span style="color:#e53e3e;">*</span></label>
+              <input type="tel" id="cPhone" placeholder="e.g. +61 412 345 678" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cNationality">Nationality <span style="color:#e53e3e;">*</span></label>
+              <input type="text" id="cNationality" placeholder="e.g. Australia, Germany, Indonesia" required>
+            </div>
+            <div class="form-group">
+              <label for="cGuests">Number of Guests <span style="color:#e53e3e;">*</span></label>
+              <input type="number" id="cGuests" min="1" max="50" value="1" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cDate">Preferred Tour Date <span style="color:#e53e3e;">*</span></label>
               <input type="date" id="cDate" required>
             </div>
             <div class="form-group">
-              <label for="cGuests">Number of Guests</label>
-              <input type="number" id="cGuests" min="1" value="2" required>
+              <label for="cTime" id="labelCTime">Preferred Tour Time <span style="color:#e53e3e;">*</span></label>
+              <div class="time-trigger-box" id="cTimeTriggerBox" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Select preferred tour time">
+                <span class="time-trigger-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </span>
+                <input type="text" id="cTime" class="time-trigger-input" placeholder="e.g. 08:30 AM" value="08:30 AM" readonly required>
+              </div>
             </div>
           </div>
+
           <div class="form-group">
             <label for="cPackageSelect">Select Tour Package</label>
             <select id="cPackageSelect">
@@ -232,11 +264,13 @@
               <option value="Ayung River Rafting">Ayung River Rafting (Rp 400k)</option>
             </select>
           </div>
+
           <div class="form-group">
-            <label for="cNotes">Notes / Hotel Pickup Location</label>
-            <textarea id="cNotes" rows="3" placeholder="e.g. Staying at Ubud Center hotel, need morning pickup"></textarea>
+            <label for="cNotes">Message / Special Requests</label>
+            <textarea id="cNotes" rows="2" placeholder="e.g. Staying at Ubud Center hotel, need morning pickup, or dietary preferences"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary btn-block btn-lg">
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnQuickContactSubmit">
             Send to Dewa Bike Tour WhatsApp ➔
           </button>
         </form>
@@ -247,16 +281,33 @@
   <!-- Google Map Frame Section -->
   <section style="padding-bottom: 4rem; background-color: #ffffff;">
     <div class="container">
-      <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border); height: 380px;">
+      <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border); height: 420px;">
         <iframe 
           title="Google Maps Location Dewa Bike Tour"
-          src="https://maps.google.com/maps?q=Mas%20Ubud%20Gianyar%20Bali&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+          src="https://maps.google.com/maps?q=Ubud%20Private%20Cycling%20Tours%20-%20Dewa%20Bike%20Tour&t=&z=16&ie=UTF8&iwloc=&output=embed" 
           width="100%" 
           height="100%" 
           style="border:0;" 
           allowfullscreen="" 
-          loading="lazy">
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
         </iframe>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-dark); font-size: 0.95rem;">
+          <span style="font-size: 1.25rem;">📍</span>
+          <div>
+            <strong>Ubud Private Cycling Tours - Dewa Bike Tour</strong>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">Jl. Arjuna, Perumahan Jl. Br. Abianseka No.16, Mas, Ubud, Gianyar, Bali 80571</div>
+          </div>
+        </div>
+        <a href="https://maps.app.goo.gl/wpodeDthnAYynYzd8" target="_blank" rel="noopener" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; font-size: 0.9rem; text-decoration: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Open in Google Maps &rarr;
+        </a>
       </div>
     </div>
   </section>
@@ -307,7 +358,7 @@
         <div class="footer-map-wrap">
           <iframe 
             title="Dewa Bike Tour Google Maps Location"
-            src="https://maps.google.com/maps?q=-8.5573824,115.2708361&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+            src="https://maps.google.com/maps?q=Ubud%20Private%20Cycling%20Tours%20-%20Dewa%20Bike%20Tour&t=&z=15&ie=UTF8&iwloc=&output=embed" 
             width="100%" 
             height="100%" 
             style="border:0;" 
@@ -316,7 +367,7 @@
             referrerpolicy="no-referrer-when-downgrade">
           </iframe>
         </div>
-        <a href="https://maps.app.goo.gl/rSkhpMAen7qUVribA" target="_blank" rel="noopener" class="footer-map-link">
+        <a href="https://maps.app.goo.gl/wpodeDthnAYynYzd8" target="_blank" rel="noopener" class="footer-map-link">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
             <circle cx="12" cy="10" r="3"></circle>
@@ -340,6 +391,6 @@
     </div>
   </a>
 
-  <script src="js/app.js?v=53"></script>
+  <script src="js/app.js?v=60"></script>
 </body>
 </html>
