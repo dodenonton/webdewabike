@@ -2174,6 +2174,18 @@ button, input, select, textarea {
   gap: 0.5rem;
 }
 
+.footer-hosting {
+  color: #64748b;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.footer-hosting svg {
+  opacity: 0.85;
+}
+
 /* ==========================================================================
    14. FLOATING WHATSAPP BUTTON
    ========================================================================== */
