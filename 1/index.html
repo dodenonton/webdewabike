@@ -354,6 +354,25 @@
       color: var(--text);
     }
 
+    table.bookings-table td.detail-td {
+      vertical-align: top;
+    }
+
+    .detail-box {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #334155;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.65rem 0.8rem;
+      white-space: pre-wrap;
+      font-family: inherit;
+      min-width: 270px;
+      max-width: 360px;
+      word-break: break-word;
+    }
+
     table.bookings-table tr:hover td {
       background-color: #f8fafc;
     }
@@ -799,12 +818,13 @@
               <th>Rider & Ukuran Sepeda</th>
               <th>Pickup / Catatan</th>
               <th>Total Biaya</th>
+              <th>Detail</th>
               <th style="text-align: right; width: 180px;">Aksi</th>
             </tr>
           </thead>
           <tbody id="bookingsTableBody">
             <tr>
-              <td colspan="9">
+              <td colspan="10">
                 <div class="state-box">
                   <i class="fas fa-circle-notch spinner"></i>
                   <p>Menghubungkan ke Google Spreadsheet...</p>
@@ -1001,7 +1021,7 @@
       refreshIcon.classList.add('spinner');
       bookingsTableBody.innerHTML = `
         <tr>
-          <td colspan="9">
+          <td colspan="10">
             <div class="state-box">
               <i class="fas fa-circle-notch spinner" style="color: var(--primary);"></i>
               <p style="margin-top: 0.5rem; font-weight: 600;">Memuat data reservasi dari Google Spreadsheet...</p>
@@ -1030,7 +1050,7 @@
         console.error('Error fetching bookings:', err);
         bookingsTableBody.innerHTML = `
           <tr>
-            <td colspan="9">
+            <td colspan="10">
               <div class="state-box">
                 <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
                 <p style="font-weight: 700; color: var(--dark); margin-top: 0.5rem;">Tidak dapat memuat data otomatis</p>
@@ -1079,6 +1099,62 @@
       statGuests.textContent = guestsCount;
     }
 
+    // Escape HTML to prevent injection issues
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Format Detail text for the table column beside Total Biaya
+    function formatDetailColumn(b) {
+      if (b.detail && b.detail.trim()) {
+        let text = b.detail.trim();
+        // Cut off contact info & booking method (already in other columns)
+        const emailIdx = text.search(/\n?•\s*Email Address:/i);
+        if (emailIdx !== -1) {
+          text = text.substring(0, emailIdx).trim();
+        } else {
+          const phoneIdx = text.search(/\n?•\s*Phone\s*\/\s*WhatsApp/i);
+          if (phoneIdx !== -1) {
+            text = text.substring(0, phoneIdx).trim();
+          }
+        }
+        // Remove separate Package Tier line if present
+        text = text.replace(/\n?•\s*Package Tier:[^\n\r]*/gi, '').trim();
+        // Standardize "Rider Height(s) & Bike Size:" to "Height:"
+        text = text.replace(/•\s*Rider Height\(s\)\s*(?:&\s*Bike Size)?:\s*/gi, '• Height: ');
+        if (text) return text;
+      }
+
+      // Fallback: build dynamically from b fields
+      const guestName = b.guestName || 'Guest';
+      let tourName = b.tourName || 'Kintamani Downhill Cycling Tour (Regular)';
+      if (b.tier && !tourName.includes('|')) {
+        const tierClean = b.tier.toLowerCase().includes('sharing') ? 'Sharing' : 'Private';
+        tourName = `${tourName} | ${tierClean}`;
+      }
+      const totalGuests = b.totalGuests ? (b.totalGuests.includes('Guest') ? b.totalGuests : `${b.totalGuests} Guests`) : '1 Guests';
+      const riderHeight = b.riderHeight || '-';
+      const tourDate = b.tourDate || '-';
+      const hotel = b.hotel || '-';
+      const totalCost = b.totalCost || '-';
+      const specialRequests = b.specialRequests || '-';
+
+      return `• Lead Guest Name: ${guestName}
+• Tour Package: ${tourName}
+• Total Guests: ${totalGuests}
+   • Adults: 1 pax
+• Height: ${riderHeight}
+• Tour Date: ${tourDate}
+• Hotel Pickup: ${hotel}
+• Estimated Total Cost: ${totalCost}
+• Message / Special Requests: ${specialRequests}`;
+    }
+
     // Render Table with Filters & Search
     function renderTable() {
       const query = (searchInput.value || '').toLowerCase().trim();
@@ -1121,7 +1197,7 @@
       if (filtered.length === 0) {
         bookingsTableBody.innerHTML = `
           <tr>
-            <td colspan="9">
+            <td colspan="10">
               <div class="state-box">
                 <i class="fas fa-search"></i>
                 <p style="font-weight: 600; color: var(--dark);">Tidak ada data booking yang sesuai</p>
@@ -1189,7 +1265,7 @@
             </td>
             <td>
               <div style="font-size: 0.85rem; font-weight: 600;">${b.riderHeight || '-'}</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">${b.totalGuests || '2'} Tamu</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">${b.totalGuests || '1'} Tamu</div>
             </td>
             <td>
               <div style="font-size: 0.84rem; color: #475569; max-width: 220px; line-height: 1.35;">
@@ -1198,6 +1274,9 @@
             </td>
             <td>
               <strong style="color: var(--primary); font-size: 0.95rem;">${b.totalCost || '-'}</strong>
+            </td>
+            <td class="detail-td">
+              <div class="detail-box">${escapeHtml(formatDetailColumn(b))}</div>
             </td>
             <td style="text-align: right;">
               <div class="row-actions" style="justify-content: flex-end;">

@@ -61,14 +61,18 @@ function doGet(e) {
           return (m && m[1]) ? m[1].trim() : "";
         }
 
-        var guestName   = extractVal(/(?:•\s*Guest Name:|\bGuest Name:)\s*([^\n\r]+)/);
-        var tourName    = extractVal(/(?:•\s*Tour Package:|\bTour Package:)\s*([^\n\r]+)/);
-        var tier        = extractVal(/(?:•\s*Package Tier:|\bPackage Tier:)\s*([^\n\r]+)/);
-        var riderHeight = extractVal(/(?:•\s*Rider Height\(s\)(?: & Bike Size)?:|\bRider Height:)\s*([^\n\r]+)/);
-        var hotel       = extractVal(/(?:•\s*Hotel Pickup(?: \/ Special Requests)?:\s*|\bHotel:)\s*([^\n\r]+)/);
-        var totalGuests = extractVal(/(?:•\s*Total Guests:)\s*([^\n\r]+)/);
-        var totalCost   = extractVal(/(?:•\s*Estimated Total Cost:|\bTotal Cost:)\s*([^\n\r]+)/);
-        var method      = extractVal(/(?:•\s*Booking Method:|\bMethod:)\s*([^\n\r]+)/);
+        var guestName       = extractVal(/(?:•\s*Lead Guest Name:|\bLead Guest Name:|\bGuest Name:)\s*([^\n\r]+)/);
+        var tourName        = extractVal(/(?:•\s*Tour Package:|\bTour Package:)\s*([^\n\r]+)/);
+        var tier            = extractVal(/(?:•\s*Package Tier:|\bPackage Tier:)\s*([^\n\r]+)/);
+        if (!tier && tourName.indexOf('|') !== -1) {
+          tier = tourName.split('|')[1].trim();
+        }
+        var riderHeight     = extractVal(/(?:•\s*Height:|\bRider Height\(s\)(?: & Bike Size)?:|\bRider Height:)\s*([^\n\r]+)/);
+        var hotel           = extractVal(/(?:•\s*Hotel Pickup(?: \/ Special Requests)?:\s*|\bHotel:)\s*([^\n\r]+)/);
+        var totalGuests     = extractVal(/(?:•\s*Total Guests:)\s*([^\n\r]+)/);
+        var totalCost       = extractVal(/(?:•\s*Estimated Total Cost:|\bTotal Cost:)\s*([^\n\r]+)/);
+        var specialRequests = extractVal(/(?:•\s*Message \/ Special Requests:|\bSpecial Requests:)\s*([^\n\r]+)/);
+        var method          = extractVal(/(?:•\s*Booking Method:|\bMethod:)\s*([^\n\r]+)/);
 
         rows.push({
           row: rowNum,
@@ -83,6 +87,7 @@ function doGet(e) {
           tier: tier,
           riderHeight: riderHeight,
           hotel: hotel,
+          specialRequests: specialRequests,
           totalGuests: totalGuests,
           totalCost: totalCost,
           method: method
@@ -167,10 +172,23 @@ function doPost(e) {
 
     var showHotel = (hotel && hotel !== "-" && hotel !== "" && hotel.indexOf("Not Included") === -1);
     var hotelHtmlRow = showHotel 
-      ? '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Hotel Pickup / Special Requests:</td><td style="padding: 9px 0; color: #444;">' + hotel + '</td></tr>' 
+      ? '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Hotel Pickup:</td><td style="padding: 9px 0; color: #444;">' + hotel + '</td></tr>' 
       : '';
     var hotelPlainRow = showHotel 
       ? "Hotel Pickup        : " + hotel + "\n" 
+      : "";
+
+    var specialRequests = data.specialRequests || "-";
+    if (specialRequests === "-" && detail !== "-") {
+      var reqMatch = detail.match(/(?:•\s*Message \/ Special Requests:|\bSpecial Requests:)\s*([^\n\r]+)/);
+      if (reqMatch && reqMatch[1]) specialRequests = reqMatch[1].trim();
+    }
+    var showReq = (specialRequests && specialRequests !== "-" && specialRequests !== "");
+    var reqHtmlRow = showReq 
+      ? '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Message / Special Requests:</td><td style="padding: 9px 0; color: #444;">' + specialRequests + '</td></tr>' 
+      : '';
+    var reqPlainRow = showReq 
+      ? "Special Requests    : " + specialRequests + "\n" 
       : "";
 
     var adminHtmlBody = 
@@ -184,10 +202,11 @@ function doPost(e) {
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666; width: 40%;">Lead Guest Name:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + guestName + '</td></tr>' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Tour Package:</td><td style="padding: 9px 0; font-weight: bold; color: #105b38;">' + tourName + '</td></tr>' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Total Guests:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + totalGuests + ' Guests</td></tr>' +
-            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Rider Height(s) & Bike Size:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + riderHeight + '</td></tr>' +
+            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Height:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + riderHeight + '</td></tr>' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Tour Date:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + tourDate + '</td></tr>' +
             hotelHtmlRow +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 10px 0; color: #666;">Estimated Total Cost:</td><td style="padding: 10px 0; font-weight: 800; font-size: 16px; color: #105b38;">' + totalCost + '</td></tr>' +
+            reqHtmlRow +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Email Address:</td><td style="padding: 9px 0; font-weight: bold; color: #222;"><a href="mailto:' + email + '" style="color: #105b38;">' + email + '</a></td></tr>' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Phone / WhatsApp / Telegram:</td><td style="padding: 9px 0; font-weight: bold; color: #222;"><a href="https://wa.me/' + phone.replace(/[^0-9]/g, '') + '" style="color: #16a34a; text-decoration: none; font-weight: bold;">' + phone + ' 💬 Chat WA</a></td></tr>' +
             '<tr><td style="padding: 9px 0; color: #666;">Nationality:</td><td style="padding: 9px 0; color: #222;">' + nationality + '</td></tr>' +
@@ -208,10 +227,11 @@ function doPost(e) {
       "Lead Guest Name     : " + guestName + "\n" +
       "Tour Package        : " + tourName + "\n" +
       "Total Guests        : " + totalGuests + "\n" +
-      "Rider Height(s)     : " + riderHeight + "\n" +
+      "Height              : " + riderHeight + "\n" +
       "Tour Date           : " + tourDate + "\n" +
       hotelPlainRow +
       "Estimated Total Cost: " + totalCost + "\n" +
+      reqPlainRow +
       "Email Address       : " + email + "\n" +
       "Phone / WhatsApp    : " + phone + "\n" +
       "Nationality         : " + nationality + "\n" +
@@ -249,10 +269,11 @@ function doPost(e) {
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666; width: 42%;">Lead Guest Name:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + guestName + '</td></tr>' +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Tour Package:</td><td style="padding: 8px 0; font-weight: bold; color: #105b38;">' + tourName + '</td></tr>' +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Total Guests:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + totalGuests + ' Guests</td></tr>' +
-                '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Rider Height(s) & Bike Size:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + riderHeight + '</td></tr>' +
+                '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Height:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + riderHeight + '</td></tr>' +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Tour Date:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + tourDate + '</td></tr>' +
                 hotelHtmlRow +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 10px 0; color: #666;">Estimated Total Cost:</td><td style="padding: 10px 0; font-weight: 800; font-size: 16px; color: #105b38;">' + totalCost + '</td></tr>' +
+                reqHtmlRow +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Phone / WhatsApp:</td><td style="padding: 8px 0; color: #222;">' + phone + '</td></tr>' +
                 '<tr><td style="padding: 8px 0; color: #666;">Email Address:</td><td style="padding: 8px 0; color: #222;">' + email + '</td></tr>' +
               '</table>' +
@@ -282,11 +303,13 @@ function doPost(e) {
         "- Lead Guest Name     : " + guestName + "\n" +
         "- Tour Package        : " + tourName + "\n" +
         "- Total Guests        : " + totalGuests + "\n" +
-        "- Rider Height(s)     : " + riderHeight + "\n" +
+        "- Height              : " + riderHeight + "\n" +
         "- Tour Date           : " + tourDate + "\n" +
         hotelPlainRow +
         "- Estimated Total Cost: " + totalCost + "\n" +
+        reqPlainRow +
         "- Phone / WhatsApp    : " + phone + "\n" +
+        "- Email Address       : " + email + "\n\n" +
         "Someone from our team will reconfirm your booking schedule via WhatsApp or Email shortly.\n" +
         "Payment can be completed on the tour day.\n\n" +
         "Contact us:\n" +

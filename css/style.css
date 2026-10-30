@@ -3038,6 +3038,25 @@ button, input, select, textarea {
   font-weight: 400;
 }
 
+.calc-payment-notice {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  padding-top: 0.15rem;
+}
+
+.calc-payment-notice strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.calc-payment-sub {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  display: inline-block;
+  margin-top: 0.15rem;
+}
+
 .modal-booking-actions {
   display: flex;
   flex-direction: column;

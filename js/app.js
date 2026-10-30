@@ -474,10 +474,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="calc-divider"></div>
           <div class="calc-row total-row">
             <span>Estimated Total Cost:</span>
-            <div>
+            <div class="total-wrap">
               <span class="total-idr" id="calcTotalIdr">Rp 600.000</span>
               <span class="total-usd" id="calcTotalUsd">(Approx. ~$39 USD)</span>
             </div>
+          </div>
+          <div class="calc-divider"></div>
+          <div class="calc-payment-notice">
+            Payment by <strong>Cash rupiah money, Transfer via Wise, or Card</strong><br>
+            <span class="calc-payment-sub">• Payment by Card needs 3% fee for our EDC machine</span>
           </div>
         </div>
 
@@ -969,12 +974,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const getBookingDetails = () => {
     const tourKey = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : 'Kintamani Downhill';
     const pkg = packageData[tourKey] || {};
-    const tourName = pkg.title || tourKey;
+    const baseTitle = pkg.title || tourKey;
     let selectedTier = 'private';
     const checkedRadio = document.querySelector('input[name="modalTier"]:checked');
     if (checkedRadio) selectedTier = checkedRadio.value;
     
     const isSaving = !!pkg.isSaving;
+    const isCombo = !!pkg.comboPrice;
+    const tierSuffix = isCombo ? '' : ` | ${selectedTier === 'sharing' ? 'Sharing' : 'Private'}`;
+    const tourName = `${baseTitle}${tierSuffix}`;
+
     let tierLabel = (selectedTier === 'private') 
       ? 'PRIVATE (Without sharing other group)'
       : 'SHARING (With a small group)';
@@ -1041,10 +1050,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const hotel = isSaving ? '' : ((modalHotel && modalHotel.value.trim()) ? modalHotel.value.trim() : '-');
     const elMessage = document.getElementById('modalMessage');
     const specialRequests = (elMessage && elMessage.value.trim()) ? elMessage.value.trim() : '-';
-    const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 1.200.000';
+    const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 600.000';
     const totalUsd = (calcTotalUsd && calcTotalUsd.textContent) ? calcTotalUsd.textContent.trim() : '';
 
-    return { tourKey, tourName, selectedTier, tierLabel, isSaving, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, specialRequests, totalCost, totalUsd };
+    return { tourKey, tourName, baseTitle, selectedTier, tierLabel, isSaving, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, specialRequests, totalCost, totalUsd };
   };
 
   // Validate required booking modal fields
@@ -1138,26 +1147,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Build complete detail text for Google Sheets & Email Notification
   const buildDetailString = (b, method) => {
     const ageBreakdown = b.parts.length ? b.parts.map(p => `   • ${p}`).join('\n') : '   • Adults: 1 pax';
+    const hotelVal = (!b.isSaving && b.hotel && b.hotel !== '-') ? b.hotel : (b.isSaving ? 'Not Included (Saving Package)' : (b.hotel || '-'));
+    const costVal = `${b.totalCost} ${b.totalUsd}`.trim();
+    const reqVal = (b.specialRequests && b.specialRequests !== '-') ? b.specialRequests : '-';
+
     let str = `• Lead Guest Name: ${b.name}
 • Tour Package: ${b.tourName}
 • Total Guests: ${b.totalGuests} Guests
 ${ageBreakdown}
-• Rider Height(s) & Bike Size: ${b.riderHeight}
-• Tour Date: ${b.dateTime}`;
-
-    if (!b.isSaving && b.hotel && b.hotel !== '-') {
-      str += `\n• Hotel Pickup: ${b.hotel}`;
-    }
-
-    if (b.specialRequests && b.specialRequests !== '-') {
-      str += `\n• Message / Special Requests: ${b.specialRequests}`;
-    }
-
-    str += `\n• Estimated Total Cost: ${b.totalCost} ${b.totalUsd}
+• Height: ${b.riderHeight}
+• Tour Date: ${b.dateTime}
+• Hotel Pickup: ${hotelVal}
+• Estimated Total Cost: ${costVal}
+• Message / Special Requests: ${reqVal}
 • Email Address: ${b.email}
 • Phone / WhatsApp / Telegram: ${b.phone}
 • Nationality: ${b.nationality}
-• Package Tier: ${b.tierLabel}
 • Booking Method: ${method}`;
 
     return str;
@@ -1190,10 +1195,10 @@ ${ageBreakdown}
       tourName: bookingData.tourName,
       guestName: bookingData.name,
       riderHeight: bookingData.riderHeight,
-      hotel: hotelCombined,
+      hotel: (bookingData.hotel && bookingData.hotel !== '-') ? bookingData.hotel : (bookingData.isSaving ? 'Not Included' : '-'),
       specialRequests: bookingData.specialRequests || '-',
-      totalGuests: bookingData.totalGuests || '1',
-      totalCost: `${bookingData.totalCost} ${bookingData.totalUsd}`,
+      totalGuests: `${bookingData.totalGuests} Guests`,
+      totalCost: `${bookingData.totalCost} ${bookingData.totalUsd}`.trim(),
       method: method,
       detail: detailText
     };
@@ -1301,7 +1306,7 @@ I would like to book a tour with Dewa Bike Tour. Here are my booking details:
 - Tour Package: ${b.tourName}
 - Total Guests: ${b.totalGuests} Guests
 ${partsList}
-- Rider Height(s) & Bike Size: ${b.riderHeight}
+- Height: ${b.riderHeight}
 - Tour Date: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
@@ -1756,16 +1761,12 @@ ${b.name}`;
 `• Lead Guest Name: ${name}
 • Tour Package: ${packageSel}
 • Total Guests: ${guests} Guests
-• Tour Date: ${dateTime}`;
-
-      if (hotel && hotel !== '-') {
-        detailText += `\n• Hotel Pickup: ${hotel}`;
-      }
-      if (notes && notes !== '-') {
-        detailText += `\n• Message / Special Requests: ${notes}`;
-      }
-
-      detailText += `
+   • Adults: ${guests} pax
+• Height: -
+• Tour Date: ${dateTime}
+• Hotel Pickup: ${hotel || '-'}
+• Estimated Total Cost: -
+• Message / Special Requests: ${notes || '-'}
 • Email Address: ${email}
 • Phone / WhatsApp / Telegram: ${phone}
 • Nationality: ${nationality}
@@ -1785,7 +1786,7 @@ ${b.name}`;
         tourName: packageSel,
         guestName: name,
         riderHeight: '-',
-        hotel: hotelCombined,
+        hotel: hotel || '-',
         specialRequests: notes || '-',
         totalGuests: `${guests} Guests`,
         totalCost: '-',
