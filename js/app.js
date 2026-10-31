@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span>Adults (1x Rp 600.000):</span>
               <strong>Rp 600.000</strong>
             </div>
-            <div class="calc-row" style="color: var(--text-muted); font-size: 0.86rem;">
+            <div class="calc-row" style="color: var(--text-muted); font-size: 0.92rem;">
               <span>Total participants:</span>
               <strong>1 guest</strong>
             </div>
@@ -820,7 +820,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const title1_2 = nameLabel1_2?.textContent || 'Infant (1-2 yo)';
         html += `<div class="calc-row"><span>${title1_2} (${n1_2}x ${p1_2 === 0 ? 'Free' : formatIDR(p1_2)}):</span><strong>${p1_2 === 0 ? 'Free' : formatIDR(cost1_2)}</strong></div>`;
       }
-      html += `<div class="calc-row" style="color: var(--text-muted); font-size: 0.86rem;"><span>Total participants:</span><strong>${totalGuests} ${totalGuests > 1 ? 'guests' : 'guest'}</strong></div>`;
+      html += `<div class="calc-row" style="color: var(--text-muted); font-size: 0.92rem;"><span>Total participants:</span><strong>${totalGuests} ${totalGuests > 1 ? 'guests' : 'guest'}</strong></div>`;
       listEl.innerHTML = html;
     }
 
