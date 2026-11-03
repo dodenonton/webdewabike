@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal • Dewa Bike Tour Bali</title>
+  
+  <!-- SANGAT PENTING: Jangan tampilkan di Google atau mesin pencari manapun -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+
+  <!-- Favicon & Fonts -->
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #105b38;
+      --primary-dark: #0c4329;
+      --primary-light: #eaf5ee;
+      --accent: #d97706;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --wa-green: #16a34a;
+      --wa-dark: #15803d;
+      --dark: #0f172a;
+      --text: #334155;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    /* Top Navigation Header */
+    .admin-navbar {
+      background: #ffffff;
+      border-bottom: 1.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-logo-badge {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 10px rgba(16, 91, 56, 0.25);
+    }
+
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.3px;
+    }
+
+    .brand-text p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.05rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border-color: var(--border);
+      color: var(--dark);
+    }
+    .btn-outline:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .btn-sheets {
+      background-color: #0f9d58;
+      color: #ffffff;
+    }
+    .btn-sheets:hover {
+      background-color: #0b8043;
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .admin-main {
+      max-width: 1360px;
+      margin: 1.8rem auto 0;
+      padding: 0 1.5rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.4rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .stat-icon.green { background: #dcfce7; color: #15803d; }
+    .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
+    .stat-icon.orange { background: #fef3c7; color: #d97706; }
+    .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+
+    .stat-info .stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+    .stat-info .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Toolbar / Controls */
+    .toolbar-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.4rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1 1 320px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.65rem 1rem 0.65rem 2.6rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--dark);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 91, 56, 0.12);
+    }
+
+    .toolbar-filters {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .select-filter {
+      padding: 0.65rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.86rem;
+      font-family: inherit;
+      color: var(--dark);
+      background-color: #ffffff;
+      cursor: pointer;
+      outline: none;
+    }
+    .select-filter:focus {
+      border-color: var(--primary);
+    }
+
+    /* Content Area / Bookings Table */
+    .bookings-container {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-header-title {
+      padding: 1.1rem 1.4rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fbfcfd;
+    }
+
+    .table-header-title h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .total-counter-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+    }
+
+    /* Table Styles */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table.bookings-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    table.bookings-table th {
+      background-color: #f8fafc;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.85rem 1rem;
+      border-bottom: 1.5px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.bookings-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: var(--text);
+    }
+
+    table.bookings-table td.detail-td {
+      vertical-align: top;
+    }
+
+    .detail-box {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #334155;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.65rem 0.8rem;
+      white-space: pre-wrap;
+      font-family: inherit;
+      min-width: 270px;
+      max-width: 360px;
+      word-break: break-word;
+    }
+
+    table.bookings-table tr:hover td {
+      background-color: #f8fafc;
+    }
+
+    .row-badge {
+      font-weight: 800;
+      color: #64748b;
+      font-size: 0.82rem;
+      background: #f1f5f9;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .guest-info .guest-name {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .guest-info .guest-nat {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-size: 0.82rem;
+    }
+
+    .contact-link {
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+    .contact-link.wa-link {
+      color: var(--wa-green);
+      font-weight: 600;
+    }
+
+    .tour-pill {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.88rem;
+      display: block;
+    }
+
+    .tour-date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #fef3c7;
+      color: #92400e;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      margin-top: 3px;
+    }
+
+    .method-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .method-badge.direct { background: #dcfce7; color: #166534; }
+    .method-badge.whatsapp { background: #dcfce7; color: #15803d; }
+    .method-badge.email { background: #e0f2fe; color: #0369a1; }
+
+    /* Action Buttons in Rows */
+    .row-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+    }
+
+    .btn-action {
+      padding: 0.42rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      background: #ffffff;
+    }
+
+    .btn-action-edit {
+      color: #2563eb;
+      border-color: #bfdbfe;
+      background-color: #eff6ff;
+    }
+    .btn-action-edit:hover {
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+
+    .btn-action-del {
+      color: var(--danger);
+      border-color: #fecaca;
+      background-color: #fef2f2;
+    }
+    .btn-action-del:hover {
+      background-color: var(--danger);
+      color: #ffffff;
+    }
+
+    .btn-action-wa {
+      color: #15803d;
+      border-color: #bbf7d0;
+      background-color: #f0fdf4;
+    }
+    .btn-action-wa:hover {
+      background-color: #16a34a;
+      color: #ffffff;
+    }
+
+    /* Empty & Loading States */
+    .state-box {
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .state-box i {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.5;
+    }
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+    .modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-backdrop.active .modal-content-card {
+      transform: scale(1);
+    }
+
+    .modal-head {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-head h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+    }
+    .btn-close-modal:hover {
+      background: #f1f5f9;
+      color: var(--dark);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 580px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--dark);
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 91, 56, 0.12);
+    }
+
+    .modal-foot {
+      padding: 1rem 1.5rem;
+      border-top: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: #fbfcfd;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .toast {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast.success { background: #065f46; }
+    .toast.danger { background: #991b1b; }
+
+    /* Security Notice Banner */
+    .security-banner {
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.82rem;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Tab Navigation */
+    .admin-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      background: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      position: relative;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .tab-btn:hover {
+      color: var(--primary);
+      background-color: rgba(16, 91, 56, 0.05);
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      background-color: #ffffff;
+    }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--primary);
+      border-radius: 3px 3px 0 0;
+    }
+    .tab-badge {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 20px;
+      background: #e2e8f0;
+      color: var(--dark);
+      font-weight: 700;
+    }
+    .tab-badge.alert {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* Closed Dates Styles */
+    .closed-dates-banner {
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.35rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .closed-dates-banner-icon {
+      font-size: 1.4rem;
+      color: #2563eb;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .closed-dates-banner-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 0.25rem;
+    }
+    .closed-dates-banner-text p {
+      font-size: 0.86rem;
+      color: #1e40af;
+      line-height: 1.55;
+    }
+
+    .closed-dates-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .closed-dates-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .closed-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-header-flex h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .radio-pill-group {
+      display: flex;
+      gap: 0.5rem;
+      background: #f1f5f9;
+      padding: 0.3rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+    }
+    .radio-pill {
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .radio-pill input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .radio-pill span {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .radio-pill input:checked + span {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      font-weight: 700;
+    }
+    .admin-form-group {
+      margin-bottom: 1rem;
+    }
+    .admin-form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+    }
+    .admin-input, .admin-select, .admin-textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--dark);
+      outline: none;
+      transition: all 0.2s ease;
+      background: #ffffff;
+    }
+    .admin-input:focus, .admin-select:focus, .admin-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 91, 56, 0.12);
+    }
+    .dates-input-row {
+      display: flex;
+      gap: 0.85rem;
+    }
+    .dates-input-row .input-col {
+      flex: 1;
+    }
+    .pkg-check-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 0.45rem;
+      margin-top: 0.35rem;
+    }
+    .pkg-check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: var(--dark);
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .pkg-check-item:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .pkg-check-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .pkg-group-label {
+      grid-column: 1 / -1;
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.45rem;
+      margin-bottom: 0.1rem;
+    }
+    .pkg-group-label:first-child {
+      margin-top: 0;
+    }
+    .closed-item-packages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+      align-items: center;
+    }
+    .pkg-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+    }
+    .pkg-badge.all {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+    .pkg-badge.specific {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .closed-item-card {
+      background: #fef2f2;
+      border: 1.5px solid #fecaca;
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+    .closed-item-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: #f87171;
+    }
+    .closed-item-main {
+      flex: 1;
+    }
+    .closed-item-date {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #991b1b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+    .closed-item-badge {
+      font-size: 0.72rem;
+      background: #dc2626;
+      color: #ffffff;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .closed-item-reason {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #7f1d1d;
+    }
+    .closed-item-note {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+      line-height: 1.45;
+    }
+    .btn-reopen {
+      background: #ffffff;
+      border: 1.5px solid #fca5a5;
+      color: #b91c1c;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+    .btn-reopen:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+    .empty-closed-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+    }
+    .empty-closed-state i {
+      font-size: 3rem;
+      color: #22c55e;
+      margin-bottom: 0.85rem;
+      display: inline-block;
+    }
+    .empty-closed-state h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.35rem;
+    }
+    .empty-closed-state p {
+      font-size: 0.88rem;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="admin-navbar">
+    <div class="nav-container">
+      <div class="brand-group">
+        <div class="brand-logo-badge">
+          <i class="fas fa-bicycle"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Dewa Bike Tour Bali &bull; Admin Portal</h1>
+          <p><span class="status-dot"></span> Terhubung ke Google Spreadsheet</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button type="button" class="btn btn-outline" id="btnRefresh" title="Segarkan Data Terbaru">
+          <i class="fas fa-sync-alt" id="refreshIcon"></i>
+          <span>Segarkan</span>
+        </button>
+        <a href="https://docs.google.com/spreadsheets/d/1X5XpZzZ" target="_blank" class="btn btn-sheets" id="btnOpenSheet" title="Buka Spreadsheet di Google Sheets">
+          <i class="fas fa-table"></i>
+          <span>Buka Google Spreadsheet</span>
+        </a>
+        <a href="../index.html" class="btn btn-outline" target="_blank" title="Buka Website Utama">
+          <i class="fas fa-external-link-alt"></i>
+          <span>Lihat Web</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    
+    <!-- Security & Privacy Banner -->
+    <div class="security-banner">
+      <div>
+        <i class="fas fa-shield-alt" style="margin-right: 0.35rem;"></i>
+        <strong>Halaman Rahasia Admin:</strong> Halaman ini tidak terdaftar di Google Search Engine dan tidak memiliki tautan pada menu publik. Simpan bookmark link ini pada browser Anda.
+      </div>
+      <span style="font-size: 0.78rem; opacity: 0.85;">URL: https://www.dewabike.com/1</span>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="admin-tabs">
+      <button type="button" class="tab-btn active" id="tabBtnBookings">
+        <i class="fas fa-list-check"></i>
+        <span>Daftar Reservasi Tamu</span>
+        <span class="tab-badge" id="tabBookingsBadge">0</span>
+      </button>
+      <button type="button" class="tab-btn" id="tabBtnClosedDates">
+        <i class="fas fa-calendar-xmark"></i>
+        <span>Manajemen Tanggal Tutup / Libur</span>
+        <span class="tab-badge alert" id="tabClosedDatesBadge">0</span>
+      </button>
+    </div>
+
+    <!-- PANE 1: DAFTAR RESERVASI TAMU -->
+    <div id="paneBookings">
+      <!-- Stats Cards -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-label">Total Booking Masuk</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-mouse-pointer"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-num" id="statDirect">0</div>
+            <div class="stat-label">Web Direct (Booking Now)</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-num" id="statWhatsapp">0</div>
+            <div class="stat-label">Via WhatsApp / Email</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-num" id="statGuests">0</div>
+            <div class="stat-label">Total Tamu (Estimasi)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Toolbar / Search and Filters -->
+      <section class="toolbar-card">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Cari nama tamu, email, no WA, tanggal, paket tur...">
+        </div>
+        <div class="toolbar-filters">
+          <select class="select-filter" id="filterMethod">
+            <option value="all">Semua Metode Booking</option>
+            <option value="direct">Booking Now (Web Direct)</option>
+            <option value="whatsapp">Confirm on WhatsApp</option>
+            <option value="email">Confirm via Email</option>
+          </select>
+          <select class="select-filter" id="sortOrder">
+            <option value="newest">Urutan: Terbaru Dulu</option>
+            <option value="oldest">Urutan: Terlama Dulu</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Bookings Table Card -->
+      <section class="bookings-container">
+        <div class="table-header-title">
+          <h2>Daftar Reservasi Tamu</h2>
+          <span class="total-counter-badge" id="bookingCounter">Memuat data...</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="bookings-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Baris</th>
+                <th>Waktu Pesan</th>
+                <th>Nama Tamu & Kebangsaan</th>
+                <th>Kontak (WA & Email)</th>
+                <th>Paket & Tanggal Tur</th>
+                <th>Rider & Ukuran Sepeda</th>
+                <th>Pickup / Catatan</th>
+                <th>Total Biaya</th>
+                <th>Detail</th>
+                <th style="text-align: right; width: 180px;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTableBody">
+              <tr>
+                <td colspan="10">
+                  <div class="state-box">
+                    <i class="fas fa-circle-notch spinner"></i>
+                    <p>Menghubungkan ke Google Spreadsheet...</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- PANE 2: MANAJEMEN TANGGAL TUTUP / LIBUR -->
+    <div id="paneClosedDates" style="display: none;">
+      <!-- Explainer Banner -->
+      <div class="closed-dates-banner">
+        <div class="closed-dates-banner-icon">
+          <i class="fas fa-calendar-times"></i>
+        </div>
+        <div class="closed-dates-banner-text">
+          <h4>Fitur Penutupan Tanggal Operasional (Blackout Dates)</h4>
+          <p>Tanggal yang Anda tutup di sini akan <strong>otomatis diblokir pada form reservasi website</strong>. Tamu tidak akan dapat memilih tanggal tersebut dan akan melihat alasan penutupan (misal: Hari Raya Nyepi, Piodalan, Full Booked, dll).</p>
+        </div>
+      </div>
+
+      <div class="closed-dates-grid">
+        <!-- Form Tambah Tanggal Tutup -->
+        <div class="closed-card">
+          <div class="card-header-flex">
+            <h3><i class="fas fa-calendar-plus" style="color: var(--primary);"></i> Tambah Tanggal Tutup</h3>
+            <span class="badge-pill" style="font-size: 0.76rem; background: var(--primary-light); color: var(--primary); padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 700;">Pengaturan Cepat</span>
+          </div>
+          
+          <form id="formAddClosedDate">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Tipe Tanggal:</label>
+              <div class="radio-pill-group">
+                <label class="radio-pill">
+                  <input type="radio" name="closedDateType" value="single" checked>
+                  <span>1 Hari Saja</span>
+                </label>
+                <label class="radio-pill">
+                  <input type="radio" name="closedDateType" value="range">
+                  <span>Rentang Tanggal (Beberapa Hari)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="admin-form-group dates-input-row">
+              <div class="input-col" id="colStartDate">
+                <label for="inputClosedStartDate" class="admin-form-label" id="labelStartDate">Pilih Tanggal Tutup: *</label>
+                <input type="date" id="inputClosedStartDate" class="admin-input" required>
+              </div>
+              <div class="input-col" id="colEndDate" style="display: none;">
+                <label for="inputClosedEndDate" class="admin-form-label">Sampai Tanggal (Selesai): *</label>
+                <input type="date" id="inputClosedEndDate" class="admin-input">
+              </div>
+            </div>
+
+            <!-- Pilihan Paket Tur yang Ditutup -->
+            <div class="admin-form-group">
+              <label class="admin-form-label">Berlaku Untuk Paket Tur: *</label>
+              <div class="radio-pill-group">
+                <label class="radio-pill">
+                  <input type="radio" name="closedPackageScopeType" value="all" checked>
+                  <span><i class="fas fa-globe-asia"></i> Semua Paket (Global)</span>
+                </label>
+                <label class="radio-pill">
+                  <input type="radio" name="closedPackageScopeType" value="specific">
+                  <span><i class="fas fa-bicycle"></i> Pilih Paket Tertentu</span>
+                </label>
+              </div>
+
+              <!-- Checkbox List Paket Spesifik -->
+              <div id="containerSpecificPackages" style="display: none; margin-top: 0.85rem; padding: 0.85rem; background: #f8fafc; border: 1.5px solid var(--border); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.82rem; font-weight: 700; color: var(--dark);">Pilih satu atau beberapa paket yang ditutup:</span>
+                  <div style="font-size: 0.78rem;">
+                    <button type="button" id="btnSelectAllPackages" style="background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; padding: 0;">Pilih Semua</button>
+                    <span style="color: var(--text-muted); margin: 0 0.3rem;">|</span>
+                    <button type="button" id="btnUnselectAllPackages" style="background: none; border: none; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 0;">Batal Semua</button>
+                  </div>
+                </div>
+
+                <div class="pkg-check-grid">
+                  <div class="pkg-group-label">Paket Regular (Inc. Lunch &amp; Transfer):</div>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="Kintamani Downhill">
+                    <span>Kintamani Downhill (Regular)</span>
+                  </label>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="Ubud Rice Fields">
+                    <span>Ubud Rice Fields (Regular)</span>
+                  </label>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="E-Bike Ubud Countryside">
+                    <span>Ubud E-Bike Tour (Regular)</span>
+                  </label>
+
+                  <div class="pkg-group-label">Paket Saving (Ride Only):</div>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="Kintamani Downhill (Saving)">
+                    <span>Kintamani Downhill (Saving)</span>
+                  </label>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="Ubud Rice Fields (Saving)">
+                    <span>Ubud Rice Fields (Saving)</span>
+                  </label>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="E-Bike Ubud Countryside (Saving)">
+                    <span>Ubud E-Bike Tour (Saving)</span>
+                  </label>
+
+                  <div class="pkg-group-label">Paket Adventure Combo:</div>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="Cycling + River Tubing">
+                    <span>Cycling + River Tubing</span>
+                  </label>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="Cycling + ATV Quad Bike">
+                    <span>Cycling + ATV Quad Bike</span>
+                  </label>
+                  <label class="pkg-check-item">
+                    <input type="checkbox" name="closedPackages" value="Rice Paddy Planting &amp; Rafting">
+                    <span>Rice Paddy Planting &amp; Rafting</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="selectClosedReason" class="admin-form-label">Alasan Tutup / Keterangan: *</label>
+              <select id="selectClosedReason" class="admin-select" required>
+                <option value="Kapasitas Penuh (Full Booked)" selected>Kapasitas Penuh (Full Booked)</option>
+                <option value="Libur Operasional / Istirahat Tim">Libur Operasional / Istirahat Tim</option>
+                <option value="Perbaikan Jalur / Cuaca Ekstrem">Perbaikan Jalur / Cuaca Ekstrem</option>
+                <option value="Hari Raya Nyepi (Tahun Baru Caka)">Hari Raya Nyepi (Tahun Baru Caka)</option>
+                <option value="Hari Raya Galungan &amp; Kuningan">Hari Raya Galungan &amp; Kuningan</option>
+                <option value="Upacara Adat / Piodalan Desa">Upacara Adat / Piodalan Desa</option>
+                <option value="custom">Alasan Lainnya (Ketik Manual)...</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group" id="groupCustomReason" style="display: none;">
+              <label for="inputCustomReason" class="admin-form-label">Ketik Alasan Khusus: *</label>
+              <input type="text" id="inputCustomReason" class="admin-input" placeholder="Contoh: Acara Pernikahan Keluarga, Renovasi Basecamp, dll">
+            </div>
+
+            <div class="admin-form-group">
+              <label for="inputClosedNote" class="admin-form-label">Pesan / Catatan untuk Tamu (Opsional):</label>
+              <textarea id="inputClosedNote" class="admin-textarea" rows="2" placeholder="Pesan ini akan dibaca tamu saat membuka tanggal ini di website (misal: 'Pemesanan dibuka kembali tanggal 31 Maret. Silakan chat via WA jika butuh bantuan.')"></textarea>
+            </div>
+
+            <div style="margin-top: 1.25rem;">
+              <button type="submit" class="btn btn-primary" id="btnSaveClosedDate" style="width: 100%; justify-content: center; padding: 0.75rem 1rem;">
+                <i class="fas fa-lock"></i>
+                <span>Tutup Tanggal Ini Sekarang</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Daftar Tanggal Tutup Aktif -->
+        <div class="closed-card">
+          <div class="card-header-flex">
+            <div>
+              <h3><i class="fas fa-calendar-xmark" style="color: var(--danger);"></i> Daftar Tanggal Tutup Aktif</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Tanggal berikut diblokir dari sistem pemesanan online.</p>
+            </div>
+            <span class="total-counter-badge" id="closedCounter" style="background: #fee2e2; color: #b91c1c;">0 Tanggal</span>
+          </div>
+
+          <div class="closed-dates-list" id="closedDatesList">
+            <!-- Will be rendered by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Edit Booking Modal -->
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal-content-card">
+      <div class="modal-head">
+        <h3><i class="fas fa-edit" style="color: #2563eb;"></i> Edit Data Booking</h3>
+        <button type="button" class="btn-close-modal" id="btnCloseEditModal">&times;</button>
+      </div>
+      <form id="editBookingForm">
+        <div class="modal-body">
+          <input type="hidden" id="editRowNumber">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editGuestName">Nama Tamu *</label>
+              <input type="text" id="editGuestName" required>
+            </div>
+            <div class="form-group">
+              <label for="editNationality">Kebangsaan</label>
+              <input type="text" id="editNationality">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editEmail">Email Address</label>
+              <input type="email" id="editEmail">
+            </div>
+            <div class="form-group">
+              <label for="editPhone">Phone / WhatsApp</label>
+              <input type="text" id="editPhone">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editTourDate">Tanggal & Waktu Tur *</label>
+              <input type="text" id="editTourDate" placeholder="e.g. 30/10/2026 8:30 AM" required>
+            </div>
+            <div class="form-group">
+              <label for="editRiderHeight">Tinggi Rider (Bike Size)</label>
+              <input type="text" id="editRiderHeight" placeholder="e.g. Rider 1: 175cm">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editHotel">Hotel Pickup / Catatan Penjemputan</label>
+            <input type="text" id="editHotel" placeholder="Nama hotel atau lokasi penjemputan">
+          </div>
+
+          <div class="form-group">
+            <label for="editDetail">Detail Lengkap (Tersimpan di Kolom 6 Spreadsheet)</label>
+            <textarea id="editDetail" rows="5" style="resize: vertical; font-family: monospace; font-size: 0.84rem;"></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline" id="btnCancelEdit">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveEdit">
+            <i class="fas fa-save"></i>
+            <span>Simpan ke Google Spreadsheet</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-backdrop" id="deleteModal">
+    <div class="modal-content-card" style="max-width: 440px;">
+      <div class="modal-head">
+        <h3 style="color: var(--danger);"><i class="fas fa-trash-alt"></i> Hapus Data Booking</h3>
+        <button type="button" class="btn-close-modal" id="btnCloseDeleteModal">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 1.8rem 1.5rem;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #f59e0b; margin-bottom: 0.75rem;"></i>
+        <h4 style="font-size: 1.1rem; color: var(--dark); margin-bottom: 0.5rem;" id="deleteConfirmTitle">Hapus Booking?</h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;">
+          Data pada baris ini akan dihapus secara permanen dari Google Spreadsheet Anda. Tindakan ini tidak dapat dibatalkan.
+        </p>
+        <input type="hidden" id="deleteRowNumber">
+      </div>
+      <div class="modal-foot" style="justify-content: center;">
+        <button type="button" class="btn btn-outline" id="btnCancelDelete">Batal</button>
+        <button type="button" class="btn btn-primary" style="background-color: var(--danger); border-color: var(--danger);" id="btnConfirmDelete">
+          <i class="fas fa-trash-alt"></i>
+          <span>Ya, Hapus Sekarang</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // URL Webhook Google Apps Script Aktif
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbjBCkaDQPV8kjjuO78uR_lKJ0_6Sswa7MX9e5b_sQGNh-UNeMXlzgLjxM4l5EO_5nYw/exec';
+
+    // State
+    let allBookings = [];
+    let currentSpreadsheetUrl = 'https://docs.google.com/spreadsheets/';
+
+    // DOM Elements
+    const bookingsTableBody = document.getElementById('bookingsTableBody');
+    const bookingCounter = document.getElementById('bookingCounter');
+    const searchInput = document.getElementById('searchInput');
+    const filterMethod = document.getElementById('filterMethod');
+    const sortOrder = document.getElementById('sortOrder');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const refreshIcon = document.getElementById('refreshIcon');
+    const btnOpenSheet = document.getElementById('btnOpenSheet');
+
+    // Stats
+    const statTotal = document.getElementById('statTotal');
+    const statDirect = document.getElementById('statDirect');
+    const statWhatsapp = document.getElementById('statWhatsapp');
+    const statGuests = document.getElementById('statGuests');
+
+    // Modals
+    const editModal = document.getElementById('editModal');
+    const btnCloseEditModal = document.getElementById('btnCloseEditModal');
+    const btnCancelEdit = document.getElementById('btnCancelEdit');
+    const editBookingForm = document.getElementById('editBookingForm');
+    const btnSaveEdit = document.getElementById('btnSaveEdit');
+
+    const deleteModal = document.getElementById('deleteModal');
+    const btnCloseDeleteModal = document.getElementById('btnCloseDeleteModal');
+    const btnCancelDelete = document.getElementById('btnCancelDelete');
+    const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+    // Toast Helper
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> <span>${message}</span>`;
+      document.getElementById('toastContainer').appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // JSONP Helper to bypass all CORS and sandbox hurdles
+    function fetchJSONP(url, callbackName, timeoutMs = 35000) {
+      return new Promise((resolve, reject) => {
+        const scriptId = 'jsonp_' + Math.random().toString(36).substring(2, 9);
+        const script = document.createElement('script');
+        
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error(`Koneksi ke Google Apps Script timeout (${Math.round(timeoutMs / 1000)} detik).`));
+        }, timeoutMs);
+
+        function cleanup() {
+          clearTimeout(timeout);
+          delete window[callbackName];
+          if (document.getElementById(scriptId)) {
+            document.getElementById(scriptId).remove();
+          }
+        }
+
+        window[callbackName] = function(data) {
+          cleanup();
+          resolve(data);
+        };
+
+        script.id = scriptId;
+        const separator = url.includes('?') ? '&' : '?';
+        script.src = `${url}${separator}callback=${callbackName}&_t=${Date.now()}`;
+        script.onerror = function() {
+          cleanup();
+          reject(new Error('Gagal memuat skrip dari Google Apps Script.'));
+        };
+
+        document.head.appendChild(script);
+      });
+    }
+
+    // Load Bookings from Google Spreadsheet
+    async function loadBookings() {
+      refreshIcon.classList.add('spinner');
+      bookingsTableBody.innerHTML = `
+        <tr>
+          <td colspan="10">
+            <div class="state-box">
+              <i class="fas fa-circle-notch spinner" style="color: var(--primary);"></i>
+              <p style="margin-top: 0.5rem; font-weight: 600;">Memuat data reservasi dari Google Spreadsheet...</p>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      try {
+        const callbackName = 'cb_read_' + Date.now();
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?action=read`, callbackName);
+
+        if (res && res.status === 'success') {
+          allBookings = res.data || [];
+          if (res.spreadsheetUrl) {
+            currentSpreadsheetUrl = res.spreadsheetUrl;
+            btnOpenSheet.href = currentSpreadsheetUrl;
+          }
+          updateStats();
+          renderTable();
+          showToast(`Berhasil memuat ${allBookings.length} data reservasi.`);
+        } else {
+          throw new Error(res.message || 'Format data dari Google Apps Script tidak valid.');
+        }
+      } catch (err) {
+        console.error('Error fetching bookings:', err);
+        bookingsTableBody.innerHTML = `
+          <tr>
+            <td colspan="10">
+              <div class="state-box">
+                <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
+                <p style="font-weight: 700; color: var(--dark); margin-top: 0.5rem;">Tidak dapat memuat data otomatis</p>
+                <p style="font-size: 0.85rem; max-width: 500px; margin: 0.25rem auto 1rem;">${err.message}</p>
+                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 1rem;">Pastikan Anda telah memasang kode Google Apps Script Versi 2.0 yang terbaru.</p>
+                <button type="button" class="btn btn-primary" onclick="loadBookings()">
+                  <i class="fas fa-sync-alt"></i> Coba Lagi
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+        showToast('Gagal memuat data dari Spreadsheet', 'danger');
+      } finally {
+        refreshIcon.classList.remove('spinner');
+      }
+    }
+
+    // Update Top Stats
+    function updateStats() {
+      statTotal.textContent = allBookings.length;
+      const tabBadge = document.getElementById('tabBookingsBadge');
+      if (tabBadge) tabBadge.textContent = allBookings.length;
+      
+      let direct = 0;
+      let waOrEmail = 0;
+      let guestsCount = 0;
+
+      allBookings.forEach(b => {
+        const m = (b.method || '').toLowerCase();
+        if (m.includes('direct') || m.includes('booking now')) {
+          direct++;
+        } else {
+          waOrEmail++;
+        }
+
+        // Parse guests count
+        const gMatch = (b.totalGuests || b.detail || '').match(/(\d+)\s*Guests?/i);
+        if (gMatch) {
+          guestsCount += parseInt(gMatch[1], 10);
+        } else {
+          guestsCount += 2; // default fallback
+        }
+      });
+
+      statDirect.textContent = direct;
+      statWhatsapp.textContent = waOrEmail;
+      statGuests.textContent = guestsCount;
+    }
+
+    // Escape HTML to prevent injection issues
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Format Detail text for the table column beside Total Biaya
+    function formatDetailColumn(b) {
+      if (b.detail && b.detail.trim()) {
+        let text = b.detail.trim();
+        // Cut off contact info & booking method (already in other columns)
+        const emailIdx = text.search(/\n?•\s*Email Address:/i);
+        if (emailIdx !== -1) {
+          text = text.substring(0, emailIdx).trim();
+        } else {
+          const phoneIdx = text.search(/\n?•\s*Phone\s*\/\s*WhatsApp/i);
+          if (phoneIdx !== -1) {
+            text = text.substring(0, phoneIdx).trim();
+          }
+        }
+        // Remove separate Package Tier line if present
+        text = text.replace(/\n?•\s*Package Tier:[^\n\r]*/gi, '').trim();
+        // Standardize "Rider Height(s) & Bike Size:" to "Height:"
+        text = text.replace(/•\s*Rider Height\(s\)\s*(?:&\s*Bike Size)?:\s*/gi, '• Height: ');
+
+        // Format legacy Children lines that lacked age descriptions
+        let childIndex = 0;
+        text = text.replace(/^[ \t]*•[ \t]*Children:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, (match, count) => {
+          childIndex++;
+          if (childIndex === 1) {
+            return `   • Children (Age 8 – 11): *${count} pax*`;
+          } else if (childIndex === 2) {
+            return `   • Children (Age 6 – 7): *${count} pax*`;
+          } else {
+            return `   • Children (Age 3 – 5): *${count} pax*`;
+          }
+        });
+        text = text.replace(/^[ \t]*•[ \t]*Children[ \t]*Age[ \t]*8[ \t]*–[ \t]*11:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 8 – 11): *$1 pax*');
+        text = text.replace(/^[ \t]*•[ \t]*Children[ \t]*Age[ \t]*6[ \t]*–[ \t]*7:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 6 – 7): *$1 pax*');
+        text = text.replace(/^[ \t]*•[ \t]*Children[ \t]*Age[ \t]*3[ \t]*–[ \t]*5:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 3 – 5): *$1 pax*');
+        text = text.replace(/^[ \t]*•[ \t]*Young Children:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 3 – 5): *$1 pax*');
+        text = text.replace(/^[ \t]*•[ \t]*Infants?(?:[ \t]*\/[ \t]*Toddlers)?:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Infant / Baby Seat (Age 1 – 2): *$1 pax*');
+        text = text.replace(/^[ \t]*•[ \t]*Adults(?:\s*\([^)]*\))?:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Adults: *$1 pax*');
+
+        if (text) return text;
+      }
+
+      // Fallback: build dynamically from b fields
+      const guestName = b.guestName || 'Guest';
+      let tourName = b.tourName || 'Kintamani Downhill Cycling Tour (Regular)';
+      if (b.tier && !tourName.includes('|')) {
+        const tierClean = b.tier.toLowerCase().includes('sharing') ? 'Sharing' : 'Private';
+        tourName = `${tourName} | ${tierClean}`;
+      }
+      const totalGuests = b.totalGuests ? (b.totalGuests.includes('Guest') ? b.totalGuests : `${b.totalGuests} Guests`) : '1 Guests';
+      const riderHeight = b.riderHeight || '-';
+      const tourDate = b.tourDate || '-';
+      const hotel = b.hotel || '-';
+      const totalCost = b.totalCost || '-';
+      const specialRequests = b.specialRequests || '-';
+
+      return `• Lead Guest Name: ${guestName}
+• Tour Package: ${tourName}
+• Total Guests: ${totalGuests}
+   • Adults: *1 pax*
+• Height: ${riderHeight}
+• Tour Date: ${tourDate}
+• Hotel Pickup: ${hotel}
+• Estimated Total Cost: ${totalCost}
+• Message / Special Requests: ${specialRequests}`;
+    }
+
+    // Format Detail HTML for table with bold pax counts
+    function formatDetailHtml(b) {
+      const text = formatDetailColumn(b);
+      const safeHtml = escapeHtml(text);
+      return safeHtml.replace(/\*([^\*\n\r]+)\*/g, '<strong style="color: #0f172a; font-weight: 800;">$1</strong>');
+    }
+
+    // Render Table with Filters & Search
+    function renderTable() {
+      const query = (searchInput.value || '').toLowerCase().trim();
+      const methodFilter = filterMethod.value;
+      const sort = sortOrder.value;
+
+      let filtered = allBookings.filter(b => {
+        // Search query
+        const matchSearch = !query || 
+          (b.guestName || '').toLowerCase().includes(query) ||
+          (b.email || '').toLowerCase().includes(query) ||
+          (b.phone || '').toLowerCase().includes(query) ||
+          (b.tourDate || '').toLowerCase().includes(query) ||
+          (b.nationality || '').toLowerCase().includes(query) ||
+          (b.tourName || '').toLowerCase().includes(query) ||
+          (b.detail || '').toLowerCase().includes(query);
+
+        if (!matchSearch) return false;
+
+        // Method filter
+        if (methodFilter !== 'all') {
+          const m = (b.method || '').toLowerCase();
+          if (methodFilter === 'direct' && !m.includes('direct') && !m.includes('booking now')) return false;
+          if (methodFilter === 'whatsapp' && !m.includes('whatsapp')) return false;
+          if (methodFilter === 'email' && !m.includes('email')) return false;
+        }
+
+        return true;
+      });
+
+      // Sorting
+      if (sort === 'oldest') {
+        filtered = [...filtered].sort((a, b) => a.row - b.row);
+      } else {
+        filtered = [...filtered].sort((a, b) => b.row - a.row);
+      }
+
+      bookingCounter.textContent = `${filtered.length} dari ${allBookings.length} booking`;
+
+      if (filtered.length === 0) {
+        bookingsTableBody.innerHTML = `
+          <tr>
+            <td colspan="10">
+              <div class="state-box">
+                <i class="fas fa-search"></i>
+                <p style="font-weight: 600; color: var(--dark);">Tidak ada data booking yang sesuai</p>
+                <p style="font-size: 0.85rem;">Coba ubah kata kunci pencarian atau reset filter.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      bookingsTableBody.innerHTML = filtered.map(b => {
+        const cleanPhone = (b.phone || '').replace(/[^0-9]/g, '');
+        const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hello ${b.guestName || 'Guest'}, this is Dewa Bike Tour regarding your booking on ${b.tourDate || ''}.`)}` : '#';
+        
+        let methodClass = 'direct';
+        let methodLabel = 'Booking Now';
+        const m = (b.method || '').toLowerCase();
+        if (m.includes('whatsapp')) {
+          methodClass = 'whatsapp';
+          methodLabel = 'WhatsApp';
+        } else if (m.includes('email')) {
+          methodClass = 'email';
+          methodLabel = 'Email';
+        }
+
+        return `
+          <tr id="booking-row-${b.row}">
+            <td><span class="row-badge">#${b.row}</span></td>
+            <td>
+              <div style="font-size: 0.82rem; font-weight: 600; color: var(--dark);">${b.timestamp || '-'}</div>
+              <span class="method-badge ${methodClass}">${methodLabel}</span>
+            </td>
+            <td>
+              <div class="guest-info">
+                <div class="guest-name">
+                  <i class="fas fa-user-circle" style="color: #94a3b8;"></i>
+                  ${b.guestName || 'Guest'}
+                </div>
+                <div class="guest-nat">
+                  <i class="fas fa-globe-americas" style="font-size: 0.72rem;"></i>
+                  ${b.nationality || '-'}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="contact-links">
+                ${cleanPhone ? `
+                  <a href="${waLink}" target="_blank" class="contact-link wa-link">
+                    <i class="fab fa-whatsapp"></i> ${b.phone}
+                  </a>
+                ` : `<span style="color: #94a3b8;">${b.phone || '-'}</span>`}
+                ${b.email && b.email !== '-' ? `
+                  <a href="mailto:${b.email}" class="contact-link">
+                    <i class="fas fa-envelope"></i> ${b.email}
+                  </a>
+                ` : '<span style="color: #94a3b8;">-</span>'}
+              </div>
+            </td>
+            <td>
+              <span class="tour-pill">${b.tourName || 'Dewa Bike Tour'}</span>
+              <div class="tour-date-badge">
+                <i class="far fa-calendar-alt"></i> ${b.tourDate || '-'}
+              </div>
+            </td>
+            <td>
+              <div style="font-size: 0.85rem; font-weight: 600;">${b.riderHeight || '-'}</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">${b.totalGuests || '1'} Tamu</div>
+            </td>
+            <td>
+              <div style="font-size: 0.84rem; color: #475569; max-width: 220px; line-height: 1.35;">
+                ${b.hotel || '-'}
+              </div>
+            </td>
+            <td>
+              <strong style="color: var(--primary); font-size: 0.95rem;">${b.totalCost || '-'}</strong>
+            </td>
+            <td class="detail-td">
+              <div class="detail-box">${formatDetailHtml(b)}</div>
+            </td>
+            <td style="text-align: right;">
+              <div class="row-actions" style="justify-content: flex-end;">
+                ${cleanPhone ? `
+                  <a href="${waLink}" target="_blank" class="btn-action btn-action-wa" title="Chat WhatsApp Tamu">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                ` : ''}
+                <button type="button" class="btn-action btn-action-edit" onclick="openEditModal(${b.row})" title="Edit Data Booking di Spreadsheet">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button type="button" class="btn-action btn-action-del" onclick="openDeleteModal(${b.row}, '${(b.guestName || 'Guest').replace(/'/g, "\\'")}')" title="Hapus Data dari Spreadsheet">
+                  <i class="fas fa-trash-alt"></i> Hapus
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Open Edit Modal
+    window.openEditModal = function(rowNumber) {
+      const b = allBookings.find(x => x.row === rowNumber);
+      if (!b) return;
+
+      document.getElementById('editRowNumber').value = b.row;
+      document.getElementById('editGuestName').value = b.guestName || '';
+      document.getElementById('editNationality').value = b.nationality || '';
+      document.getElementById('editEmail').value = b.email || '';
+      document.getElementById('editPhone').value = b.phone || '';
+      document.getElementById('editTourDate').value = b.tourDate || '';
+      document.getElementById('editRiderHeight').value = b.riderHeight || '';
+      document.getElementById('editHotel').value = b.hotel || '';
+      let detailFormatted = b.detail || '';
+      let childIdx = 0;
+      detailFormatted = detailFormatted.replace(/^[ \t]*•[ \t]*Children:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, (match, count) => {
+        childIdx++;
+        if (childIdx === 1) return `   • Children (Age 8 – 11): ${count} pax`;
+        if (childIdx === 2) return `   • Children (Age 6 – 7): ${count} pax`;
+        return `   • Children (Age 3 – 5): ${count} pax`;
+      });
+      detailFormatted = detailFormatted.replace(/^[ \t]*•[ \t]*Children[ \t]*Age[ \t]*8[ \t]*–[ \t]*11:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 8 – 11): $1 pax');
+      detailFormatted = detailFormatted.replace(/^[ \t]*•[ \t]*Children[ \t]*Age[ \t]*6[ \t]*–[ \t]*7:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 6 – 7): $1 pax');
+      detailFormatted = detailFormatted.replace(/^[ \t]*•[ \t]*Children[ \t]*Age[ \t]*3[ \t]*–[ \t]*5:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 3 – 5): $1 pax');
+      detailFormatted = detailFormatted.replace(/^[ \t]*•[ \t]*Young Children:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Children (Age 3 – 5): $1 pax');
+      detailFormatted = detailFormatted.replace(/^[ \t]*•[ \t]*Infants?(?:[ \t]*\/[ \t]*Toddlers)?:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Infant / Baby Seat (Age 1 – 2): $1 pax');
+      detailFormatted = detailFormatted.replace(/^[ \t]*•[ \t]*Adults(?:\s*\([^)]*\))?:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Adults: $1 pax');
+      document.getElementById('editDetail').value = detailFormatted;
+
+      editModal.classList.add('active');
+    };
+
+    function closeEditModal() {
+      editModal.classList.remove('active');
+    }
+
+    btnCloseEditModal.addEventListener('click', closeEditModal);
+    btnCancelEdit.addEventListener('click', closeEditModal);
+
+    // Save Edit to Google Spreadsheet
+    editBookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const rowNum = parseInt(document.getElementById('editRowNumber').value, 10);
+      const email = document.getElementById('editEmail').value.trim();
+      const phone = document.getElementById('editPhone').value.trim();
+      const nationality = document.getElementById('editNationality').value.trim();
+      const tourDate = document.getElementById('editTourDate').value.trim();
+      let detail = document.getElementById('editDetail').value.trim();
+      const hotelVal = document.getElementById('editHotel').value.trim();
+
+      btnSaveEdit.disabled = true;
+      btnSaveEdit.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Menyimpan ke Spreadsheet...';
+
+      try {
+        const callbackName = 'cb_update_' + Date.now();
+        const params = new URLSearchParams({
+          action: 'update',
+          row: rowNum,
+          email: email,
+          phone: phone,
+          nationality: nationality,
+          tourDate: tourDate,
+          detail: detail
+        });
+
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?${params.toString()}`, callbackName);
+
+        if (res && res.status === 'success') {
+          showToast(`Baris #${rowNum} berhasil diperbarui di Google Spreadsheet!`);
+          closeEditModal();
+          // Update in-memory data
+          const b = allBookings.find(x => x.row === rowNum);
+          if (b) {
+            b.email = email;
+            b.phone = phone;
+            b.nationality = nationality;
+            b.tourDate = tourDate;
+            b.detail = detail;
+            b.guestName = document.getElementById('editGuestName').value.trim();
+            b.riderHeight = document.getElementById('editRiderHeight').value.trim();
+            b.hotel = hotelVal;
+            renderTable();
+          }
+        } else {
+          throw new Error(res.message || 'Gagal menyimpan pembaruan.');
+        }
+      } catch (err) {
+        alert('Gagal memperbarui ke Google Spreadsheet: ' + err.message);
+      } finally {
+        btnSaveEdit.disabled = false;
+        btnSaveEdit.innerHTML = '<i class="fas fa-save"></i> <span>Simpan ke Google Spreadsheet</span>';
+      }
+    });
+
+    // Open Delete Modal
+    window.openDeleteModal = function(rowNumber, guestName) {
+      document.getElementById('deleteRowNumber').value = rowNumber;
+      document.getElementById('deleteConfirmTitle').textContent = `Hapus Booking Baris #${rowNumber} (${guestName})?`;
+      deleteModal.classList.add('active');
+    };
+
+    function closeDeleteModal() {
+      deleteModal.classList.remove('active');
+    }
+
+    btnCloseDeleteModal.addEventListener('click', closeDeleteModal);
+    btnCancelDelete.addEventListener('click', closeDeleteModal);
+
+    // Confirm Delete from Google Spreadsheet
+    btnConfirmDelete.addEventListener('click', async () => {
+      const rowNum = parseInt(document.getElementById('deleteRowNumber').value, 10);
+      btnConfirmDelete.disabled = true;
+      btnConfirmDelete.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Menghapus dari Spreadsheet...';
+
+      try {
+        const callbackName = 'cb_del_' + Date.now();
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?action=delete&row=${rowNum}`, callbackName);
+
+        if (res && res.status === 'success') {
+          showToast(`Baris #${rowNum} berhasil dihapus dari Google Spreadsheet!`);
+          closeDeleteModal();
+          // Remove from local memory and refresh
+          allBookings = allBookings.filter(x => x.row !== rowNum);
+          updateStats();
+          renderTable();
+        } else {
+          throw new Error(res.message || 'Gagal menghapus baris.');
+        }
+      } catch (err) {
+        alert('Gagal menghapus dari Google Spreadsheet: ' + err.message);
+      } finally {
+        btnConfirmDelete.disabled = false;
+        btnConfirmDelete.innerHTML = '<i class="fas fa-trash-alt"></i> <span>Ya, Hapus Sekarang</span>';
+      }
+    });
+
+    // Event Listeners for Filters
+    searchInput.addEventListener('input', renderTable);
+    filterMethod.addEventListener('change', renderTable);
+    sortOrder.addEventListener('change', renderTable);
+    btnRefresh.addEventListener('click', loadBookings);
+
+    /* -------------------------------------------------------------------------
+     * MANAJEMEN TANGGAL TUTUP / LIBUR (BLACKOUT DATES)
+     * ------------------------------------------------------------------------- */
+    const STORAGE_KEY_CLOSED = 'dewa_closed_dates';
+    let closedDates = [];
+
+    // Tab Switching Elements
+    const tabBtnBookings = document.getElementById('tabBtnBookings');
+    const tabBtnClosedDates = document.getElementById('tabBtnClosedDates');
+    const paneBookings = document.getElementById('paneBookings');
+    const paneClosedDates = document.getElementById('paneClosedDates');
+    const tabClosedDatesBadge = document.getElementById('tabClosedDatesBadge');
+
+    // Form & List Elements
+    const formAddClosedDate = document.getElementById('formAddClosedDate');
+    const inputClosedStartDate = document.getElementById('inputClosedStartDate');
+    const inputClosedEndDate = document.getElementById('inputClosedEndDate');
+    const colStartDate = document.getElementById('colStartDate');
+    const colEndDate = document.getElementById('colEndDate');
+    const labelStartDate = document.getElementById('labelStartDate');
+    const selectClosedReason = document.getElementById('selectClosedReason');
+    const groupCustomReason = document.getElementById('groupCustomReason');
+    const inputCustomReason = document.getElementById('inputCustomReason');
+    const inputClosedNote = document.getElementById('inputClosedNote');
+    const btnSaveClosedDate = document.getElementById('btnSaveClosedDate');
+    const closedDatesList = document.getElementById('closedDatesList');
+    const closedCounter = document.getElementById('closedCounter');
+
+    // Tab Switching Function
+    function switchTab(target) {
+      if (target === 'closedDates') {
+        tabBtnBookings.classList.remove('active');
+        tabBtnClosedDates.classList.add('active');
+        paneBookings.style.display = 'none';
+        paneClosedDates.style.display = 'block';
+      } else {
+        tabBtnClosedDates.classList.remove('active');
+        tabBtnBookings.classList.add('active');
+        paneClosedDates.style.display = 'none';
+        paneBookings.style.display = 'block';
+      }
+    }
+
+    if (tabBtnBookings) tabBtnBookings.addEventListener('click', () => switchTab('bookings'));
+    if (tabBtnClosedDates) tabBtnClosedDates.addEventListener('click', () => switchTab('closedDates'));
+
+    // Radio Button Type Toggle (Single vs Range)
+    const dateTypeRadios = document.querySelectorAll('input[name="closedDateType"]');
+    dateTypeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (radio.value === 'range') {
+          colEndDate.style.display = 'flex';
+          labelStartDate.textContent = 'Dari Tanggal (Mulai): *';
+          inputClosedEndDate.required = true;
+          if (inputClosedStartDate.value) {
+            inputClosedEndDate.min = inputClosedStartDate.value;
+            if (!inputClosedEndDate.value || inputClosedEndDate.value < inputClosedStartDate.value) {
+              inputClosedEndDate.value = inputClosedStartDate.value;
+            }
+          }
+        } else {
+          colEndDate.style.display = 'none';
+          labelStartDate.textContent = 'Pilih Tanggal Tutup: *';
+          inputClosedEndDate.required = false;
+        }
+      });
+    });
+
+    // Package Scope Toggle (All vs Specific Packages)
+    const packageScopeRadios = document.querySelectorAll('input[name="closedPackageScopeType"]');
+    const containerSpecificPackages = document.getElementById('containerSpecificPackages');
+    const btnSelectAllPackages = document.getElementById('btnSelectAllPackages');
+    const btnUnselectAllPackages = document.getElementById('btnUnselectAllPackages');
+
+    packageScopeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (radio.value === 'specific') {
+          if (containerSpecificPackages) containerSpecificPackages.style.display = 'block';
+        } else {
+          if (containerSpecificPackages) containerSpecificPackages.style.display = 'none';
+        }
+      });
+    });
+
+    if (btnSelectAllPackages) {
+      btnSelectAllPackages.addEventListener('click', () => {
+        document.querySelectorAll('input[name="closedPackages"]').forEach(cb => cb.checked = true);
+      });
+    }
+    if (btnUnselectAllPackages) {
+      btnUnselectAllPackages.addEventListener('click', () => {
+        document.querySelectorAll('input[name="closedPackages"]').forEach(cb => cb.checked = false);
+      });
+    }
+
+    // Custom Reason Toggle
+    if (selectClosedReason) {
+      selectClosedReason.addEventListener('change', () => {
+        if (selectClosedReason.value === 'custom') {
+          groupCustomReason.style.display = 'block';
+          inputCustomReason.required = true;
+          inputCustomReason.focus();
+        } else {
+          groupCustomReason.style.display = 'none';
+          inputCustomReason.required = false;
+        }
+      });
+    }
+
+    // Dynamic min on end date when start date changes
+    if (inputClosedStartDate) {
+      inputClosedStartDate.addEventListener('change', () => {
+        if (inputClosedEndDate) {
+          inputClosedEndDate.min = inputClosedStartDate.value;
+          if (inputClosedEndDate.value && inputClosedEndDate.value < inputClosedStartDate.value) {
+            inputClosedEndDate.value = inputClosedStartDate.value;
+          }
+        }
+      });
+    }
+
+    // Helper: Generate array of 'YYYY-MM-DD' strings between start and end inclusive
+    function getDatesInRange(startStr, endStr) {
+      const dates = [];
+      const start = new Date(startStr + 'T00:00:00');
+      const end = new Date(endStr + 'T00:00:00');
+      const curr = new Date(start);
+      while (curr <= end) {
+        const y = curr.getFullYear();
+        const m = String(curr.getMonth() + 1).padStart(2, '0');
+        const d = String(curr.getDate()).padStart(2, '0');
+        dates.push(`${y}-${m}-${d}`);
+        curr.setDate(curr.getDate() + 1);
+      }
+      return dates;
+    }
+
+    // Helper: Indonesian Date Formatter
+    function formatIndoDate(dateStr) {
+      if (!dateStr) return '-';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        const dayName = days[d.getDay()];
+        return `${dayName}, ${parseInt(parts[2], 10)} ${months[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
+      }
+      return dateStr;
+    }
+
+    // Load Closed Dates: Reads from Local Storage, then syncs from Apps Script Cloud
+    function loadClosedDates() {
+      try {
+        const local = localStorage.getItem(STORAGE_KEY_CLOSED);
+        if (local) {
+          closedDates = JSON.parse(local);
+        }
+      } catch (err) {
+        closedDates = [];
+      }
+      renderClosedDates();
+      syncClosedDatesFromCloud();
+    }
+
+    // Sync from Google Apps Script
+    async function syncClosedDatesFromCloud() {
+      try {
+        const callbackName = 'cb_get_closed_' + Date.now();
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?action=getClosedDates`, callbackName);
+        if (res && res.status === 'success' && Array.isArray(res.data)) {
+          // If cloud has data, update local state
+          if (res.data.length > 0 || closedDates.length === 0) {
+            closedDates = res.data;
+            try {
+              localStorage.setItem(STORAGE_KEY_CLOSED, JSON.stringify(closedDates));
+            } catch (e) {}
+            renderClosedDates();
+          }
+        }
+      } catch (err) {
+        console.warn('Sync closed dates from cloud:', err.message);
+      }
+    }
+
+    // Save Closed Dates to Cloud (Jaminan 100% Bebas Notifikasi Email)
+    async function saveClosedDatesToCloud(dataList) {
+      const dataStr = JSON.stringify(dataList);
+      try {
+        const callbackName = 'cb_save_closed_' + Date.now();
+        const encoded = encodeURIComponent(dataStr);
+        // Utamakan GET (JSONP) ke doGet Apps Script yang 100% tidak pernah memiliki kode kirim email
+        await fetchJSONP(`${APPS_SCRIPT_URL}?action=saveClosedDates&data=${encoded}&noEmail=1`, callbackName, 35000);
+      } catch (err) {
+        console.warn('Cloud save via JSONP fallback to POST:', err.message);
+        try {
+          // Cadangan POST jika URL JSONP kepanjangan; diberi bendera noEmail & isBooking: false yang ketat
+          await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ 
+              action: 'saveClosedDates', 
+              noEmail: true, 
+              isBooking: false, 
+              source: 'admin',
+              data: dataList 
+            })
+          });
+        } catch (e2) {}
+      }
+    }
+
+    // Render Closed Dates List
+    function renderClosedDates() {
+      // Calculate total unique closed dates
+      const uniqueDays = new Set();
+      closedDates.forEach(item => {
+        if (Array.isArray(item.dates)) {
+          item.dates.forEach(d => uniqueDays.add(d));
+        } else if (item.startDate) {
+          uniqueDays.add(item.startDate);
+        }
+      });
+
+      const totalDaysCount = uniqueDays.size;
+      if (closedCounter) {
+        closedCounter.textContent = `${totalDaysCount} Hari Ditutup (${closedDates.length} Aturan)`;
+      }
+      if (tabClosedDatesBadge) {
+        tabClosedDatesBadge.textContent = totalDaysCount;
+      }
+
+      if (!closedDatesList) return;
+
+      if (closedDates.length === 0) {
+        closedDatesList.innerHTML = `
+          <div class="empty-closed-state">
+            <i class="fas fa-calendar-check"></i>
+            <p>Tidak ada tanggal yang sedang ditutup.</p>
+            <span style="font-size: 0.82rem; color: #94a3b8; display: block; max-width: 360px; margin: 0.35rem auto 0; line-height: 1.4;">
+              Semua tanggal pada form reservasi website saat ini berstatus <strong>TERBUKA</strong> dan dapat dipesan oleh tamu.
+            </span>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      closedDates.forEach(item => {
+        const isRange = item.type === 'range' && item.startDate !== item.endDate;
+        const daysCount = item.dates ? item.dates.length : 1;
+        
+        let periodDisplay = '';
+        if (isRange) {
+          periodDisplay = `${formatIndoDate(item.startDate)} &mdash; ${formatIndoDate(item.endDate)}`;
+        } else {
+          periodDisplay = formatIndoDate(item.startDate);
+        }
+
+        let packageBadgeHtml = '';
+        if (!item.packageScope || item.packageScope === 'all') {
+          packageBadgeHtml = `<span class="pkg-badge all"><i class="fas fa-globe-asia"></i> Semua Paket Tur (Global)</span>`;
+        } else if (Array.isArray(item.packageScope)) {
+          packageBadgeHtml = `<span class="pkg-badge specific"><i class="fas fa-bicycle"></i> ${item.packageScope.length} Paket Ditutup:</span> ` +
+            item.packageScope.map(p => `<span class="badge-pill" style="font-size: 0.73rem; background: #fef3c7; color: #92400e; padding: 0.12rem 0.45rem; border-radius: 4px; font-weight: 600;">${escapeHtml(p)}</span>`).join(' ');
+        } else {
+          packageBadgeHtml = `<span class="pkg-badge specific"><i class="fas fa-bicycle"></i> ${escapeHtml(item.packageScope)}</span>`;
+        }
+
+        html += `
+          <div class="closed-item-card" data-id="${item.id}">
+            <div class="closed-item-left">
+              <div class="closed-item-date-title">
+                <i class="fas fa-calendar-times" style="color: var(--danger);"></i>
+                <span>${periodDisplay}</span>
+              </div>
+              <div class="closed-item-meta">
+                <span class="closed-badge-days">${daysCount} Hari Ditutup</span>
+                <span class="closed-badge-reason"><i class="fas fa-tag"></i> ${escapeHtml(item.reason || 'Libur Operasional')}</span>
+              </div>
+              <div class="closed-item-packages">
+                ${packageBadgeHtml}
+              </div>
+              ${item.note ? `
+                <div class="closed-item-note">
+                  <i class="fas fa-comment-dots"></i> "${escapeHtml(item.note)}"
+                </div>
+              ` : ''}
+            </div>
+            <div>
+              <button type="button" class="btn-reopen" onclick="reopenClosedDate('${item.id}')" title="Buka kembali tanggal ini agar tamu dapat memesan">
+                <i class="fas fa-lock-open"></i>
+                <span>Buka Kembali</span>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      closedDatesList.innerHTML = html;
+    }
+
+    // Add Closed Date Form Handler
+    if (formAddClosedDate) {
+      formAddClosedDate.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const typeInput = document.querySelector('input[name="closedDateType"]:checked');
+        const isRange = typeInput ? typeInput.value === 'range' : false;
+        const startDate = inputClosedStartDate.value;
+        const endDate = isRange ? (inputClosedEndDate.value || startDate) : startDate;
+
+        if (!startDate) {
+          alert('Silakan pilih tanggal tutup.');
+          inputClosedStartDate.focus();
+          return;
+        }
+
+        if (isRange && endDate < startDate) {
+          alert('Tanggal selesai tidak boleh lebih awal dari tanggal mulai.');
+          inputClosedEndDate.focus();
+          return;
+        }
+
+        // Package scope check
+        const scopeRadio = document.querySelector('input[name="closedPackageScopeType"]:checked');
+        const isSpecific = scopeRadio && scopeRadio.value === 'specific';
+        let packageScope = 'all';
+
+        if (isSpecific) {
+          const checkedBoxes = Array.from(document.querySelectorAll('input[name="closedPackages"]:checked')).map(cb => cb.value);
+          if (checkedBoxes.length === 0) {
+            alert('Silakan pilih minimal 1 paket tur yang ingin ditutup, atau pilih opsi "Semua Paket (Global)".');
+            return;
+          }
+          packageScope = checkedBoxes;
+        }
+
+        let reason = selectClosedReason.value;
+        if (reason === 'custom') {
+          reason = inputCustomReason.value.trim();
+          if (!reason) {
+            alert('Silakan ketik alasan khusus penutupan tanggal.');
+            inputCustomReason.focus();
+            return;
+          }
+        }
+
+        const note = (inputClosedNote.value || '').trim();
+        const datesList = getDatesInRange(startDate, endDate);
+
+        // Check for duplicates
+        let duplicateFound = false;
+        closedDates.forEach(existing => {
+          if (existing.dates) {
+            existing.dates.forEach(d => {
+              if (datesList.includes(d)) duplicateFound = true;
+            });
+          }
+        });
+
+        if (duplicateFound) {
+          const confirmAdd = confirm('Satu atau lebih tanggal yang Anda pilih sudah terdaftar ditutup sebelumnya. Apakah Anda tetap ingin menyimpan pembaruan ini?');
+          if (!confirmAdd) return;
+        }
+
+        btnSaveClosedDate.disabled = true;
+        btnSaveClosedDate.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Menyimpan Pengaturan...';
+
+        const newEntry = {
+          id: 'cd_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+          type: isRange ? 'range' : 'single',
+          startDate: startDate,
+          endDate: endDate,
+          dates: datesList,
+          packageScope: packageScope,
+          reason: reason,
+          note: note,
+          createdAt: new Date().toISOString()
+        };
+
+        // Add to list and update local storage immediately
+        closedDates.unshift(newEntry);
+        try {
+          localStorage.setItem(STORAGE_KEY_CLOSED, JSON.stringify(closedDates));
+        } catch (err) {}
+
+        renderClosedDates();
+
+        // Push to Cloud
+        try {
+          await saveClosedDatesToCloud(closedDates);
+          showToast(`Berhasil menutup ${datesList.length} tanggal operasional!`);
+        } catch (err) {
+          showToast(`Pengaturan disimpan secara lokal.`, 'warning');
+        } finally {
+          btnSaveClosedDate.disabled = false;
+          btnSaveClosedDate.innerHTML = '<i class="fas fa-lock"></i> <span>Tutup Tanggal Ini Sekarang</span>';
+        }
+
+        // Reset form
+        inputClosedNote.value = '';
+        if (selectClosedReason.value === 'custom') {
+          inputCustomReason.value = '';
+        }
+        selectClosedReason.value = 'Kapasitas Penuh (Full Booked)';
+        if (groupCustomReason) groupCustomReason.style.display = 'none';
+        document.querySelectorAll('input[name="closedPackages"]').forEach(cb => cb.checked = false);
+        const allScopeRadio = document.querySelector('input[name="closedPackageScopeType"][value="all"]');
+        if (allScopeRadio) {
+          allScopeRadio.checked = true;
+          if (containerSpecificPackages) containerSpecificPackages.style.display = 'none';
+        }
+      });
+    }
+
+    // Reopen / Delete a Closed Date
+    window.reopenClosedDate = async function(id) {
+      const item = closedDates.find(x => x.id === id);
+      if (!item) return;
+
+      const periodDesc = (item.startDate === item.endDate) ? item.startDate : `${item.startDate} s/d ${item.endDate}`;
+      const scopeDesc = (!item.packageScope || item.packageScope === 'all') ? 'Semua Paket (Global)' : (Array.isArray(item.packageScope) ? item.packageScope.join(', ') : item.packageScope);
+      const conf = confirm(`Apakah Anda yakin ingin MEMBUKA KEMBALI operasional pada tanggal:\n\n${periodDesc}\nPaket: ${scopeDesc}\nAlasan: ${item.reason}?\n\nTamu di website akan dapat memesan paket ini kembali.`);
+      if (!conf) return;
+
+      closedDates = closedDates.filter(x => x.id !== id);
+      try {
+        localStorage.setItem(STORAGE_KEY_CLOSED, JSON.stringify(closedDates));
+      } catch (err) {}
+
+      renderClosedDates();
+
+      try {
+        await saveClosedDatesToCloud(closedDates);
+        showToast('Tanggal berhasil dibuka kembali untuk reservasi!');
+      } catch (err) {
+        showToast('Tanggal dibuka kembali (tersimpan lokal).', 'warning');
+      }
+    };
+
+    // Auto-load on page ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set default date input in closed dates form (tomorrow)
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      if (inputClosedStartDate) {
+        inputClosedStartDate.value = tomorrowStr;
+        inputClosedStartDate.min = todayStr;
+      }
+      if (inputClosedEndDate) {
+        inputClosedEndDate.value = tomorrowStr;
+        inputClosedEndDate.min = tomorrowStr;
+      }
+
+      loadBookings();
+      loadClosedDates();
+    });
+  </script>
+</body>
+</html>
