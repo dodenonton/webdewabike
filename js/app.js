@@ -61,19 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const topBar = document.querySelector('.top-announcement');
 
   if (header) {
-    // --- Simple & Reliable Scroll Direction Detection ---
-    // Works perfectly on both desktop and mobile.
-    // We sample scrollY every ~100ms so we don't get fooled by tiny
-    // sub-pixel jitter that mobile browsers emit between real swipe frames.
+    // --- Consecutive-Event Scroll Direction Detection ---
+    // Works on both desktop AND mobile (iOS Safari, Chrome Android).
+    // Uses consecutive event counting — no timers/debounce — so it's
+    // immune to momentum-scroll jitter that fooled the debounce approach.
+    // Requires 3 consecutive "down" events to hide, 2 "up" to reveal.
 
     let lastScrollY = window.pageYOffset || 0;
     let isHidden = false;
     let isScrolled = false;
-    let checkTimer = null;
+    let consecutiveUp = 0;
+    let consecutiveDown = 0;
 
-    const applyHeaderState = () => {
+    const onScroll = () => {
       const scrollY = window.pageYOffset || 0;
       const threshold = topBar ? topBar.offsetHeight : 40;
+      const diff = scrollY - lastScrollY;
+      lastScrollY = scrollY;
 
       // Shadow / background when scrolled away from top
       if (scrollY > threshold) {
@@ -88,34 +92,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (isMobileMenuOpen || scrollY <= threshold) {
         if (isHidden) { header.classList.remove('header-hidden'); isHidden = false; }
-        lastScrollY = scrollY;
+        consecutiveUp = 0;
+        consecutiveDown = 0;
         return;
       }
 
-      const diff = scrollY - lastScrollY;
-
-      if (diff > 2) {
-        // Scrolling DOWN — hide
-        if (!isHidden) { header.classList.add('header-hidden'); isHidden = true; }
-      } else if (diff < -2) {
-        // Scrolling UP — show
-        if (isHidden) { header.classList.remove('header-hidden'); isHidden = false; }
+      if (diff > 0) {
+        // Scrolling DOWN
+        consecutiveDown++;
+        consecutiveUp = 0;
+        if (consecutiveDown >= 3 && scrollY > 80 && !isHidden) {
+          header.classList.add('header-hidden');
+          isHidden = true;
+        }
+      } else if (diff < 0) {
+        // Scrolling UP
+        consecutiveUp++;
+        consecutiveDown = 0;
+        if (consecutiveUp >= 2 && isHidden) {
+          header.classList.remove('header-hidden');
+          isHidden = false;
+        }
       }
-
-      lastScrollY = scrollY;
-    };
-
-    // Throttle: run on scroll but debounce the sample to avoid mobile jitter
-    const onScroll = () => {
-      if (checkTimer) return;
-      checkTimer = setTimeout(() => {
-        checkTimer = null;
-        applyHeaderState();
-      }, 80); // 80ms gives enough gap to measure real direction
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    applyHeaderState();
+    onScroll();
   }
 
   /* -------------------------------------------------------------
