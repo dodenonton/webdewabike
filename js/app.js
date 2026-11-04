@@ -61,69 +61,61 @@ document.addEventListener('DOMContentLoaded', () => {
   const topBar = document.querySelector('.top-announcement');
 
   if (header) {
-    let lastScrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
-    let scrollDownAccum = 0;  // Accumulate scroll-down distance
-    let scrollUpAccum = 0;    // Accumulate scroll-up distance
+    // --- Simple & Reliable Scroll Direction Detection ---
+    // Works perfectly on both desktop and mobile.
+    // We sample scrollY every ~100ms so we don't get fooled by tiny
+    // sub-pixel jitter that mobile browsers emit between real swipe frames.
+
+    let lastScrollY = window.pageYOffset || 0;
     let isHidden = false;
     let isScrolled = false;
-    const HIDE_THRESHOLD = 10;   // px scrolled down before hiding
-    const SHOW_THRESHOLD = 4;    // px scrolled up before showing (lower = more responsive)
+    let checkTimer = null;
 
-    const onScroll = () => {
-      const scrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
+    const applyHeaderState = () => {
+      const scrollY = window.pageYOffset || 0;
       const threshold = topBar ? topBar.offsetHeight : 40;
-      const diff = scrollY - lastScrollY;
-      lastScrollY = scrollY;
 
-      // 1. Scrolled styling (shadow)
+      // Shadow / background when scrolled away from top
       if (scrollY > threshold) {
-        if (!isScrolled) {
-          header.classList.add('scrolled');
-          isScrolled = true;
-        }
+        if (!isScrolled) { header.classList.add('scrolled'); isScrolled = true; }
       } else {
-        if (isScrolled) {
-          header.classList.remove('scrolled');
-          isScrolled = false;
-        }
+        if (isScrolled) { header.classList.remove('scrolled'); isScrolled = false; }
       }
 
-      // 2. Auto-hide on scroll down, reveal on scroll up
+      // Keep header visible at top of page or when mobile menu open
       const navMenuEl = document.getElementById('navMenu');
       const isMobileMenuOpen = navMenuEl && navMenuEl.classList.contains('mobile-open');
 
       if (isMobileMenuOpen || scrollY <= threshold) {
-        // Always visible at top or when mobile menu open
-        if (isHidden) {
-          header.classList.remove('header-hidden');
-          isHidden = false;
-        }
-        scrollDownAccum = 0;
-        scrollUpAccum = 0;
+        if (isHidden) { header.classList.remove('header-hidden'); isHidden = false; }
+        lastScrollY = scrollY;
         return;
       }
 
-      if (diff > 0) {
-        // Scrolling down
-        scrollDownAccum += diff;
-        scrollUpAccum = 0;
-        if (scrollDownAccum > HIDE_THRESHOLD && scrollY > 80 && !isHidden) {
-          header.classList.add('header-hidden');
-          isHidden = true;
-        }
-      } else if (diff < 0) {
-        // Scrolling up
-        scrollUpAccum += Math.abs(diff);
-        scrollDownAccum = 0;
-        if (scrollUpAccum > SHOW_THRESHOLD && isHidden) {
-          header.classList.remove('header-hidden');
-          isHidden = false;
-        }
+      const diff = scrollY - lastScrollY;
+
+      if (diff > 2) {
+        // Scrolling DOWN — hide
+        if (!isHidden) { header.classList.add('header-hidden'); isHidden = true; }
+      } else if (diff < -2) {
+        // Scrolling UP — show
+        if (isHidden) { header.classList.remove('header-hidden'); isHidden = false; }
       }
+
+      lastScrollY = scrollY;
+    };
+
+    // Throttle: run on scroll but debounce the sample to avoid mobile jitter
+    const onScroll = () => {
+      if (checkTimer) return;
+      checkTimer = setTimeout(() => {
+        checkTimer = null;
+        applyHeaderState();
+      }, 80); // 80ms gives enough gap to measure real direction
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    applyHeaderState();
   }
 
   /* -------------------------------------------------------------
