@@ -316,7 +316,8 @@ button, input, select, textarea {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  transition: box-shadow 0.25s ease, background-color 0.25s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.25s ease;
+  will-change: transform;
 }
 
 .site-header.scrolled {
@@ -333,6 +334,11 @@ button, input, select, textarea {
   z-index: 950 !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   background-color: #ffffff !important;
+}
+
+.site-header.header-hidden {
+  transform: translateY(-100%) !important;
+  box-shadow: none !important;
 }
 
 .header-spacer {

@@ -62,18 +62,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (header) {
     let spacer = null;
+    let lastScrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
+    const scrollDelta = 6; // Sensitivity threshold in px to prevent micro-stutter
 
     const handleHeaderScroll = () => {
-      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      const scrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
       const threshold = topBar ? topBar.offsetHeight : 40;
 
+      // 1. Scrolled styling (shadow & background opacity)
       if (scrollY > threshold) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
 
-      // Fail-safe fallback: if browser fails native sticky positioning (e.g. rect.top < -1 when scrolled down)
+      // 2. Auto-hide on scroll down, reveal on scroll up
+      const navMenuEl = document.getElementById('navMenu');
+      const isMobileMenuOpen = navMenuEl && navMenuEl.classList.contains('mobile-open');
+
+      if (isMobileMenuOpen) {
+        // Keep header visible while mobile navigation menu is active
+        header.classList.remove('header-hidden');
+      } else if (scrollY <= threshold) {
+        // At the top of the page: always visible
+        header.classList.remove('header-hidden');
+      } else {
+        const diff = scrollY - lastScrollY;
+        if (diff > scrollDelta && scrollY > 80) {
+          // Scrolling down: hide header
+          header.classList.add('header-hidden');
+        } else if (diff < -scrollDelta) {
+          // Scrolling up: reveal header
+          header.classList.remove('header-hidden');
+        }
+      }
+
+      lastScrollY = scrollY;
+
+      // Fail-safe fallback: if browser fails native sticky positioning
       const rect = header.getBoundingClientRect();
       if (scrollY > threshold && rect.top < -1) {
         if (!header.classList.contains('is-fixed')) {
