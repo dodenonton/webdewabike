@@ -61,68 +61,69 @@ document.addEventListener('DOMContentLoaded', () => {
   const topBar = document.querySelector('.top-announcement');
 
   if (header) {
-    let spacer = null;
     let lastScrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
-    const scrollDelta = 6; // Sensitivity threshold in px to prevent micro-stutter
+    let scrollDownAccum = 0;  // Accumulate scroll-down distance
+    let scrollUpAccum = 0;    // Accumulate scroll-up distance
+    let isHidden = false;
+    let isScrolled = false;
+    const HIDE_THRESHOLD = 10;   // px scrolled down before hiding
+    const SHOW_THRESHOLD = 4;    // px scrolled up before showing (lower = more responsive)
 
-    const handleHeaderScroll = () => {
+    const onScroll = () => {
       const scrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
       const threshold = topBar ? topBar.offsetHeight : 40;
+      const diff = scrollY - lastScrollY;
+      lastScrollY = scrollY;
 
-      // 1. Scrolled styling (shadow & background opacity)
+      // 1. Scrolled styling (shadow)
       if (scrollY > threshold) {
-        header.classList.add('scrolled');
+        if (!isScrolled) {
+          header.classList.add('scrolled');
+          isScrolled = true;
+        }
       } else {
-        header.classList.remove('scrolled');
+        if (isScrolled) {
+          header.classList.remove('scrolled');
+          isScrolled = false;
+        }
       }
 
       // 2. Auto-hide on scroll down, reveal on scroll up
       const navMenuEl = document.getElementById('navMenu');
       const isMobileMenuOpen = navMenuEl && navMenuEl.classList.contains('mobile-open');
 
-      if (isMobileMenuOpen) {
-        // Keep header visible while mobile navigation menu is active
-        header.classList.remove('header-hidden');
-      } else if (scrollY <= threshold) {
-        // At the top of the page: always visible
-        header.classList.remove('header-hidden');
-      } else {
-        const diff = scrollY - lastScrollY;
-        if (diff > scrollDelta && scrollY > 80) {
-          // Scrolling down: hide header
-          header.classList.add('header-hidden');
-        } else if (diff < -scrollDelta) {
-          // Scrolling up: reveal header
+      if (isMobileMenuOpen || scrollY <= threshold) {
+        // Always visible at top or when mobile menu open
+        if (isHidden) {
           header.classList.remove('header-hidden');
+          isHidden = false;
         }
+        scrollDownAccum = 0;
+        scrollUpAccum = 0;
+        return;
       }
 
-      lastScrollY = scrollY;
-
-      // Fail-safe fallback: if browser fails native sticky positioning
-      const rect = header.getBoundingClientRect();
-      if (scrollY > threshold && rect.top < -1) {
-        if (!header.classList.contains('is-fixed')) {
-          if (!spacer) {
-            spacer = document.createElement('div');
-            spacer.className = 'header-spacer';
-            spacer.style.height = `${header.offsetHeight}px`;
-            header.parentNode.insertBefore(spacer, header.nextSibling);
-          }
-          header.classList.add('is-fixed');
+      if (diff > 0) {
+        // Scrolling down
+        scrollDownAccum += diff;
+        scrollUpAccum = 0;
+        if (scrollDownAccum > HIDE_THRESHOLD && scrollY > 80 && !isHidden) {
+          header.classList.add('header-hidden');
+          isHidden = true;
         }
-      } else if (scrollY <= threshold && header.classList.contains('is-fixed')) {
-        header.classList.remove('is-fixed');
-        if (spacer && spacer.parentNode) {
-          spacer.parentNode.removeChild(spacer);
-          spacer = null;
+      } else if (diff < 0) {
+        // Scrolling up
+        scrollUpAccum += Math.abs(diff);
+        scrollDownAccum = 0;
+        if (scrollUpAccum > SHOW_THRESHOLD && isHidden) {
+          header.classList.remove('header-hidden');
+          isHidden = false;
         }
       }
     };
 
-    window.addEventListener('scroll', handleHeaderScroll, { passive: true });
-    window.addEventListener('resize', handleHeaderScroll, { passive: true });
-    handleHeaderScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
 
   /* -------------------------------------------------------------
