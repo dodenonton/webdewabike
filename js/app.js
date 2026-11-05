@@ -51,6 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     'Rice Paddy Planting & Rafting': {
       title: 'Rice Paddy Planting & Ayung Rafting',
       comboPrice: 450000
+    },
+    'Ubud Rice Field Trekking': {
+      title: 'Ubud Rice Field Trekking & Walking Tour',
+      comboPrice: 350000
     }
   };
 
