@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
       comboPrice: 450000
     },
     'Ubud Rice Field Trekking': {
-      title: 'Ubud: Balinese Village & Rice Fields Guided Trek',
-      comboPrice: 350000
+      title: 'Ubud: Balinese Village and Rice Fields Guided Trek',
+      isTrekking: true
     }
   };
 
@@ -940,15 +940,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (groupHeight) groupHeight.style.display = 'none';
       if (groupHotel) groupHotel.style.display = 'block';
       if (labelModalTime) labelModalTime.textContent = 'Preferred Session';
-      if (row8_11) row8_11.style.display = 'none';
+      if (row8_11) row8_11.style.display = 'flex';
       if (row6_7) row6_7.style.display = 'none';
       if (row3_5) row3_5.style.display = 'none';
       if (row1_2) row1_2.style.display = 'flex';
       if (rowAdult) rowAdult.style.display = 'flex';
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Participants / Walkers';
-      if (descLabelAdult) descLabelAdult.textContent = 'Rp 350.000 / person (Age 3+)';
-      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants (Age 1 – 2)';
-      if (descLabel1_2) descLabel1_2.textContent = 'Free of charge';
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults (Age 11+)';
+      if (descLabelAdult) descLabelAdult.textContent = 'Age 11+ years old';
+      if (nameLabel8_11) nameLabel8_11.textContent = 'Children (Age 5 – 10)';
+      if (descLabel8_11) descLabel8_11.textContent = 'Age 5 – 10 years old';
+      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants (Age 1 – 4)';
+      if (descLabel1_2) descLabel1_2.textContent = 'Free of charge (Age 1 – 4)';
+    } else {
+      if (labelModalTime) labelModalTime.textContent = 'Preferred Pick-Up Time';
+    }
+    
+    if (selectedTourKey === 'Ubud Rice Field Trekking') {
+      // handled above
     } else if (comboPrice) {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
       if (row8_11) row8_11.style.display = 'none';
@@ -1044,7 +1052,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let p3_5 = 0;
     let p1_2 = 0;
 
-    if (comboPrice) {
+    if (selectedTourKey === 'Ubud Rice Field Trekking') {
+      pAdult = 350000;
+      p8_11 = 250000;
+      p6_7 = 0;
+      p3_5 = 0;
+      p1_2 = 0;
+    } else if (comboPrice) {
       pAdult = comboPrice;
       p8_11 = comboPrice;
       p6_7 = comboPrice;
@@ -1108,7 +1122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update row price labels
     if (priceLabelAdult) {
-      priceLabelAdult.textContent = formatIDR(pAdult) + ((selectedTier === 'private' && !isSaving && !comboPrice && totalGuests === 1) ? ' (1 pax)' : '/pax');
+      priceLabelAdult.textContent = formatIDR(pAdult) + ((selectedTier === 'private' && !isSaving && !comboPrice && totalGuests === 1 && selectedTourKey !== 'Ubud Rice Field Trekking') ? ' (1 pax)' : '/pax');
     }
     if (priceLabel8_11) priceLabel8_11.textContent = formatIDR(p8_11) + '/pax';
     if (priceLabel6_7) priceLabel6_7.textContent = formatIDR(p6_7) + '/pax';
@@ -1130,11 +1144,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (listEl) {
       let html = '';
       if (nAdult > 0) {
-        const titleAdult = nameLabelAdult?.textContent || 'Adults';
+        const titleAdult = (selectedTourKey === 'Ubud Rice Field Trekking') ? 'Adults (Age 11+)' : (nameLabelAdult?.textContent || 'Adults');
         html += `<div class="calc-row"><span>${titleAdult}:</span><strong>${nAdult} pax (${formatIDR(costAdult)})</strong></div>`;
       }
       if (n8_11 > 0) {
-        const title8_11 = 'Children (Age 8 – 11)';
+        const title8_11 = (selectedTourKey === 'Ubud Rice Field Trekking') ? 'Children (Age 5 – 10)' : 'Children (Age 8 – 11)';
         html += `<div class="calc-row"><span>${title8_11}:</span><strong>${n8_11} pax (${formatIDR(cost8_11)})</strong></div>`;
       }
       if (n6_7 > 0) {
@@ -1146,7 +1160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         html += `<div class="calc-row"><span>${title3_5}:</span><strong>${n3_5} pax (${formatIDR(cost3_5)})</strong></div>`;
       }
       if (n1_2 > 0) {
-        const title1_2 = 'Infant / Baby Seat (Age 1 – 2)';
+        const title1_2 = (selectedTourKey === 'Ubud Rice Field Trekking') ? 'Infants (Age 1 – 4)' : 'Infant / Baby Seat (Age 1 – 2)';
         html += `<div class="calc-row"><span>${title1_2}:</span><strong>${n1_2} pax (${p1_2 === 0 ? 'Free' : formatIDR(cost1_2)})</strong></div>`;
       }
       html += `<div class="calc-row" style="color: var(--text-muted); font-size: 0.92rem;"><span>Total participants:</span><strong>${totalGuests} ${totalGuests > 1 ? 'guests' : 'guest'}</strong></div>`;
@@ -1327,13 +1341,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isSaving = !!pkg.isSaving;
     const isCombo = !!pkg.comboPrice;
-    const tierSuffix = isCombo ? '' : ` | ${selectedTier === 'sharing' ? 'Sharing' : 'Private'}`;
+    const isTrekking = (tourKey === 'Ubud Rice Field Trekking');
+    const tierSuffix = (isCombo || isTrekking) ? '' : ` | ${selectedTier === 'sharing' ? 'Sharing' : 'Private'}`;
     const tourName = `${baseTitle}${tierSuffix}`;
 
     let tierLabel = (selectedTier === 'private') 
       ? 'PRIVATE (Without sharing other group)'
       : 'SHARING (With a small group)';
-    if (isSaving) {
+    if (isTrekking) {
+      tierLabel = 'Guided Walking Trek (Morning / Afternoon Session)';
+    } else if (isSaving) {
       tierLabel += ' [Saving Package - Ride Only]';
     } else if (!pkg.comboPrice) {
       tierLabel += ' [Regular Package - Inc. Lunch & Hotel Transfer]';
@@ -1354,11 +1371,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const parts = [];
     if (nAdult > 0) {
       const lbl = (document.getElementById('nameLabelAdult')?.textContent || 'Adults').trim();
-      const cleanLbl = lbl.toLowerCase().includes('adult') ? 'Adults' : lbl;
+      const cleanLbl = isTrekking ? 'Adults (Age 11+)' : (lbl.toLowerCase().includes('adult') ? 'Adults' : lbl);
       parts.push(`${cleanLbl}: *${nAdult} pax*`);
     }
     if (n8_11 > 0) {
-      parts.push(`Children (Age 8 – 11): *${n8_11} pax*`);
+      const lbl8_11 = isTrekking ? 'Children (Age 5 – 10)' : 'Children (Age 8 – 11)';
+      parts.push(`${lbl8_11}: *${n8_11} pax*`);
     }
     if (n6_7 > 0) {
       parts.push(`Children (Age 6 – 7): *${n6_7} pax*`);
@@ -1368,7 +1386,8 @@ document.addEventListener('DOMContentLoaded', () => {
       parts.push(isBabySeat ? `Children (Age 3 – 4) [Baby Seat]: *${n3_5} pax*` : `Children (Age 3 – 5): *${n3_5} pax*`);
     }
     if (n1_2 > 0) {
-      parts.push(`Infant / Baby Seat (Age 1 – 2): *${n1_2} pax*`);
+      const lbl1_2 = isTrekking ? 'Infants (Age 1 – 4)' : 'Infant / Baby Seat (Age 1 – 2)';
+      parts.push(`${lbl1_2}: *${n1_2} pax*`);
     }
 
     let formattedDate = 'Flexible';
@@ -1390,14 +1409,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const phone = (modalPhone && modalPhone.value.trim()) ? modalPhone.value.trim() : '-';
     const nationality = (modalNationality && modalNationality.value.trim()) ? modalNationality.value.trim() : '-';
     const elHeight = document.getElementById('modalHeight');
-    const riderHeight = (elHeight && elHeight.value.trim()) ? elHeight.value.trim() : '-';
+    const riderHeight = isTrekking ? '-' : ((elHeight && elHeight.value.trim()) ? elHeight.value.trim() : '-');
     const hotel = isSaving ? '' : ((modalHotel && modalHotel.value.trim()) ? modalHotel.value.trim() : '-');
     const elMessage = document.getElementById('modalMessage');
     const specialRequests = (elMessage && elMessage.value.trim()) ? elMessage.value.trim() : '-';
     const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 600.000';
     const totalUsd = (calcTotalUsd && calcTotalUsd.textContent) ? calcTotalUsd.textContent.trim() : '';
 
-    return { tourKey, tourName, baseTitle, selectedTier, tierLabel, isSaving, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, specialRequests, totalCost, totalUsd };
+    return { tourKey, tourName, baseTitle, selectedTier, tierLabel, isSaving, isTrekking, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, specialRequests, totalCost, totalUsd };
   };
 
   // Validate required booking modal fields
@@ -1516,8 +1535,7 @@ document.addEventListener('DOMContentLoaded', () => {
 • Tour Package: ${b.tourName}
 • Total Guests: ${b.totalGuests} Guests
 ${ageBreakdown}
-• Height: ${b.riderHeight}
-• Tour Date: ${b.dateTime}
+${b.isTrekking ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTime}
 • Hotel Pickup: ${hotelVal}
 • Estimated Total Cost: ${costVal}
 • Message / Special Requests: ${reqVal}
@@ -1602,11 +1620,10 @@ ${ageBreakdown}
 `*NEW RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
 👤 *Lead Guest Name*: ${b.name}
-🚲 *Tour Package*: ${b.tourName}
+${b.isTrekking ? '🌾' : '🚲'} *Tour Package*: ${b.tourName}
 👥 *Total Guests*: ${b.totalGuests} Guests
 ${partsList}
-📏 *Rider Height(s)*: ${b.riderHeight}
-📅 *Tour Date*: ${b.dateTime}`;
+${b.isTrekking ? '' : `📏 *Rider Height(s)*: ${b.riderHeight}\n`}📅 *Tour Date*: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
       message += `\n🏨 *Hotel Pickup*: ${b.hotel}`;
@@ -1667,8 +1684,7 @@ I would like to book a tour with Dewa Bike Tour. Here are my booking details:
 - Tour Package: ${b.tourName}
 - Total Guests: ${b.totalGuests} Guests
 ${partsList}
-- Height: ${b.riderHeight}
-- Tour Date: ${b.dateTime}`;
+${b.isTrekking ? '' : `- Height: ${b.riderHeight}\n`}- Tour Date: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
       body += `\n- Hotel Pickup: ${b.hotel}`;
