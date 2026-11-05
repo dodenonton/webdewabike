@@ -929,8 +929,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const priceLabel1_2 = document.getElementById('priceLabel1_2');
 
     // Configure category visibility & label descriptions based on tour type
-    const groupHeight = document.getElementById('modalHeight')?.closest('.form-group');
-    if (selectedTour === 'Ubud Rice Field Trekking') {
+    const packageTierGroup = document.getElementById('packageTierGroup');
+    const groupHeight = document.getElementById('modalHeight') ? document.getElementById('modalHeight').closest('.form-group') : null;
+
+    if (packageTierGroup) packageTierGroup.style.display = 'block';
+    if (groupHeight) groupHeight.style.display = 'block';
+
+    if (selectedTourKey === 'Ubud Rice Field Trekking') {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
       if (groupHeight) groupHeight.style.display = 'none';
       if (groupHotel) groupHotel.style.display = 'block';
@@ -946,7 +951,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (descLabel1_2) descLabel1_2.textContent = 'Free of charge';
     } else if (comboPrice) {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
-      if (groupHeight) groupHeight.style.display = 'block';
       if (row8_11) row8_11.style.display = 'none';
       if (row6_7) row6_7.style.display = 'none';
       if (row3_5) row3_5.style.display = 'none';
