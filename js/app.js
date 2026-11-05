@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       comboPrice: 450000
     },
     'Ubud Rice Field Trekking': {
-      title: 'Ubud Rice Field Trekking & Walking Tour',
+      title: 'Ubud: Balinese Village & Rice Fields Guided Trek',
       comboPrice: 350000
     }
   };
@@ -584,6 +584,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <option value="Ubud Rice Fields (Saving)">Ubud Rice Fields (Saving Package)</option>
               <option value="E-Bike Ubud Countryside (Saving)">Ubud E-Bike Tour (Saving Package)</option>
             </optgroup>
+            <optgroup label="Walking &amp; Cultural Tours">
+              <option value="Ubud Rice Field Trekking">Ubud: Balinese Village &amp; Rice Fields Guided Trek</option>
+            </optgroup>
           </select>
         </div>
 
@@ -926,7 +929,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const priceLabel1_2 = document.getElementById('priceLabel1_2');
 
     // Configure category visibility & label descriptions based on tour type
-    if (comboPrice) {
+    const groupHeight = document.getElementById('modalHeight')?.closest('.form-group');
+    if (selectedTour === 'Ubud Rice Field Trekking') {
+      if (packageTierGroup) packageTierGroup.style.display = 'none';
+      if (groupHeight) groupHeight.style.display = 'none';
+      if (groupHotel) groupHotel.style.display = 'block';
+      if (labelModalTime) labelModalTime.textContent = 'Preferred Session (8:30 AM or 2:30 PM)';
+      if (row8_11) row8_11.style.display = 'none';
+      if (row6_7) row6_7.style.display = 'none';
+      if (row3_5) row3_5.style.display = 'none';
+      if (row1_2) row1_2.style.display = 'flex';
+      if (rowAdult) rowAdult.style.display = 'flex';
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Participants / Walkers';
+      if (descLabelAdult) descLabelAdult.textContent = 'Rp 350.000 / person (Age 3+)';
+      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants (Age 1 – 2)';
+      if (descLabel1_2) descLabel1_2.textContent = 'Free of charge';
+    } else if (comboPrice) {
+      if (packageTierGroup) packageTierGroup.style.display = 'none';
+      if (groupHeight) groupHeight.style.display = 'block';
       if (row8_11) row8_11.style.display = 'none';
       if (row6_7) row6_7.style.display = 'none';
       if (row3_5) row3_5.style.display = 'none';
@@ -1430,7 +1450,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     }
 
-    if (!height) {
+    const currentTourKey = modalTourSelect ? modalTourSelect.value : '';
+    const isWalkingTour = (currentTourKey === 'Ubud Rice Field Trekking');
+
+    if (!isWalkingTour && !height) {
       if (elHeight) {
         elHeight.classList.add('input-error');
         elHeight.focus();
