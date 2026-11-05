@@ -320,7 +320,8 @@ button, input, select, textarea {
   -webkit-transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Scroll UP reveal: snappy 0.3s */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
 
@@ -332,6 +333,8 @@ button, input, select, textarea {
 .site-header.header-hidden {
   transform: translate3d(0, -100%, 0) !important;
   -webkit-transform: translate3d(0, -100%, 0) !important;
+  /* Scroll DOWN hide: slower & smoother 0.45s */
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.6, 1) !important;
   box-shadow: none !important;
   pointer-events: none;
 }
