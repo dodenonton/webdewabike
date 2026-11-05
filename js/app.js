@@ -939,7 +939,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
       if (groupHeight) groupHeight.style.display = 'none';
       if (groupHotel) groupHotel.style.display = 'block';
-      if (labelModalTime) labelModalTime.textContent = 'Preferred Session (8:30 AM or 2:30 PM)';
+      if (labelModalTime) labelModalTime.textContent = 'Preferred Session';
       if (row8_11) row8_11.style.display = 'none';
       if (row6_7) row6_7.style.display = 'none';
       if (row3_5) row3_5.style.display = 'none';
@@ -1175,6 +1175,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (modalTourTitle) {
         modalTourTitle.textContent = `Book: ${packageData[modalTourSelect.value]?.title || tourKey}`;
+      }
+      if (tourKey === 'Ubud Rice Field Trekking') {
+        const elTime = document.getElementById('modalTime');
+        if (elTime) elTime.value = '08:30 AM';
       }
     }
 
