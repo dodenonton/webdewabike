@@ -41,20 +41,39 @@ document.addEventListener('DOMContentLoaded', () => {
       isSaving: true
     },
     'Cycling + River Tubing': {
-      title: 'Cycling + River Tubing Adventure',
-      comboPrice: 850000
+      title: 'Cycling + River Tubing Combo',
+      comboPrice: 800000,
+      comboSinglePrice: 1150000
+    },
+    'Cycling + River Rafting': {
+      title: 'Cycling + River Rafting Combo',
+      comboPrice: 850000,
+      comboSinglePrice: 1200000
     },
     'Cycling + ATV Quad Bike': {
-      title: 'Cycling + ATV Quad Bike Adventure',
-      comboPrice: 950000
-    },
-    'Rice Paddy Planting & Rafting': {
-      title: 'Rice Paddy Planting & Ayung Rafting',
-      comboPrice: 450000
+      title: 'Cycling + ATV Quad Bike Combo',
+      comboPrice: 900000,
+      comboSinglePrice: 1200000
     },
     'Ubud Rice Field Trekking': {
       title: 'Ubud: Balinese Village and Rice Fields Guided Trek',
-      isTrekking: true
+      isTrekking: true,
+      noBike: true
+    },
+    'River Rafting': {
+      title: 'Ayung River Rafting Adventure',
+      activityPrice: 400000,
+      noBike: true
+    },
+    'River Tubing': {
+      title: 'Ubud River Tubing Adventure',
+      activityPrice: 450000,
+      noBike: true
+    },
+    'ATV Adventures': {
+      title: 'Ubud ATV Quad Bike Adventure',
+      activityPrice: 550000,
+      noBike: true
     }
   };
 
@@ -569,23 +588,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="modal-body">
         <div class="form-group">
-          <label>Select Cycling Tour</label>
+          <label>Select Tour Package</label>
           <select id="modalTourSelect">
-            <optgroup label="Regular Packages (Inc. Lunch &amp; Hotel Transfer)">
+            <optgroup label="Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)">
               <option value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</option>
               <option value="Ubud Rice Fields">Ubud Rice Fields Cycling (Regular)</option>
               <option value="E-Bike Ubud Countryside">Ubud E-Bike Tour (Regular)</option>
-              <option value="Cycling + River Tubing">Cycling + River Tubing Combo</option>
-              <option value="Cycling + ATV Quad Bike">Cycling + ATV Quad Bike Combo</option>
-              <option value="Rice Paddy Planting &amp; Rafting">Rice Paddy Planting &amp; Rafting</option>
             </optgroup>
-            <optgroup label="Saving Packages (Ride Only, Without Lunch &amp; Transfer)">
+            <optgroup label="Saving Cycling Packages (Ride Only, Without Lunch &amp; Transfer)">
               <option value="Kintamani Downhill (Saving)">Kintamani Downhill (Saving Package)</option>
               <option value="Ubud Rice Fields (Saving)">Ubud Rice Fields (Saving Package)</option>
               <option value="E-Bike Ubud Countryside (Saving)">Ubud E-Bike Tour (Saving Package)</option>
             </optgroup>
-            <optgroup label="Walking &amp; Cultural Tours">
+            <optgroup label="Combination Tours (Cycling + Adventure)">
+              <option value="Cycling + River Tubing">Cycling + River Tubing Combo</option>
+              <option value="Cycling + River Rafting">Cycling + River Rafting Combo</option>
+              <option value="Cycling + ATV Quad Bike">Cycling + ATV Quad Bike Combo</option>
+            </optgroup>
+            <optgroup label="Other Activities (Walking, Water &amp; Off-Road)">
               <option value="Ubud Rice Field Trekking">Ubud: Balinese Village &amp; Rice Fields Guided Trek</option>
+              <option value="River Tubing">River Tubing Adventure</option>
+              <option value="River Rafting">River Rafting Adventure</option>
+              <option value="ATV Adventures">ATV Quad Bike Adventure</option>
             </optgroup>
           </select>
         </div>
@@ -868,6 +892,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const isEBike = !!pkg.isEBike;
     const isSaving = !!pkg.isSaving;
     const comboPrice = pkg.comboPrice;
+    const comboSinglePrice = pkg.comboSinglePrice;
+    const activityPrice = pkg.activityPrice;
+    const noBike = !!pkg.noBike;
 
     let selectedTier = 'private';
     const checkedRadio = document.querySelector('input[name="modalTier"]:checked');
@@ -933,7 +960,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const groupHeight = document.getElementById('modalHeight') ? document.getElementById('modalHeight').closest('.form-group') : null;
 
     if (packageTierGroup) packageTierGroup.style.display = 'block';
-    if (groupHeight) groupHeight.style.display = 'block';
+    if (groupHeight) groupHeight.style.display = noBike ? 'none' : 'block';
 
     if (selectedTourKey === 'Ubud Rice Field Trekking') {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
@@ -951,11 +978,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (descLabel8_11) descLabel8_11.textContent = 'Age 5 – 10 years old';
       if (nameLabel1_2) nameLabel1_2.textContent = 'Infants (Age 1 – 4)';
       if (descLabel1_2) descLabel1_2.textContent = 'Free of charge (Age 1 – 4)';
+    } else if (activityPrice) {
+      if (packageTierGroup) packageTierGroup.style.display = 'none';
+      if (groupHeight) groupHeight.style.display = 'none';
+      if (groupHotel) groupHotel.style.display = 'block';
+      if (labelModalTime) labelModalTime.textContent = 'Preferred Time';
+      if (row8_11) row8_11.style.display = 'none';
+      if (row6_7) row6_7.style.display = 'none';
+      if (row3_5) row3_5.style.display = 'none';
+      if (row1_2) row1_2.style.display = 'none';
+      if (rowAdult) rowAdult.style.display = 'flex';
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Participants';
+      if (descLabelAdult) descLabelAdult.textContent = 'Adults & Children';
     } else {
-      if (labelModalTime) labelModalTime.textContent = 'Preferred Pick-Up Time';
+      if (labelModalTime) labelModalTime.textContent = isSaving ? 'Preferred Tour Time' : 'Preferred Pick-Up Time';
     }
     
-    if (selectedTourKey === 'Ubud Rice Field Trekking') {
+    if (selectedTourKey === 'Ubud Rice Field Trekking' || activityPrice) {
       // handled above
     } else if (comboPrice) {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
@@ -964,8 +1003,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (row3_5) row3_5.style.display = 'none';
       if (row1_2) row1_2.style.display = 'none';
       if (rowAdult) rowAdult.style.display = 'flex';
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Guests (Combo Rider)';
-      if (descLabelAdult) descLabelAdult.textContent = 'Minimum 2 pax for combo';
+      if (nameLabelAdult) nameLabelAdult.textContent = 'Guests (Combo Package)';
+      if (descLabelAdult) descLabelAdult.textContent = 'Private Cycling + Adventure Combo';
     } else if (isEBike && !isSaving) {
       // E-Bike Regular (Gambar 1)
       if (row8_11) row8_11.style.display = 'none';
@@ -1058,11 +1097,18 @@ document.addEventListener('DOMContentLoaded', () => {
       p6_7 = 0;
       p3_5 = 0;
       p1_2 = 0;
+    } else if (activityPrice) {
+      pAdult = activityPrice;
+      p8_11 = activityPrice;
+      p6_7 = activityPrice;
+      p3_5 = activityPrice;
+      p1_2 = 0;
     } else if (comboPrice) {
-      pAdult = comboPrice;
-      p8_11 = comboPrice;
-      p6_7 = comboPrice;
-      p3_5 = comboPrice;
+      const effectiveComboPrice = (totalGuests === 1 && comboSinglePrice) ? comboSinglePrice : comboPrice;
+      pAdult = effectiveComboPrice;
+      p8_11 = effectiveComboPrice;
+      p6_7 = effectiveComboPrice;
+      p3_5 = effectiveComboPrice;
       p1_2 = 0;
     } else if (isEBike && !isSaving) {
       // E-Bike Regular (Gambar 1)
@@ -1122,7 +1168,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update row price labels
     if (priceLabelAdult) {
-      priceLabelAdult.textContent = formatIDR(pAdult) + ((selectedTier === 'private' && !isSaving && !comboPrice && totalGuests === 1 && selectedTourKey !== 'Ubud Rice Field Trekking') ? ' (1 pax)' : '/pax');
+      const isSingleSpecial = ((selectedTier === 'private' && !isSaving && !comboPrice && !activityPrice && selectedTourKey !== 'Ubud Rice Field Trekking' && totalGuests === 1) || (comboPrice && comboSinglePrice && totalGuests === 1));
+      priceLabelAdult.textContent = formatIDR(pAdult) + (isSingleSpecial ? ' (1 pax)' : '/pax');
     }
     if (priceLabel8_11) priceLabel8_11.textContent = formatIDR(p8_11) + '/pax';
     if (priceLabel6_7) priceLabel6_7.textContent = formatIDR(p6_7) + '/pax';
@@ -1341,8 +1388,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isSaving = !!pkg.isSaving;
     const isCombo = !!pkg.comboPrice;
+    const isActivity = !!pkg.activityPrice;
     const isTrekking = (tourKey === 'Ubud Rice Field Trekking');
-    const tierSuffix = (isCombo || isTrekking) ? '' : ` | ${selectedTier === 'sharing' ? 'Sharing' : 'Private'}`;
+    const noBike = !!pkg.noBike;
+    const tierSuffix = (isCombo || isTrekking || isActivity) ? '' : ` | ${selectedTier === 'sharing' ? 'Sharing' : 'Private'}`;
     const tourName = `${baseTitle}${tierSuffix}`;
 
     let tierLabel = (selectedTier === 'private') 
@@ -1350,9 +1399,13 @@ document.addEventListener('DOMContentLoaded', () => {
       : 'SHARING (With a small group)';
     if (isTrekking) {
       tierLabel = 'Guided Walking Trek (Morning / Afternoon Session)';
+    } else if (isActivity) {
+      tierLabel = 'Outdoor Activity Package';
+    } else if (isCombo) {
+      tierLabel = 'PRIVATE (Combination Cycling + Adventure Package)';
     } else if (isSaving) {
       tierLabel += ' [Saving Package - Ride Only]';
-    } else if (!pkg.comboPrice) {
+    } else {
       tierLabel += ' [Regular Package - Inc. Lunch & Hotel Transfer]';
     }
 
@@ -1382,7 +1435,7 @@ document.addEventListener('DOMContentLoaded', () => {
       parts.push(`Children (Age 6 – 7): *${n6_7} pax*`);
     }
     if (n3_5 > 0) {
-      const isBabySeat = isEBike;
+      const isBabySeat = !!pkg.isEBike;
       parts.push(isBabySeat ? `Children (Age 3 – 4) [Baby Seat]: *${n3_5} pax*` : `Children (Age 3 – 5): *${n3_5} pax*`);
     }
     if (n1_2 > 0) {
@@ -1409,14 +1462,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const phone = (modalPhone && modalPhone.value.trim()) ? modalPhone.value.trim() : '-';
     const nationality = (modalNationality && modalNationality.value.trim()) ? modalNationality.value.trim() : '-';
     const elHeight = document.getElementById('modalHeight');
-    const riderHeight = isTrekking ? '-' : ((elHeight && elHeight.value.trim()) ? elHeight.value.trim() : '-');
+    const riderHeight = noBike ? '-' : ((elHeight && elHeight.value.trim()) ? elHeight.value.trim() : '-');
     const hotel = isSaving ? '' : ((modalHotel && modalHotel.value.trim()) ? modalHotel.value.trim() : '-');
     const elMessage = document.getElementById('modalMessage');
     const specialRequests = (elMessage && elMessage.value.trim()) ? elMessage.value.trim() : '-';
     const totalCost = (calcTotalIdr && calcTotalIdr.textContent) ? calcTotalIdr.textContent : 'Rp 600.000';
     const totalUsd = (calcTotalUsd && calcTotalUsd.textContent) ? calcTotalUsd.textContent.trim() : '';
 
-    return { tourKey, tourName, baseTitle, selectedTier, tierLabel, isSaving, isTrekking, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, specialRequests, totalCost, totalUsd };
+    return { tourKey, tourName, baseTitle, selectedTier, tierLabel, isSaving, isTrekking, noBike, totalGuests, parts, date, time: selectedTime, dateTime, name, email, phone, nationality, riderHeight, hotel, specialRequests, totalCost, totalUsd };
   };
 
   // Validate required booking modal fields
@@ -1478,9 +1531,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const currentTourKey = modalTourSelect ? modalTourSelect.value : '';
-    const isWalkingTour = (currentTourKey === 'Ubud Rice Field Trekking');
+    const currentPkg = packageData[currentTourKey] || {};
+    const isNoBikeTour = !!currentPkg.noBike;
 
-    if (!isWalkingTour && !height) {
+    if (!isNoBikeTour && !height) {
       if (elHeight) {
         elHeight.classList.add('input-error');
         elHeight.focus();
@@ -1535,7 +1589,7 @@ document.addEventListener('DOMContentLoaded', () => {
 • Tour Package: ${b.tourName}
 • Total Guests: ${b.totalGuests} Guests
 ${ageBreakdown}
-${b.isTrekking ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTime}
+${b.noBike ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTime}
 • Hotel Pickup: ${hotelVal}
 • Estimated Total Cost: ${costVal}
 • Message / Special Requests: ${reqVal}
@@ -1616,14 +1670,15 @@ ${b.isTrekking ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTi
     }
 
     const partsList = b.parts.map(p => `   • ${p}`).join('\n');
+    const pkgEmoji = b.isTrekking ? '🌾' : (b.noBike ? '🌴' : '🚲');
     let message = 
 `*NEW RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
 👤 *Lead Guest Name*: ${b.name}
-${b.isTrekking ? '🌾' : '🚲'} *Tour Package*: ${b.tourName}
+${pkgEmoji} *Tour Package*: ${b.tourName}
 👥 *Total Guests*: ${b.totalGuests} Guests
 ${partsList}
-${b.isTrekking ? '' : `📏 *Rider Height(s)*: ${b.riderHeight}\n`}📅 *Tour Date*: ${b.dateTime}`;
+${b.noBike ? '' : `📏 *Rider Height(s)*: ${b.riderHeight}\n`}📅 *Tour Date*: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
       message += `\n🏨 *Hotel Pickup*: ${b.hotel}`;
@@ -1684,7 +1739,7 @@ I would like to book a tour with Dewa Bike Tour. Here are my booking details:
 - Tour Package: ${b.tourName}
 - Total Guests: ${b.totalGuests} Guests
 ${partsList}
-${b.isTrekking ? '' : `- Height: ${b.riderHeight}\n`}- Tour Date: ${b.dateTime}`;
+${b.noBike ? '' : `- Height: ${b.riderHeight}\n`}- Tour Date: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
       body += `\n- Hotel Pickup: ${b.hotel}`;
