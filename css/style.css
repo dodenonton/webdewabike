@@ -3615,6 +3615,7 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
 
   /* Hero Section Mobile Polish */
   .hero-section {
+    background-image: url('../images/hero-bg-mobile.jpg') !important;
     min-height: calc(100vh - 4rem);
     min-height: calc(100dvh - 4rem);
     height: auto;

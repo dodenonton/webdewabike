@@ -30,10 +30,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Preload Critical LCP Hero Image -->
+  <link rel="preload" as="image" href="images/hero-bg-mobile.jpg" media="(max-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/hero-bg.jpg" media="(min-width: 769px)" fetchpriority="high">
+
   <!-- Main Stylesheet -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=116">
+  <link rel="stylesheet" href="css/style.css?v=117">
   <link rel="canonical" href="https://www.dewabike.com/">
 
   <!-- Schema.org Structured Data (JSON-LD) for LocalBusiness & TourOperator -->
@@ -170,7 +174,7 @@
     <div class="container header-container">
       <a href="#hero" class="brand-logo">
         <!-- [TAG FOTO: foto-logo-header] -->
-            <img id="foto-logo-header" data-tag="foto-logo-header" src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img">
+            <img id="foto-logo-header" data-tag="foto-logo-header" src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img" width="46" height="46" decoding="async">
         <div class="logo-text">
           <span class="logo-title">DEWA BIKE TOUR</span>
           <span class="logo-subtitle">Ubud Private Cycling • Bali</span>
@@ -624,7 +628,7 @@
       <div class="footer-brand">
         <div class="footer-logo">
           <!-- [TAG FOTO: foto-logo-footer] -->
-            <img id="foto-logo-footer" data-tag="foto-logo-footer" src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img small">
+            <img id="foto-logo-footer" data-tag="foto-logo-footer" src="images/logo.png" alt="Dewa Bike Tour Logo" class="brand-logo-img small" width="36" height="36" loading="lazy" decoding="async">
           <span class="logo-title">DEWA BIKE TOUR</span>
         </div>
         <div class="footer-social">
