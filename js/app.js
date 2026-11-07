@@ -590,6 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="form-group">
           <label>Select Tour Package</label>
           <select id="modalTourSelect">
+            <option value="" disabled selected>-- Select a Tour Package --</option>
             <optgroup label="Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)">
               <option value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</option>
               <option value="Ubud Rice Fields">Ubud Rice Fields Cycling (Regular)</option>
@@ -883,7 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Live Recalculate Prices
   const recalculateModal = () => {
-    const selectedTourKey = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : 'Kintamani Downhill';
+    const selectedTourKey = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : '';
     const pkg = packageData[selectedTourKey] || {
       isEBike: false,
       isSaving: false
@@ -1084,6 +1085,22 @@ document.addEventListener('DOMContentLoaded', () => {
       pill.textContent = `${totalGuests} ${totalGuests > 1 ? 'Guests' : 'Guest'}`;
     }
 
+    if (!selectedTourKey) {
+      if (priceLabelAdult) priceLabelAdult.textContent = '-';
+      if (priceLabel8_11) priceLabel8_11.textContent = '-';
+      if (priceLabel6_7) priceLabel6_7.textContent = '-';
+      if (priceLabel3_5) priceLabel3_5.textContent = '-';
+      if (priceLabel1_2) priceLabel1_2.textContent = '-';
+
+      const listEl = document.getElementById('calcBreakdownList');
+      if (listEl) {
+        listEl.innerHTML = `<div class="calc-row" style="color: var(--text-muted);"><span>Please select a tour package above to calculate price.</span></div>`;
+      }
+      if (calcTotalIdr) calcTotalIdr.textContent = 'Rp 0';
+      if (calcTotalUsd) calcTotalUsd.textContent = '(Select a package above)';
+      return;
+    }
+
     // Determine unit price per category
     let pAdult = 600000;
     let p8_11 = 0;
@@ -1219,23 +1236,29 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Open Modal logic
-  const openModal = (tourKey = 'Kintamani Downhill', tier = 'private') => {
-    // If on a saving package page, automatically ensure saving variant is selected
-    if (window.location.pathname.includes('saving-packages') && !tourKey.includes('(Saving)')) {
-      tourKey = `${tourKey} (Saving)`;
-      tier = 'saving';
-    } else if (tier === 'saving' && !tourKey.includes('(Saving)')) {
-      tourKey = `${tourKey} (Saving)`;
+  const openModal = (tourKey = '', tier = 'private') => {
+    // If on a saving package page and a tourKey is provided, automatically ensure saving variant is selected
+    if (tourKey) {
+      if (window.location.pathname.includes('saving-packages') && !tourKey.includes('(Saving)')) {
+        tourKey = `${tourKey} (Saving)`;
+        tier = 'saving';
+      } else if (tier === 'saving' && !tourKey.includes('(Saving)')) {
+        tourKey = `${tourKey} (Saving)`;
+      }
     }
 
     if (modalTourSelect) {
-      if (packageData[tourKey]) {
+      modalTourSelect.classList.remove('input-error');
+      if (tourKey && packageData[tourKey]) {
         modalTourSelect.value = tourKey;
+        if (modalTourTitle) {
+          modalTourTitle.textContent = `Book: ${packageData[tourKey].title || tourKey}`;
+        }
       } else {
-        modalTourSelect.value = 'Kintamani Downhill';
-      }
-      if (modalTourTitle) {
-        modalTourTitle.textContent = `Book: ${packageData[modalTourSelect.value]?.title || tourKey}`;
+        modalTourSelect.value = '';
+        if (modalTourTitle) {
+          modalTourTitle.textContent = 'Book Dewa Bike Tour';
+        }
       }
       if (tourKey === 'Ubud Rice Field Trekking') {
         const elTime = document.getElementById('modalTime');
@@ -1259,7 +1282,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Validate and auto-advance closed date if needed
     if (modalDate) {
-      const currentTour = modalTourSelect ? modalTourSelect.value : tourKey;
+      const currentTour = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : 'Kintamani Downhill';
       if (isDateClosed(modalDate.value, currentTour)) {
         const nextDate = getNextAvailableDate(new Date(modalDate.value), currentTour);
         modalDate.value = nextDate;
@@ -1293,7 +1316,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = e.target.closest('.open-booking-btn');
     if (btn) {
       e.preventDefault();
-      const tour = btn.getAttribute('data-tour') || 'Kintamani Downhill';
+      const tour = btn.getAttribute('data-tour') || '';
       const tier = btn.getAttribute('data-tier') || 'regular';
       openModal(tour, tier);
     }
@@ -1356,12 +1379,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tour select change
   if (modalTourSelect) {
     modalTourSelect.addEventListener('change', () => {
+      modalTourSelect.classList.remove('input-error');
       const selected = modalTourSelect.value;
       if (packageData[selected]) {
         modalTourTitle.textContent = `Book: ${packageData[selected].title}`;
+      } else if (modalTourTitle) {
+        modalTourTitle.textContent = 'Book Dewa Bike Tour';
       }
       if (modalDate) {
-        updateClosedNotice(modalDate.value, 'modalClosedDateNotice', modalDate, selected);
+        updateClosedNotice(modalDate.value, 'modalClosedDateNotice', modalDate, selected || 'Kintamani Downhill');
       }
       recalculateModal();
     });
@@ -1482,9 +1508,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const elDate = document.getElementById('modalDate');
     const elTime = document.getElementById('modalTime');
 
-    [elName, elEmail, elPhone, elNationality, elHeight, elDate, elTime].forEach(el => {
+    [modalTourSelect, elName, elEmail, elPhone, elNationality, elHeight, elDate, elTime].forEach(el => {
       if (el) el.classList.remove('input-error');
     });
+
+    if (!modalTourSelect || !modalTourSelect.value) {
+      if (modalTourSelect) {
+        modalTourSelect.classList.add('input-error');
+        modalTourSelect.focus();
+      }
+      alert('Please select a Tour Package first.');
+      return false;
+    }
 
     const name = elName ? elName.value.trim() : '';
     const email = elEmail ? elEmail.value.trim() : '';
