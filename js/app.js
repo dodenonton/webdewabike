@@ -114,7 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const isMobileMenuOpen = navMenuEl && navMenuEl.classList.contains('mobile-open');
 
       if (isMobileMenuOpen || scrollY <= threshold) {
-        if (isHidden) { header.classList.remove('header-hidden'); isHidden = false; }
+        if (isHidden) {
+          header.classList.remove('header-hidden');
+          document.body.classList.remove('header-hidden-state');
+          isHidden = false;
+        }
         consecutiveUp = 0;
         consecutiveDown = 0;
         return;
@@ -126,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         consecutiveUp = 0;
         if (consecutiveDown >= 3 && scrollY > 80 && !isHidden) {
           header.classList.add('header-hidden');
+          document.body.classList.add('header-hidden-state');
           isHidden = true;
         }
       } else if (diff < 0) {
@@ -134,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         consecutiveDown = 0;
         if (consecutiveUp >= 2 && isHidden) {
           header.classList.remove('header-hidden');
+          document.body.classList.remove('header-hidden-state');
           isHidden = false;
         }
       }
@@ -198,8 +204,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.innerWidth <= 1024) return;
 
         const headerEl = document.getElementById('header');
+        const isHeaderHidden = headerEl && headerEl.classList.contains('header-hidden');
         const headerHeight = headerEl ? headerEl.offsetHeight : 72;
-        const topOffset = headerHeight + 16;
+        const topOffset = isHeaderHidden ? 16 : (headerHeight + 16);
         const gridRect = grid.getBoundingClientRect();
 
         // Dynamic Scroll Sync: saat bagian kiri discroll turun, bagian kanan ikut turun menampilkan tombol booking
