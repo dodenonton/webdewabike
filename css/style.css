@@ -320,9 +320,13 @@ button, input, select, textarea {
   -webkit-transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  /* Scroll UP reveal: snappy 0.3s */
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
+  /* Scroll UP reveal: buttery smooth Apple-style spring curve */
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.35s ease,
+              box-shadow 0.3s ease,
+              background-color 0.3s ease;
+  will-change: transform, opacity;
+  opacity: 1;
 }
 
 .site-header.scrolled {
@@ -333,8 +337,10 @@ button, input, select, textarea {
 .site-header.header-hidden {
   transform: translate3d(0, -100%, 0) !important;
   -webkit-transform: translate3d(0, -100%, 0) !important;
-  /* Scroll DOWN hide: slower & smoother 0.45s */
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.6, 1) !important;
+  opacity: 0 !important;
+  /* Scroll DOWN hide: natural fluid glide */
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.35s ease !important;
   box-shadow: none !important;
   pointer-events: none;
 }

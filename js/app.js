@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scrolling DOWN
         consecutiveDown++;
         consecutiveUp = 0;
-        if (consecutiveDown >= 3 && scrollY > 80 && !isHidden) {
+        if (consecutiveDown >= 3 && scrollY > 160 && !isHidden) {
           header.classList.add('header-hidden');
           isHidden = true;
         }
