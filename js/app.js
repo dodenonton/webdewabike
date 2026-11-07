@@ -250,15 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initDesktopStickySidebar();
 
-  // Scroll active package button into view in horizontal package nav on mobile
-  const activePkgBtn = document.querySelector('.pkg-btn-group .pkg-btn.active');
-  if (activePkgBtn && activePkgBtn.parentElement) {
-    const parent = activePkgBtn.parentElement;
-    if (parent.scrollWidth > parent.clientWidth) {
-      const scrollPos = activePkgBtn.offsetLeft - (parent.clientWidth / 2) + (activePkgBtn.clientWidth / 2);
-      parent.scrollLeft = Math.max(0, scrollPos);
-    }
-  }
+
 
   /* -------------------------------------------------------------
    * 2. MOBILE MENU TOGGLE
