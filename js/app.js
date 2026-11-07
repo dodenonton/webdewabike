@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scrolling DOWN
         consecutiveDown++;
         consecutiveUp = 0;
-        if (consecutiveDown >= 3 && scrollY > 160 && !isHidden) {
+        if (consecutiveDown >= 3 && scrollY > 80 && !isHidden) {
           header.classList.add('header-hidden');
           isHidden = true;
         }
@@ -141,6 +141,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+  }
+
+  /* -------------------------------------------------------------
+   * 1.05 SMOOTH HERO BANNER ZOOM ON SCROLL (60fps / 120fps GPU)
+   * ------------------------------------------------------------- */
+  const heroSection = document.getElementById('hero');
+  if (heroSection) {
+    let heroTicking = false;
+    const onHeroScroll = () => {
+      const scrollY = window.pageYOffset || 0;
+      const heroHeight = heroSection.offsetHeight || 600;
+      if (scrollY <= heroHeight + 100) {
+        const progress = Math.min(Math.max(0, scrollY / heroHeight), 1);
+        // Smooth, silky organic zoom from 1.0 to 1.08 with gentle vertical parallax
+        const scale = 1 + progress * 0.08;
+        const translateY = Math.round(progress * 26);
+        heroSection.style.setProperty('--hero-scale', scale.toFixed(4));
+        heroSection.style.setProperty('--hero-translate-y', `${translateY}px`);
+      }
+      heroTicking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!heroTicking) {
+        window.requestAnimationFrame(onHeroScroll);
+        heroTicking = true;
+      }
+    }, { passive: true });
+    onHeroScroll();
   }
 
   /* -------------------------------------------------------------

@@ -320,13 +320,9 @@ button, input, select, textarea {
   -webkit-transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  /* Scroll UP reveal: buttery smooth Apple-style spring curve */
-  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.35s ease,
-              box-shadow 0.3s ease,
-              background-color 0.3s ease;
-  will-change: transform, opacity;
-  opacity: 1;
+  /* Scroll UP reveal: snappy 0.3s */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
 }
 
 .site-header.scrolled {
@@ -337,10 +333,8 @@ button, input, select, textarea {
 .site-header.header-hidden {
   transform: translate3d(0, -100%, 0) !important;
   -webkit-transform: translate3d(0, -100%, 0) !important;
-  opacity: 0 !important;
-  /* Scroll DOWN hide: natural fluid glide */
-  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.35s ease !important;
+  /* Scroll DOWN hide: slower & smoother 0.45s */
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.6, 1) !important;
   box-shadow: none !important;
   pointer-events: none;
 }
@@ -484,20 +478,38 @@ button, input, select, textarea {
 /* [TAG FOTO: foto-hero-bg] */
 .hero-section {
   position: relative;
-  background-image: url('../images/hero-bg.jpg');
-  background-position: center 42%;
-  background-size: cover;
-  background-repeat: no-repeat;
   height: calc(100vh - 7rem);
-  height: calc(100dvh - 7rem);
+  height: calc(100svh - 7rem);
   min-height: calc(100vh - 7rem);
-  min-height: calc(100dvh - 7rem);
+  min-height: calc(100svh - 7rem);
   display: flex;
   align-items: center;
   color: #ffffff;
   padding: 2.5rem 0;
   box-sizing: border-box;
   overflow: hidden;
+  background-color: #0f172a;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../images/hero-bg.jpg');
+  background-position: center 42%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 1;
+  pointer-events: none;
+  transform: translate3d(0, var(--hero-translate-y, 0px), 0) scale(var(--hero-scale, 1));
+  -webkit-transform: translate3d(0, var(--hero-translate-y, 0px), 0) scale(var(--hero-scale, 1));
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-origin: center center;
 }
 
 .hero-overlay {
@@ -509,11 +521,12 @@ button, input, select, textarea {
   background: linear-gradient(90deg, rgba(15, 23, 42, 0.60) 0%, rgba(15, 23, 42, 0.30) 55%, rgba(15, 23, 42, 0.15) 100%),
               linear-gradient(180deg, rgba(15, 23, 42, 0.50) 0%, transparent 40%, rgba(15, 23, 42, 0.65) 100%);
   pointer-events: none;
+  z-index: 2;
 }
 
 .hero-container {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .hero-content {
@@ -3621,16 +3634,26 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
 
   /* Hero Section Mobile Polish */
   .hero-section {
-    background-image: url('../images/hero-bg-mobile.jpg') !important;
-    min-height: calc(100vh - 4rem);
-    min-height: calc(100dvh - 4rem);
+    background-image: none !important;
+    min-height: calc(100vh - 4rem) !important;
+    min-height: calc(100svh - 4rem) !important;
     height: auto;
     padding: 0 !important;
-    background-position: center 25% !important;
-    background-size: cover !important;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow: hidden !important;
+  }
+
+  .hero-section::before {
+    background-image: url('../images/hero-bg-mobile.jpg') !important;
+    background-position: center 25% !important;
+    background-size: cover !important;
+    transform: translate3d(0, var(--hero-translate-y, 0px), 0) scale(var(--hero-scale, 1));
+    -webkit-transform: translate3d(0, var(--hero-translate-y, 0px), 0) scale(var(--hero-scale, 1));
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .hero-overlay {
@@ -5587,11 +5610,12 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
 
   .hero-section {
     padding: 0 !important;
-    min-height: calc(100vh - 4rem);
-    min-height: calc(100dvh - 4rem);
+    min-height: calc(100vh - 4rem) !important;
+    min-height: calc(100svh - 4rem) !important;
     display: flex;
     flex-direction: column;
-    background-position: center 25% !important;
+    overflow: hidden !important;
+    background-image: none !important;
   }
 
   .hero-text-block {
