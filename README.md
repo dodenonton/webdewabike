@@ -48,7 +48,7 @@ dewa-bike-tour/
     │   └── cycling-atv-adventure.html                # Cycling + ATV Quad Bike Combo (Rp 950k)
     │
     └── other-activities/                             # Aktivitas Non-Sepeda
-        ├── rice-paddy-planting.html                  # Pengalaman Menanam Padi Tradisional (Rp 450k)
+        ├── ubud-rice-field-trekking.html             # Ubud: Balinese Village & Rice Fields Guided Trek
         ├── river-tubing.html                         # River Tubing Sungai Ubud (Rp 450k)
         ├── river-rafting.html                        # Arung Jeram Sungai Ayung (Rp 400k)
         └── atv-adventures.html                       # ATV Quad Bike Standalone (Single / Tandem)
