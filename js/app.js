@@ -137,7 +137,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scrolling UP
         consecutiveUp++;
         consecutiveDown = 0;
-        if (consecutiveUp >= 2 && isHidden) {
+        const hasStickySidebar = window.innerWidth > 1024 && document.querySelector('.tour-sidebar-card');
+        const revealThreshold = hasStickySidebar ? 380 : 80;
+
+        if (scrollY <= revealThreshold) {
+          if (isHidden) {
+            header.classList.remove('header-hidden');
+            document.body.classList.remove('header-hidden-state');
+            isHidden = false;
+          }
+        } else if (!hasStickySidebar && consecutiveUp >= 3 && isHidden) {
           header.classList.remove('header-hidden');
           document.body.classList.remove('header-hidden-state');
           isHidden = false;
@@ -203,10 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const updateScrollSync = () => {
         if (window.innerWidth <= 1024) return;
 
-        const headerEl = document.getElementById('header');
-        const isHeaderHidden = headerEl && headerEl.classList.contains('header-hidden');
-        const headerHeight = headerEl ? headerEl.offsetHeight : 72;
-        const topOffset = isHeaderHidden ? 16 : (headerHeight + 16);
+        const topOffset = 16;
         const gridRect = grid.getBoundingClientRect();
 
         // Dynamic Scroll Sync: saat bagian kiri discroll turun, bagian kanan ikut turun menampilkan tombol booking
@@ -217,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
               card.scrollTop = 0;
             } else {
               const scrollPast = topOffset - gridRect.top;
-              const syncDistance = 420;
+              const syncDistance = 450;
               const progress = Math.min(1, Math.max(0, scrollPast / syncDistance));
               card.scrollTop = Math.round(progress * maxInternalScroll);
             }
@@ -243,6 +249,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   initDesktopStickySidebar();
+
+  // Scroll active package button into view in horizontal package nav on mobile
+  const activePkgBtn = document.querySelector('.pkg-btn-group .pkg-btn.active');
+  if (activePkgBtn && activePkgBtn.parentElement) {
+    const parent = activePkgBtn.parentElement;
+    if (parent.scrollWidth > parent.clientWidth) {
+      const scrollPos = activePkgBtn.offsetLeft - (parent.clientWidth / 2) + (activePkgBtn.clientWidth / 2);
+      parent.scrollLeft = Math.max(0, scrollPos);
+    }
+  }
 
   /* -------------------------------------------------------------
    * 2. MOBILE MENU TOGGLE
