@@ -4452,6 +4452,11 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
               url('../images/bike-ebike.jpg') center 33% / cover no-repeat;
 }
 
+.page-hero.trekking-hero {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
+              url('../images/trekking/trekking-local-farmers.jpg') center 35% / cover no-repeat;
+}
+
 .breadcrumb {
   display: inline-flex;
   align-items: center;
@@ -5684,6 +5689,11 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
   .page-hero#foto-hero-ebike-saving {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
                 url('../images/bike-ebike.jpg') center 40% / cover no-repeat !important;
+  }
+
+  .page-hero.trekking-hero {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
+                url('../images/trekking/trekking-local-farmers.jpg') center 35% / cover no-repeat !important;
   }
 
   .dropdown-menu {
