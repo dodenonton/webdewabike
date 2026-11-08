@@ -3299,7 +3299,7 @@ ${data.name}`;
         desc: 'High-quality adult mountain bikes available in full frame sizes from S to XL. Regularly serviced and safety checked by our in-house mechanics.'
       },
       ebike: {
-        file: 'gallery-home-3.jpg',
+        file: 'bike-ebike.jpg',
         title: 'E-Bike (Sizes S – M)',
         subtitle: 'Electric assist bicycle (Min height 150 cm)',
         desc: 'Comfortable and easy-to-ride electric bicycle featuring smooth pedal assistance, front suspension, and reliable disc brakes. Perfect for riding effortlessly through rice fields and village roads. Minimum rider height 150 cm.'
