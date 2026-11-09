@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <!-- Hidden Native Select (Synchronized for pricing, validation, & WhatsApp details) -->
-          <select id="modalTourSelect" class="sr-hidden-select" tabindex="-1" aria-hidden="true">
+          <select id="modalTourSelect" class="sr-hidden-select" style="display: none !important;" tabindex="-1" aria-hidden="true">
             <option value="" disabled selected>-- Select a Tour Package --</option>
             <optgroup label="Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)">
               <option value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</option>
