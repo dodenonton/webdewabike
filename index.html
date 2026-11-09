@@ -37,7 +37,7 @@
   <!-- Main Stylesheet -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="apple-touch-icon" href="images/logo.png">
-  <link rel="stylesheet" href="css/style.css?v=141">
+  <link rel="stylesheet" href="css/style.css?v=142">
   <link rel="canonical" href="https://www.dewabike.com/">
 
   <!-- Schema.org Structured Data (JSON-LD) for LocalBusiness & TourOperator -->
@@ -719,9 +719,54 @@
       </div>
 
       <div class="modal-body">
-        <div class="form-group">
-          <label>Select Tour Package</label>
-          <select id="modalTourSelect">
+        <div class="form-group custom-glass-select-group">
+          <label id="labelTourSelect">Select Tour Package</label>
+          
+          <!-- Custom Glass Select Trigger & Menu (Home Page Trial) -->
+          <div class="custom-glass-select" id="customGlassSelect">
+            <div class="custom-glass-trigger placeholder" id="customGlassTrigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="labelTourSelect customGlassTriggerText">
+              <span class="custom-glass-trigger-text" id="customGlassTriggerText">-- Select a Tour Package --</span>
+              <span class="custom-glass-arrow" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </div>
+
+            <div class="custom-glass-menu" id="customGlassMenu" role="listbox" aria-labelledby="labelTourSelect">
+              <div class="glass-category-header" role="presentation">
+                Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)
+              </div>
+              <div class="glass-option" role="option" data-value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</div>
+              <div class="glass-option" role="option" data-value="Ubud Rice Fields">Ubud Rice Fields Cycling (Regular)</div>
+              <div class="glass-option" role="option" data-value="E-Bike Ubud Countryside">Ubud E-Bike Tour (Regular)</div>
+
+              <div class="glass-category-header" role="presentation">
+                Saving Cycling Packages (Ride Only, Without Lunch &amp; Transfer)
+              </div>
+              <div class="glass-option" role="option" data-value="Kintamani Downhill (Saving)">Kintamani Downhill (Saving Package)</div>
+              <div class="glass-option" role="option" data-value="Ubud Rice Fields (Saving)">Ubud Rice Fields (Saving Package)</div>
+              <div class="glass-option" role="option" data-value="E-Bike Ubud Countryside (Saving)">Ubud E-Bike Tour (Saving Package)</div>
+
+              <div class="glass-category-header" role="presentation">
+                Combination Tours (Cycling + Adventure)
+              </div>
+              <div class="glass-option" role="option" data-value="Cycling + River Tubing">Cycling + River Tubing Combo</div>
+              <div class="glass-option" role="option" data-value="Cycling + River Rafting">Cycling + River Rafting Combo</div>
+              <div class="glass-option" role="option" data-value="Cycling + ATV Quad Bike">Cycling + ATV Quad Bike Combo</div>
+
+              <div class="glass-category-header" role="presentation">
+                Other Activities (Walking, Water &amp; Off-Road)
+              </div>
+              <div class="glass-option" role="option" data-value="Ubud Rice Field Trekking">Ubud: Balinese Village &amp; Rice Fields Guided Trek</div>
+              <div class="glass-option" role="option" data-value="River Tubing">River Tubing Adventure</div>
+              <div class="glass-option" role="option" data-value="River Rafting">River Rafting Adventure</div>
+              <div class="glass-option" role="option" data-value="ATV Adventures">ATV Quad Bike Adventure</div>
+            </div>
+          </div>
+
+          <!-- Hidden Native Select (Synchronized for pricing, validation, & WhatsApp details) -->
+          <select id="modalTourSelect" class="sr-hidden-select" tabindex="-1" aria-hidden="true">
             <option value="" disabled selected>-- Select a Tour Package --</option>
             <optgroup label="Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)">
               <option value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</option>
@@ -994,6 +1039,6 @@
   </div>
 
   <!-- Main JavaScript File -->
-  <script src="js/app.js?v=105"></script>
+  <script src="js/app.js?v=106"></script>
 </body>
 </html>

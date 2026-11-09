@@ -883,6 +883,102 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const modalTourSelect = document.getElementById('modalTourSelect');
   const modalTourTitle = document.getElementById('modalTourTitle');
+
+  // Custom Glass Select for Booking Modal (Home Page Trial)
+  const customGlassSelect = document.getElementById('customGlassSelect');
+  const customGlassTrigger = document.getElementById('customGlassTrigger');
+  const customGlassTriggerText = document.getElementById('customGlassTriggerText');
+  const customGlassMenu = document.getElementById('customGlassMenu');
+
+  const syncCustomGlassSelect = (tourKey) => {
+    if (!customGlassTriggerText) return;
+    if (tourKey && modalTourSelect) {
+      const opt = modalTourSelect.querySelector(`option[value="${tourKey}"]`);
+      if (opt && opt.value) {
+        customGlassTriggerText.textContent = opt.textContent.trim();
+        customGlassTriggerText.classList.remove('placeholder');
+      } else {
+        customGlassTriggerText.textContent = '-- Select a Tour Package --';
+        customGlassTriggerText.classList.add('placeholder');
+      }
+    } else {
+      customGlassTriggerText.textContent = '-- Select a Tour Package --';
+      customGlassTriggerText.classList.add('placeholder');
+    }
+    if (customGlassTrigger) customGlassTrigger.classList.remove('input-error');
+    if (customGlassMenu) {
+      customGlassMenu.querySelectorAll('.glass-option').forEach(item => {
+        item.classList.toggle('selected', item.getAttribute('data-value') === tourKey);
+      });
+    }
+  };
+
+  if (customGlassSelect && customGlassTrigger && customGlassMenu) {
+    const toggleGlassMenu = (show) => {
+      const isOpen = (typeof show === 'boolean') ? show : !customGlassSelect.classList.contains('open');
+      customGlassSelect.classList.toggle('open', isOpen);
+      customGlassTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    };
+
+    customGlassTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleGlassMenu();
+    });
+
+    customGlassTrigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        toggleGlassMenu(true);
+        const firstOpt = customGlassMenu.querySelector('.glass-option');
+        if (firstOpt) firstOpt.focus();
+      } else if (e.key === 'Escape') {
+        toggleGlassMenu(false);
+      }
+    });
+
+    customGlassMenu.querySelectorAll('.glass-option').forEach(option => {
+      option.setAttribute('tabindex', '0');
+
+      const selectOption = () => {
+        const val = option.getAttribute('data-value');
+        if (modalTourSelect) {
+          modalTourSelect.value = val;
+          modalTourSelect.classList.remove('input-error');
+          modalTourSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        syncCustomGlassSelect(val);
+        toggleGlassMenu(false);
+        customGlassTrigger.focus();
+      };
+
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectOption();
+      });
+
+      option.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectOption();
+        } else if (e.key === 'Escape') {
+          toggleGlassMenu(false);
+          customGlassTrigger.focus();
+        }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!customGlassSelect.contains(e.target)) {
+        toggleGlassMenu(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && customGlassSelect.classList.contains('open')) {
+        toggleGlassMenu(false);
+      }
+    });
+  }
   const modalTierInputs = document.querySelectorAll('input[name="modalTier"]');
   const radioCards = document.querySelectorAll('.radio-card');
   const modalGuestsInput = document.getElementById('modalGuests');
@@ -1308,6 +1404,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const elTime = document.getElementById('modalTime');
         if (elTime) elTime.value = '08:30 AM';
       }
+      syncCustomGlassSelect(modalTourSelect.value);
     }
 
     // Set tier radio
@@ -1425,6 +1522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalTourSelect.addEventListener('change', () => {
       modalTourSelect.classList.remove('input-error');
       const selected = modalTourSelect.value;
+      syncCustomGlassSelect(selected);
       if (packageData[selected]) {
         modalTourTitle.textContent = `Book: ${packageData[selected].title}`;
       } else if (modalTourTitle) {
@@ -1552,13 +1650,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const elDate = document.getElementById('modalDate');
     const elTime = document.getElementById('modalTime');
 
-    [modalTourSelect, elName, elEmail, elPhone, elNationality, elHeight, elDate, elTime].forEach(el => {
+    const customGlassTrigger = document.getElementById('customGlassTrigger');
+    [modalTourSelect, customGlassTrigger, elName, elEmail, elPhone, elNationality, elHeight, elDate, elTime].forEach(el => {
       if (el) el.classList.remove('input-error');
     });
 
     if (!modalTourSelect || !modalTourSelect.value) {
       if (modalTourSelect) {
         modalTourSelect.classList.add('input-error');
+      }
+      if (customGlassTrigger) {
+        customGlassTrigger.classList.add('input-error');
+        customGlassTrigger.focus();
+      } else if (modalTourSelect) {
         modalTourSelect.focus();
       }
       alert('Please select a Tour Package first.');
