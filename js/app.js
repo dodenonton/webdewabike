@@ -3394,20 +3394,35 @@ ${data.name}`;
       if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('http://') || href.startsWith('https://') || href.startsWith('javascript:')) return;
       if (href.endsWith('.html') || href.includes('.html#') || href.includes('.html?')) return;
       
-      if (href === './' || href === '../' || href === '../../' || href.endsWith('/')) {
-        e.preventDefault();
-        window.location.href = href + 'index.html';
-        return;
-      }
-      
+      e.preventDefault();
+
+      // Find local workspace root folder if browsing offline
+      const pathname = window.location.pathname;
+      const marker = '/dewa-bike-tour/';
+      const markerIdx = pathname.lastIndexOf(marker);
+      const rootPrefix = markerIdx !== -1 ? pathname.substring(0, markerIdx + marker.length) : '';
+
       const parts = href.split('#');
       const baseAndQuery = parts[0].split('?');
-      const base = baseAndQuery[0];
+      let base = baseAndQuery[0];
       const query = baseAndQuery[1] ? '?' + baseAndQuery[1] : '';
       const hash = parts[1] ? '#' + parts[1] : '';
-      if (!base) return;
-      
-      e.preventDefault();
+
+      if (base === '/' || base === '') {
+        window.location.href = (rootPrefix || './') + 'index.html' + query + hash;
+        return;
+      }
+
+      if (base.startsWith('/') && rootPrefix) {
+        window.location.href = rootPrefix + base.slice(1) + '.html' + query + hash;
+        return;
+      }
+
+      if (base.endsWith('/')) {
+        window.location.href = base + 'index.html' + query + hash;
+        return;
+      }
+
       window.location.href = base + '.html' + query + hash;
     });
   }
