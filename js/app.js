@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
       noBike: true
     },
     'River Tubing': {
-      title: 'Ubud River Tubing Adventure',
-      activityPrice: 450000,
+      title: 'Ubud River Tubing (Includes Lunch)',
+      activityPrice: 250000,
       noBike: true
     },
     'ATV Adventures': {
@@ -671,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Other Activities (Walking, Water &amp; Off-Road)
               </div>
               <div class="glass-option" role="option" data-value="Ubud Rice Field Trekking">Ubud: Balinese Village &amp; Rice Fields Guided Trek</div>
-              <div class="glass-option" role="option" data-value="River Tubing">River Tubing Adventure</div>
+              <div class="glass-option" role="option" data-value="River Tubing">River Tubing (Rp 250.000 - Inc. Lunch)</div>
               <div class="glass-option" role="option" data-value="River Rafting">River Rafting Adventure</div>
               <div class="glass-option" role="option" data-value="ATV Adventures">ATV Quad Bike Adventure</div>
             </div>
@@ -697,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </optgroup>
             <optgroup label="Other Activities (Walking, Water &amp; Off-Road)">
               <option value="Ubud Rice Field Trekking">Ubud: Balinese Village &amp; Rice Fields Guided Trek</option>
-              <option value="River Tubing">River Tubing Adventure</option>
+              <option value="River Tubing">River Tubing (Rp 250.000 - Inc. Lunch)</option>
               <option value="River Rafting">River Rafting Adventure</option>
               <option value="ATV Adventures">ATV Quad Bike Adventure</option>
             </optgroup>
@@ -3832,4 +3832,5 @@ ${data.name}`;
   initPackageTabs();
   syncClosedDatesFromCloud();
 });
+
 
