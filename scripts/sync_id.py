@@ -358,7 +358,7 @@ class Translator:
 
 
 def upsert_hreflang_and_locale(head_node: Node, en_url: str, id_url: str, is_id: bool) -> None:
-    """Cleanly replace hreflang alternates (and og:locale on /id/) right after canonical link."""
+    """Cleanly replace hreflang alternates, og:locale, and og:locale:alternate right after canonical link."""
     new_children = []
     i = 0
     children = head_node.children
@@ -370,7 +370,7 @@ def upsert_hreflang_and_locale(head_node: Node, en_url: str, id_url: str, is_id:
                     i += 1
                 i += 1
                 continue
-            if is_id and c.tag == "meta" and c.get_attr("property") == "og:locale":
+            if c.tag == "meta" and c.get_attr("property") in ("og:locale", "og:locale:alternate"):
                 if i + 1 < len(children) and isinstance(children[i + 1], tuple) and children[i + 1][1].strip() == "":
                     i += 1
                 i += 1
@@ -385,15 +385,14 @@ def upsert_hreflang_and_locale(head_node: Node, en_url: str, id_url: str, is_id:
         Node("link", [("rel", "alternate"), ("hreflang", "id"), ("href", id_url)], ""),
         ("raw", "\n  "),
         Node("link", [("rel", "alternate"), ("hreflang", "x-default"), ("href", en_url)], ""),
+        ("raw", "\n  "),
+        Node("meta", [("property", "og:locale"), ("content", "id_ID" if is_id else "en_US")], ""),
+        ("raw", "\n  "),
+        Node("meta", [("property", "og:locale:alternate"), ("content", "en_US" if is_id else "id_ID")], ""),
     ]
     for item in alt_tags:
         if isinstance(item, Node):
             item.dirty_attrs = True
-
-    if is_id:
-        loc_node = Node("meta", [("property", "og:locale"), ("content", "id_ID")], "")
-        loc_node.dirty_attrs = True
-        alt_tags.extend([("raw", "\n  "), loc_node])
 
     inserted = False
     final_children = []
@@ -504,7 +503,7 @@ def translate_json_ld(obj, translator: Translator, missing: list[tuple[str, str]
     if isinstance(obj, dict):
         out = {}
         for k, v in obj.items():
-            if k in ("@id", "url") and isinstance(v, str) and v.startswith(BASE_URL):
+            if k in ("@id", "url", "item") and isinstance(v, str) and v.startswith(BASE_URL):
                 suffix = v[len(BASE_URL):]
                 if not suffix.startswith("/id"):
                     if suffix == "" or suffix == "/":
@@ -515,6 +514,9 @@ def translate_json_ld(obj, translator: Translator, missing: list[tuple[str, str]
                         out[k] = f"{BASE_URL}/id{suffix}"
                 else:
                     out[k] = v
+                continue
+            if k == "inLanguage" and isinstance(v, str):
+                out[k] = "id"
                 continue
             if k in LD_SKIP_KEYS:
                 out[k] = v
@@ -527,7 +529,7 @@ def translate_json_ld(obj, translator: Translator, missing: list[tuple[str, str]
                     if not ok:
                         missing.append((rel_str, f"[ld:{k}] {v}"))
                     out[k] = v
-            elif isinstance(v, list) and k == "alternateName":
+            elif isinstance(v, list) and k in ("alternateName", "touristType"):
                 new_list = []
                 for item in v:
                     if isinstance(item, str) and re.search(r"[A-Za-z]", item):
@@ -536,7 +538,7 @@ def translate_json_ld(obj, translator: Translator, missing: list[tuple[str, str]
                             new_list.append(tr)
                         else:
                             if not ok:
-                                missing.append((rel_str, f"[ld:alternateName] {item}"))
+                                missing.append((rel_str, f"[ld:{k}] {item}"))
                             new_list.append(item)
                     else:
                         new_list.append(item)
