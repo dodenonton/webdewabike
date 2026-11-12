@@ -235,6 +235,24 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.dewabike.com/other-tours/combination-tours/cycling-rafting</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/combination-tours/cycling-rafting"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/combination-tours/cycling-rafting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/combination-tours/cycling-rafting"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/combination-tours/cycling-rafting</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/combination-tours/cycling-rafting"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/combination-tours/cycling-rafting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/combination-tours/cycling-rafting"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.dewabike.com/other-tours/combination-tours/cycling-tubing</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/combination-tours/cycling-tubing"/>
     <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/combination-tours/cycling-tubing"/>
