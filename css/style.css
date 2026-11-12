@@ -7330,3 +7330,227 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
   }
 }
 
+/* ==========================================================================
+   HEADER REFINEMENT & LANGUAGE SWITCHER (EN | ID)
+   ========================================================================== */
+.header-container {
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.brand-logo {
+  flex-shrink: 0;
+  white-space: nowrap;
+  gap: 0.65rem;
+}
+
+.brand-logo-img {
+  width: 42px;
+  height: 42px;
+}
+
+.logo-title {
+  font-size: 1.12rem;
+  white-space: nowrap;
+}
+
+.logo-subtitle {
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.nav-links {
+  gap: 1.1rem;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 0.1rem;
+  white-space: nowrap;
+  gap: 0.25rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+.header-actions .btn-sm {
+  height: 34px;
+  padding: 0 0.85rem;
+  font-size: 0.81rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 9px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.38rem;
+}
+
+.header-actions .btn-sm svg {
+  flex-shrink: 0;
+}
+
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  background-color: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 0.4rem;
+  border-radius: 6px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lang-btn:hover:not(.active) {
+  color: var(--primary);
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.lang-btn.active {
+  background-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(16, 91, 56, 0.25);
+}
+
+@media (max-width: 1160px) and (min-width: 769px) {
+  .nav-links {
+    gap: 0.8rem;
+  }
+  .nav-link {
+    font-size: 0.84rem;
+  }
+  .header-actions {
+    gap: 0.42rem;
+  }
+  .header-actions .btn-sm {
+    padding: 0 0.72rem;
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .header-actions .btn-outline {
+    display: none;
+  }
+  .nav-links {
+    gap: 0.75rem;
+  }
+  .nav-link {
+    font-size: 0.83rem;
+  }
+}
+
+@media (max-width: 860px) and (min-width: 769px) {
+  .brand-logo-img {
+    width: 38px;
+    height: 38px;
+  }
+  .logo-title {
+    font-size: 1.02rem;
+  }
+  .logo-subtitle {
+    font-size: 0.65rem;
+  }
+  .nav-links {
+    gap: 0.55rem;
+  }
+  .nav-link {
+    font-size: 0.79rem;
+  }
+  .header-actions .btn-sm {
+    padding: 0 0.65rem;
+    font-size: 0.76rem;
+    height: 32px;
+  }
+  .lang-switcher {
+    height: 32px;
+  }
+  .lang-btn {
+    height: 26px;
+    min-width: 26px;
+    padding: 0 0.36rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-title {
+    font-size: 0.98rem !important;
+    white-space: nowrap;
+  }
+  .logo-subtitle {
+    font-size: 0.66rem !important;
+    letter-spacing: 0.02em !important;
+    white-space: nowrap;
+  }
+  .header-actions {
+    gap: 0.4rem !important;
+    flex-shrink: 0;
+  }
+  .lang-switcher {
+    height: 32px;
+    padding: 2px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .lang-btn {
+    min-width: 27px;
+    height: 26px;
+    padding: 0 0.4rem;
+    border-radius: 6px;
+    font-size: 0.71rem;
+  }
+  .mobile-toggle {
+    width: 38px !important;
+    height: 38px !important;
+    padding: 6px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .logo-title {
+    font-size: 0.92rem !important;
+  }
+  .logo-subtitle {
+    font-size: 0.62rem !important;
+  }
+  .lang-switcher {
+    height: 30px;
+  }
+  .lang-btn {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 0.34rem;
+    font-size: 0.66rem;
+  }
+}
+

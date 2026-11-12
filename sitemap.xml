@@ -1,117 +1,345 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.dewabike.com/</loc>
-    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/"/>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.dewabike.com/bike-tours/all-cycling-packages</loc>
-    <lastmod>2026-11-05</lastmod>
+    <loc>https://www.dewabike.com/id/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/"/>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/bike-tours/regular-packages/kintamani-downhill</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/bike-tours/regular-packages/ubud-rice-fields</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/bike-tours/regular-packages/e-bike-ubud-rice</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/bike-tours/saving-packages/kintamani-downhill</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/bike-tours/saving-packages/ubud-rice-fields</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/bike-tours/saving-packages/e-bike-ubud-rice-fields</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/other-tours/see-all-tours</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/other-tours/combination-tours/cycling-tubing</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/other-tours/combination-tours/cycling-atv-adventure</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/other-tours/other-activities/ubud-rice-field-trekking</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/other-tours/other-activities/atv-adventures</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/other-tours/other-activities/river-rafting</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.dewabike.com/other-tours/other-activities/river-tubing</loc>
-    <lastmod>2026-11-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.dewabike.com/about/about-us</loc>
-    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/about/about-us"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/about/about-us"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/about/about-us"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/about/about-us</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/about/about-us"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/about/about-us"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/about/about-us"/>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.dewabike.com/about/our-facilities</loc>
-    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/about/our-facilities"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/about/our-facilities"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/about/our-facilities"/>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.dewabike.com/gallery</loc>
-    <lastmod>2026-11-05</lastmod>
+    <loc>https://www.dewabike.com/id/about/our-facilities</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/about/our-facilities"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/about/our-facilities"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/about/our-facilities"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/bike-tours/all-cycling-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/all-cycling-packages"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/all-cycling-packages"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/all-cycling-packages"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/bike-tours/all-cycling-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/all-cycling-packages"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/all-cycling-packages"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/all-cycling-packages"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/bike-tours/regular-packages/e-bike-ubud-rice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/regular-packages/e-bike-ubud-rice"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/regular-packages/e-bike-ubud-rice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/regular-packages/e-bike-ubud-rice"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/bike-tours/regular-packages/e-bike-ubud-rice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/regular-packages/e-bike-ubud-rice"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/regular-packages/e-bike-ubud-rice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/regular-packages/e-bike-ubud-rice"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/bike-tours/regular-packages/kintamani-downhill</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/regular-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/regular-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/regular-packages/kintamani-downhill"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/bike-tours/regular-packages/kintamani-downhill</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/regular-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/regular-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/regular-packages/kintamani-downhill"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/bike-tours/regular-packages/ubud-rice-fields</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/regular-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/regular-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/regular-packages/ubud-rice-fields"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/bike-tours/regular-packages/ubud-rice-fields</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/regular-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/regular-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/regular-packages/ubud-rice-fields"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/bike-tours/saving-packages/e-bike-ubud-rice-fields</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/saving-packages/e-bike-ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/saving-packages/e-bike-ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/saving-packages/e-bike-ubud-rice-fields"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/bike-tours/saving-packages/e-bike-ubud-rice-fields</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/saving-packages/e-bike-ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/saving-packages/e-bike-ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/saving-packages/e-bike-ubud-rice-fields"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/bike-tours/saving-packages/kintamani-downhill</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/saving-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/saving-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/saving-packages/kintamani-downhill"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/bike-tours/saving-packages/kintamani-downhill</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/saving-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/saving-packages/kintamani-downhill"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/saving-packages/kintamani-downhill"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/bike-tours/saving-packages/ubud-rice-fields</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/saving-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/saving-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/saving-packages/ubud-rice-fields"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/bike-tours/saving-packages/ubud-rice-fields</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/bike-tours/saving-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/bike-tours/saving-packages/ubud-rice-fields"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/bike-tours/saving-packages/ubud-rice-fields"/>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.dewabike.com/contact</loc>
-    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/contact"/>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/contact"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/gallery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/gallery"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/gallery"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/gallery"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/gallery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/gallery"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/gallery"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/gallery"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/other-tours/combination-tours/cycling-atv-adventure</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/combination-tours/cycling-atv-adventure"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/combination-tours/cycling-atv-adventure"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/combination-tours/cycling-atv-adventure"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/combination-tours/cycling-atv-adventure</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/combination-tours/cycling-atv-adventure"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/combination-tours/cycling-atv-adventure"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/combination-tours/cycling-atv-adventure"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/other-tours/combination-tours/cycling-tubing</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/combination-tours/cycling-tubing"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/combination-tours/cycling-tubing"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/combination-tours/cycling-tubing"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/combination-tours/cycling-tubing</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/combination-tours/cycling-tubing"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/combination-tours/cycling-tubing"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/combination-tours/cycling-tubing"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/other-tours/other-activities/atv-adventures</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/atv-adventures"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/atv-adventures"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/atv-adventures"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/other-activities/atv-adventures</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/atv-adventures"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/atv-adventures"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/atv-adventures"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/other-tours/other-activities/river-rafting</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/river-rafting"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/river-rafting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/river-rafting"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/other-activities/river-rafting</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/river-rafting"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/river-rafting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/river-rafting"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/other-tours/other-activities/river-tubing</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/river-tubing"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/river-tubing"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/river-tubing"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/other-activities/river-tubing</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/river-tubing"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/river-tubing"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/river-tubing"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/other-tours/other-activities/ubud-rice-field-trekking</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/ubud-rice-field-trekking"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/ubud-rice-field-trekking"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/ubud-rice-field-trekking"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/other-activities/ubud-rice-field-trekking</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/other-activities/ubud-rice-field-trekking"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/other-activities/ubud-rice-field-trekking"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/other-activities/ubud-rice-field-trekking"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/other-tours/see-all-tours</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/see-all-tours"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/see-all-tours"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/see-all-tours"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dewabike.com/id/other-tours/see-all-tours</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dewabike.com/other-tours/see-all-tours"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://www.dewabike.com/id/other-tours/see-all-tours"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dewabike.com/other-tours/see-all-tours"/>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 </urlset>

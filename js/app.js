@@ -7,74 +7,94 @@ document.addEventListener('DOMContentLoaded', () => {
   // Constants
   const WHATSAPP_NUMBER = '6281339545689';
   const USD_RATE = 15500; // 1 USD ~ 15,500 IDR for estimation
+  const IS_ID = document.documentElement.lang === 'id' || /(?:^|\/)id(?:\/|$)/.test(window.location.pathname);
 
   // Package Data Dictionary for Quick Price Lookup
   const packageData = {
     'Kintamani Downhill': {
       title: 'Kintamani Downhill Cycling Tour (Regular)',
+      titleId: 'Tur Sepeda Kintamani Downhill (Paket Reguler)',
       isEBike: false,
       isSaving: false
     },
     'Ubud Rice Fields': {
       title: 'Ubud Rice Fields & Village Tour (Regular)',
+      titleId: 'Tur Sepeda Persawahan & Desa Ubud (Paket Reguler)',
       isEBike: false,
       isSaving: false
     },
     'E-Bike Ubud Countryside': {
       title: 'Ubud E-Bike Countryside Tour (Regular)',
+      titleId: 'Tur E-Bike Pedesaan Ubud (Paket Reguler)',
       isEBike: true,
       isSaving: false
     },
     'Kintamani Downhill (Saving)': {
       title: 'Kintamani Downhill Cycling (Saving Package)',
+      titleId: 'Tur Sepeda Kintamani Downhill (Paket Hemat)',
       isEBike: false,
       isSaving: true
     },
     'Ubud Rice Fields (Saving)': {
       title: 'Ubud Rice Fields & Village Tour (Saving Package)',
+      titleId: 'Tur Sepeda Persawahan & Desa Ubud (Paket Hemat)',
       isEBike: false,
       isSaving: true
     },
     'E-Bike Ubud Countryside (Saving)': {
       title: 'Ubud E-Bike Tour (Saving Package)',
+      titleId: 'Tur E-Bike Ubud (Paket Hemat)',
       isEBike: true,
       isSaving: true
     },
     'Cycling + River Tubing': {
       title: 'Cycling + River Tubing Combo',
+      titleId: 'Paket Kombinasi Sepeda + River Tubing',
       comboPrice: 800000,
       comboSinglePrice: 1150000
     },
     'Cycling + River Rafting': {
       title: 'Cycling + River Rafting Combo',
+      titleId: 'Paket Kombinasi Sepeda + River Rafting',
       comboPrice: 850000,
       comboSinglePrice: 1200000
     },
     'Cycling + ATV Quad Bike': {
       title: 'Cycling + ATV Quad Bike Combo',
+      titleId: 'Paket Kombinasi Sepeda + ATV Quad Bike',
       comboPrice: 900000,
       comboSinglePrice: 1200000
     },
     'Ubud Rice Field Trekking': {
       title: 'Ubud: Balinese Village and Rice Fields Guided Trek',
+      titleId: 'Jalan Kaki Santai: Jelajah Desa & Sawah Ubud',
       isTrekking: true,
       noBike: true
     },
     'River Rafting': {
       title: 'Ayung River Rafting Adventure',
+      titleId: 'Petualangan Arung Jeram Sungai Ayung',
       activityPrice: 400000,
       noBike: true
     },
     'River Tubing': {
       title: 'Ubud River Tubing (Includes Lunch)',
+      titleId: 'River Tubing Ubud (Termasuk Makan Siang)',
       activityPrice: 250000,
       noBike: true
     },
     'ATV Adventures': {
       title: 'Ubud ATV Quad Bike Adventure',
+      titleId: 'Petualangan ATV Quad Bike Ubud',
       activityPrice: 550000,
       noBike: true
     }
+  };
+
+  const getPkgTitle = (key) => {
+    const p = packageData[key];
+    if (!p) return key;
+    return (IS_ID && p.titleId) ? p.titleId : p.title;
   };
 
   /* -------------------------------------------------------------
@@ -321,8 +341,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentLoc = window.location;
       const normalizePath = (p) => {
         let clean = (p || '').toLowerCase().split('?')[0].split('#')[0].replace(/\/$/, '');
-        if (clean === '') clean = '/index';
-        return clean.replace(/\.html$/, '');
+        if (clean === '') clean = '/';
+        clean = clean.replace(/\.html$/, '');
+        clean = clean.replace(/\/index$/, '') || '/';
+        return clean;
       };
 
       const currentNorm = normalizePath(currentLoc.pathname);
@@ -433,6 +455,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return r;
   };
 
+  const formatClosedReason = (r) => {
+    if (!IS_ID) return translateReasonToEn(r);
+    if (!r) return 'Hari Libur Operasional';
+    const lower = String(r).toLowerCase();
+    if (lower.includes('penuh') || lower.includes('full') || lower.includes('capacity')) return 'Kuota Penuh (Full Booked)';
+    if (lower.includes('istirahat') || lower.includes('libur')) return 'Libur Operasional / Istirahat Tim';
+    if (lower.includes('jalur') || lower.includes('cuaca') || lower.includes('ekstrem')) return 'Perawatan Jalur / Cuaca Ekstrem';
+    if (lower.includes('nyepi')) return 'Hari Raya Nyepi';
+    if (lower.includes('galungan')) return 'Hari Raya Galungan & Kuningan';
+    if (lower.includes('piodalan') || lower.includes('upacara')) return 'Upacara Adat Pura Desa';
+    return r;
+  };
+
   const isDateClosed = (dateStr, tourKey) => {
     if (!dateStr) return null;
     const list = getStoredClosedDates();
@@ -513,19 +548,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const closedInfo = isDateClosed(dateStr, tourKey);
     if (closedInfo) {
-      const tourTitle = (tourKey && packageData[tourKey]?.title) ? packageData[tourKey].title : (tourKey || 'Tour Package');
+      const tourTitle = getPkgTitle(tourKey) || (IS_ID ? 'Paket Tur' : 'Tour Package');
       const isGlobal = (!closedInfo.packageScope || closedInfo.packageScope === 'all');
-      const reasonDisplay = translateReasonToEn(closedInfo.reason);
+      const reasonDisplay = formatClosedReason(closedInfo.reason);
 
       let formattedDate = dateStr;
       const parsedDate = new Date(dateStr + 'T00:00:00');
       if (!isNaN(parsedDate.getTime())) {
-        formattedDate = parsedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        formattedDate = parsedDate.toLocaleDateString(IS_ID ? 'id-ID' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       }
 
-      const pkgHeadline = isGlobal 
-        ? 'All Dewa Bike Tour operations are closed' 
-        : `The <strong>"${escapeHtml(tourTitle)}"</strong> tour package is unavailable`;
+      const pkgHeadline = IS_ID
+        ? (isGlobal ? 'Seluruh layanan Dewa Bike Tour sedang tutup' : `Paket tur <strong>"${escapeHtml(tourTitle)}"</strong> tidak tersedia`)
+        : (isGlobal ? 'All Dewa Bike Tour operations are closed' : `The <strong>"${escapeHtml(tourTitle)}"</strong> tour package is unavailable`);
+
+      const noticeTitle = IS_ID ? 'TUTUP PADA TANGGAL INI' : 'CLOSED ON THIS DATE';
+      const reasonSentence = IS_ID
+        ? `${pkgHeadline} pada <strong>${escapeHtml(formattedDate)}</strong> karena: <strong style="text-decoration: underline;">${escapeHtml(reasonDisplay)}</strong>.`
+        : `${pkgHeadline} on <strong>${escapeHtml(formattedDate)}</strong> due to: <strong style="text-decoration: underline;">${escapeHtml(reasonDisplay)}</strong>.`;
+      const helpHint = IS_ID
+        ? '👉 Tanggal ini ditandai merah karena operasional libur. Silakan pilih tanggal lain atau lihat paket tur kami lainnya.'
+        : '👉 This date is highlighted in red because it is closed. Please choose another date or explore our other tour packages.';
 
       if (noticeEl) {
         noticeEl.innerHTML = `
@@ -539,10 +582,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div>
               <div style="font-weight: 800; font-size: 0.92rem; color: #991b1b; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 0.25rem;">
-                CLOSED ON THIS DATE
+                ${noticeTitle}
               </div>
               <p style="margin: 0; font-size: 0.88rem; color: #7f1d1d; line-height: 1.45;">
-                ${pkgHeadline} on <strong>${escapeHtml(formattedDate)}</strong> due to: <strong style="text-decoration: underline;">${escapeHtml(reasonDisplay)}</strong>.
+                ${reasonSentence}
               </p>
               ${closedInfo.note ? `
                 <div style="margin-top: 0.4rem; padding: 0.35rem 0.65rem; background: rgba(254, 226, 226, 0.7); border-left: 3px solid #dc2626; border-radius: 4px; font-size: 0.84rem; color: #475569; font-style: italic;">
@@ -550,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               ` : ''}
               <p style="margin: 0.4rem 0 0; font-size: 0.82rem; color: #b91c1c; font-weight: 600;">
-                👉 This date is highlighted in red because it is closed. Please choose another date or explore our other tour packages.
+                ${helpHint}
               </p>
             </div>
           </div>
@@ -613,31 +656,184 @@ document.addEventListener('DOMContentLoaded', () => {
   const ensureBookingModal = () => {
     let modalEl = document.getElementById('bookingModal');
     if (!modalEl) {
+      const m = IS_ID ? {
+        closeAria: 'Tutup modal',
+        tag: 'FORMULIR PEMESANAN TUR PRIVAT',
+        title: 'Pesan Dewa Bike Tour',
+        subtitle: 'Hitung total biaya secara instan lalu kirim detail pesanan Anda via WhatsApp atau Email.',
+        labelPkg: 'Pilih Paket Tur',
+        selectPkgPlaceholder: '-- Pilih Paket Tur --',
+        catRegular: 'Paket Sepeda Reguler (Termasuk Makan Siang &amp; Antar-Jemput)',
+        optKintReg: 'Sepeda Kintamani Downhill (Reguler)',
+        optUbudReg: 'Sepeda Persawahan Ubud (Reguler)',
+        optEbikeReg: 'Tur E-Bike Ubud (Reguler)',
+        catSaving: 'Paket Sepeda Hemat (Tanpa Makan Siang &amp; Antar-Jemput)',
+        optKintSav: 'Sepeda Kintamani Downhill (Paket Hemat)',
+        optUbudSav: 'Sepeda di Persawahan Ubud (Paket Hemat)',
+        optEbikeSav: 'Tur E-Bike Ubud (Paket Hemat)',
+        catCombo: 'Tur Kombinasi (Sepeda + Aktivitas Seru)',
+        optComboTub: 'Kombinasi Sepeda + River Tubing',
+        optComboRaf: 'Kombinasi Sepeda + River Rafting',
+        optComboAtv: 'Kombinasi Sepeda + ATV Quad Bike',
+        catOther: 'Aktivitas Lainnya (Jalan Kaki, Air &amp; Off-Road)',
+        optTrek: 'Ubud: Jalan Kaki Menyusuri Desa &amp; Persawahan Bali',
+        optTub: 'River Tubing (Rp 250.000 - Termasuk Makan Siang)',
+        optRaf: 'Petualangan River Rafting',
+        optAtv: 'Petualangan ATV Quad Bike',
+        tierLabel: 'Tipe Paket',
+        tierPrivTitle: 'PRIVAT',
+        tierPrivDesc: 'Tanpa digabung rombongan lain',
+        tierSharTitle: 'SHARING',
+        tierSharDesc: 'Digabung dengan grup kecil',
+        dateLabel: 'Tanggal Tur',
+        closedTag: 'Tutup',
+        timeLabel: 'Waktu Penjemputan Pilihan',
+        timeAria: 'Pilih waktu penjemputan pilihan',
+        timePlaceholder: 'contoh: 08:30 AM',
+        guestsLabel: 'Jumlah Peserta per Usia',
+        guestsPill: '1 Tamu',
+        adultName: 'Dewasa',
+        adultDesc: 'Usia 12+ tahun',
+        priceAdult: 'Rp 600.000/orang',
+        child8_11Name: 'Anak',
+        child8_11Desc: 'Usia 8 &ndash; 11 tahun',
+        price8_11: 'Rp 400.000/orang',
+        child6_7Name: 'Anak',
+        child6_7Desc: 'Usia 6 &ndash; 7 tahun',
+        price6_7: 'Rp 300.000/orang',
+        child3_5Name: 'Anak Kecil',
+        child3_5Desc: 'Usia 3, 4, 5 tahun',
+        price3_5: 'Rp 200.000/orang',
+        infantName: 'Bayi / Balita',
+        infantDesc: 'Usia 1 &ndash; 2 tahun',
+        price1_2: 'Rp 50.000/orang',
+        nameLabel: 'Nama Pemesan (Ketua Rombongan)',
+        namePh: 'Nama Lengkap Anda / Ketua Grup',
+        emailLabel: 'Alamat Email',
+        emailPh: 'contoh: nama@email.com',
+        phoneLabel: 'No. HP / WhatsApp / Telegram (+ ..)',
+        phonePh: 'contoh: +62 812 3456 7890',
+        natLabel: 'Asal Negara / Kota Domisili',
+        natPh: 'contoh: Indonesia, Jakarta, Surabaya, dll.',
+        heightLabel: 'Tinggi Badan Peserta',
+        heightPh: 'contoh: Peserta 1: 175 cm, Peserta 2: 162 cm',
+        sizeTitle: 'Ukuran Sepeda Reguler: S hingga XL',
+        sizeHint: 'Sepeda reguler tersedia ukuran S hingga XL. Mohon tuliskan tinggi badan tiap peserta agar kami dapat menyiapkan ukuran rangka sepeda yang paling pas.',
+        hotelLabel: 'Lokasi / Nama Hotel Penjemputan',
+        hotelPh: 'Nama Hotel atau Lokasi Penjemputan',
+        msgLabel: 'Pesan / Permintaan Khusus',
+        msgPh: 'contoh: Alergi makanan, menu vegetarian, atau permintaan khusus lainnya',
+        breakdownSample: 'Dewasa (1x Rp 600.000):',
+        totalPartLabel: 'Total peserta:',
+        totalPartSample: '1 tamu',
+        estTotalLabel: 'Estimasi Total Biaya:',
+        estUsdSample: '(Sekitar ~$39 USD)',
+        paymentNotice: 'Pembayaran via <strong>Tunai Rupiah, Transfer via Wise, atau Kartu</strong><br><span class="calc-payment-sub">&bull; Pembayaran dengan Kartu dikenakan biaya tambahan 3% untuk mesin EDC</span>',
+        btnDirect: 'Pesan Sekarang',
+        btnWa: 'Konfirmasi via WhatsApp',
+        btnEmail: 'Konfirmasi via Email'
+      } : {
+        closeAria: 'Close modal',
+        tag: 'PRIVATE TOUR BOOKING FORM',
+        title: 'Book Dewa Bike Tour',
+        subtitle: 'Calculate your total price instantly and forward your booking details via WhatsApp or Email.',
+        labelPkg: 'Select Tour Package',
+        selectPkgPlaceholder: '-- Select a Tour Package --',
+        catRegular: 'Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)',
+        optKintReg: 'Kintamani Downhill Cycling (Regular)',
+        optUbudReg: 'Ubud Rice Fields Cycling (Regular)',
+        optEbikeReg: 'Ubud E-Bike Tour (Regular)',
+        catSaving: 'Saving Cycling Packages (Ride Only, Without Lunch &amp; Transfer)',
+        optKintSav: 'Kintamani Downhill (Saving Package)',
+        optUbudSav: 'Ubud Rice Fields (Saving Package)',
+        optEbikeSav: 'Ubud E-Bike Tour (Saving Package)',
+        catCombo: 'Combination Tours (Cycling + Adventure)',
+        optComboTub: 'Cycling + River Tubing Combo',
+        optComboRaf: 'Cycling + River Rafting Combo',
+        optComboAtv: 'Cycling + ATV Quad Bike Combo',
+        catOther: 'Other Activities (Walking, Water &amp; Off-Road)',
+        optTrek: 'Ubud: Balinese Village &amp; Rice Fields Guided Trek',
+        optTub: 'River Tubing (Rp 250.000 - Inc. Lunch)',
+        optRaf: 'River Rafting Adventure',
+        optAtv: 'ATV Quad Bike Adventure',
+        tierLabel: 'Package Tier',
+        tierPrivTitle: 'PRIVATE',
+        tierPrivDesc: 'Without sharing other group',
+        tierSharTitle: 'SHARING',
+        tierSharDesc: 'With a small group',
+        dateLabel: 'Tour Date',
+        closedTag: 'Closed',
+        timeLabel: 'Preferred Pick-Up Time',
+        timeAria: 'Select preferred pick-up time',
+        timePlaceholder: 'e.g. 08:30 AM',
+        guestsLabel: 'Number of Guests by Age',
+        guestsPill: '1 Guest',
+        adultName: 'Adults',
+        adultDesc: 'Age 12+ years',
+        priceAdult: 'Rp 600.000/pax',
+        child8_11Name: 'Children',
+        child8_11Desc: 'Age 8 &ndash; 11 years old',
+        price8_11: 'Rp 400.000/pax',
+        child6_7Name: 'Children',
+        child6_7Desc: 'Age 6 &ndash; 7 years old',
+        price6_7: 'Rp 300.000/pax',
+        child3_5Name: 'Young Children',
+        child3_5Desc: 'Age 3, 4, 5 years old',
+        price3_5: 'Rp 200.000/pax',
+        infantName: 'Infants / Toddlers',
+        infantDesc: 'Age 1 &ndash; 2 years old',
+        price1_2: 'Rp 50.000/pax',
+        nameLabel: 'Lead Guest Name',
+        namePh: 'Your Name / Lead Guest',
+        emailLabel: 'Email Address',
+        emailPh: 'e.g. name@example.com',
+        phoneLabel: 'Phone / WhatsApp / Telegram (+ ..)',
+        phonePh: 'e.g. +61 412 345 678',
+        natLabel: 'Nationality',
+        natPh: 'e.g. Australia, Germany, Indonesia',
+        heightLabel: 'Rider Height(s)',
+        heightPh: 'e.g. Rider 1: 175 cm, Rider 2: 162 cm',
+        sizeTitle: 'Normal Bike Sizes: S to XL',
+        sizeHint: "Normal bikes are available in sizes S to XL. Please specify each rider's height so we can prepare the perfect bike frame.",
+        hotelLabel: 'Hotel Pickup',
+        hotelPh: 'Hotel Name or Pickup Location',
+        msgLabel: 'Message / Special Requests',
+        msgPh: 'e.g. Dietary requirements, vegetarian lunch, or special requests',
+        breakdownSample: 'Adults (1x Rp 600.000):',
+        totalPartLabel: 'Total participants:',
+        totalPartSample: '1 guest',
+        estTotalLabel: 'Estimated Total Cost:',
+        estUsdSample: '(Approx. ~$39 USD)',
+        paymentNotice: 'Payment by <strong>Cash rupiah money, Transfer via Wise, or Card</strong><br><span class="calc-payment-sub">• Payment by Card needs 3% fee for our EDC machine</span>',
+        btnDirect: 'Booking Now',
+        btnWa: 'Confirm book on Whatsapp',
+        btnEmail: 'Confirm book via Email'
+      };
       modalEl = document.createElement('div');
       modalEl.className = 'modal-backdrop';
       modalEl.id = 'bookingModal';
       modalEl.innerHTML = `
     <div class="modal-card">
-      <button class="modal-close" id="modalClose" aria-label="Close modal">
+      <button class="modal-close" id="modalClose" aria-label="${m.closeAria}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
       <div class="modal-header">
-        <div class="section-tag">PRIVATE TOUR BOOKING FORM</div>
-        <h3 id="modalTourTitle">Book Dewa Bike Tour</h3>
-        <p>Calculate your total price instantly and forward your booking details via WhatsApp or Email.</p>
+        <div class="section-tag">${m.tag}</div>
+        <h3 id="modalTourTitle">${m.title}</h3>
+        <p>${m.subtitle}</p>
       </div>
 
       <div class="modal-body">
         <div class="form-group custom-glass-select-group">
-          <label id="labelTourSelect">Select Tour Package</label>
+          <label id="labelTourSelect">${m.labelPkg}</label>
           
           <!-- Custom Glass Select Trigger & Menu -->
           <div class="custom-glass-select" id="customGlassSelect">
             <div class="custom-glass-trigger placeholder" id="customGlassTrigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="labelTourSelect customGlassTriggerText">
-              <span class="custom-glass-trigger-text" id="customGlassTriggerText">-- Select a Tour Package --</span>
+              <span class="custom-glass-trigger-text" id="customGlassTriggerText">${m.selectPkgPlaceholder}</span>
               <span class="custom-glass-arrow" aria-hidden="true">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
@@ -646,79 +842,71 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <div class="custom-glass-menu" id="customGlassMenu" role="listbox" aria-labelledby="labelTourSelect">
-              <div class="glass-category-header" role="presentation">
-                Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)
-              </div>
-              <div class="glass-option" role="option" data-value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</div>
-              <div class="glass-option" role="option" data-value="Ubud Rice Fields">Ubud Rice Fields Cycling (Regular)</div>
-              <div class="glass-option" role="option" data-value="E-Bike Ubud Countryside">Ubud E-Bike Tour (Regular)</div>
+              <div class="glass-category-header" role="presentation">${m.catRegular}</div>
+              <div class="glass-option" role="option" data-value="Kintamani Downhill">${m.optKintReg}</div>
+              <div class="glass-option" role="option" data-value="Ubud Rice Fields">${m.optUbudReg}</div>
+              <div class="glass-option" role="option" data-value="E-Bike Ubud Countryside">${m.optEbikeReg}</div>
 
-              <div class="glass-category-header" role="presentation">
-                Saving Cycling Packages (Ride Only, Without Lunch &amp; Transfer)
-              </div>
-              <div class="glass-option" role="option" data-value="Kintamani Downhill (Saving)">Kintamani Downhill (Saving Package)</div>
-              <div class="glass-option" role="option" data-value="Ubud Rice Fields (Saving)">Ubud Rice Fields (Saving Package)</div>
-              <div class="glass-option" role="option" data-value="E-Bike Ubud Countryside (Saving)">Ubud E-Bike Tour (Saving Package)</div>
+              <div class="glass-category-header" role="presentation">${m.catSaving}</div>
+              <div class="glass-option" role="option" data-value="Kintamani Downhill (Saving)">${m.optKintSav}</div>
+              <div class="glass-option" role="option" data-value="Ubud Rice Fields (Saving)">${m.optUbudSav}</div>
+              <div class="glass-option" role="option" data-value="E-Bike Ubud Countryside (Saving)">${m.optEbikeSav}</div>
 
-              <div class="glass-category-header" role="presentation">
-                Combination Tours (Cycling + Adventure)
-              </div>
-              <div class="glass-option" role="option" data-value="Cycling + River Tubing">Cycling + River Tubing Combo</div>
-              <div class="glass-option" role="option" data-value="Cycling + River Rafting">Cycling + River Rafting Combo</div>
-              <div class="glass-option" role="option" data-value="Cycling + ATV Quad Bike">Cycling + ATV Quad Bike Combo</div>
+              <div class="glass-category-header" role="presentation">${m.catCombo}</div>
+              <div class="glass-option" role="option" data-value="Cycling + River Tubing">${m.optComboTub}</div>
+              <div class="glass-option" role="option" data-value="Cycling + River Rafting">${m.optComboRaf}</div>
+              <div class="glass-option" role="option" data-value="Cycling + ATV Quad Bike">${m.optComboAtv}</div>
 
-              <div class="glass-category-header" role="presentation">
-                Other Activities (Walking, Water &amp; Off-Road)
-              </div>
-              <div class="glass-option" role="option" data-value="Ubud Rice Field Trekking">Ubud: Balinese Village &amp; Rice Fields Guided Trek</div>
-              <div class="glass-option" role="option" data-value="River Tubing">River Tubing (Rp 250.000 - Inc. Lunch)</div>
-              <div class="glass-option" role="option" data-value="River Rafting">River Rafting Adventure</div>
-              <div class="glass-option" role="option" data-value="ATV Adventures">ATV Quad Bike Adventure</div>
+              <div class="glass-category-header" role="presentation">${m.catOther}</div>
+              <div class="glass-option" role="option" data-value="Ubud Rice Field Trekking">${m.optTrek}</div>
+              <div class="glass-option" role="option" data-value="River Tubing">${m.optTub}</div>
+              <div class="glass-option" role="option" data-value="River Rafting">${m.optRaf}</div>
+              <div class="glass-option" role="option" data-value="ATV Adventures">${m.optAtv}</div>
             </div>
           </div>
 
           <!-- Hidden Native Select (Synchronized for pricing, validation, & WhatsApp details) -->
           <select id="modalTourSelect" class="sr-hidden-select" style="display: none !important;" tabindex="-1" aria-hidden="true">
-            <option value="" disabled selected>-- Select a Tour Package --</option>
-            <optgroup label="Regular Cycling Packages (Inc. Lunch &amp; Hotel Transfer)">
-              <option value="Kintamani Downhill">Kintamani Downhill Cycling (Regular)</option>
-              <option value="Ubud Rice Fields">Ubud Rice Fields Cycling (Regular)</option>
-              <option value="E-Bike Ubud Countryside">Ubud E-Bike Tour (Regular)</option>
+            <option value="" disabled selected>${m.selectPkgPlaceholder}</option>
+            <optgroup label="${m.catRegular}">
+              <option value="Kintamani Downhill">${m.optKintReg}</option>
+              <option value="Ubud Rice Fields">${m.optUbudReg}</option>
+              <option value="E-Bike Ubud Countryside">${m.optEbikeReg}</option>
             </optgroup>
-            <optgroup label="Saving Cycling Packages (Ride Only, Without Lunch &amp; Transfer)">
-              <option value="Kintamani Downhill (Saving)">Kintamani Downhill (Saving Package)</option>
-              <option value="Ubud Rice Fields (Saving)">Ubud Rice Fields (Saving Package)</option>
-              <option value="E-Bike Ubud Countryside (Saving)">Ubud E-Bike Tour (Saving Package)</option>
+            <optgroup label="${m.catSaving}">
+              <option value="Kintamani Downhill (Saving)">${m.optKintSav}</option>
+              <option value="Ubud Rice Fields (Saving)">${m.optUbudSav}</option>
+              <option value="E-Bike Ubud Countryside (Saving)">${m.optEbikeSav}</option>
             </optgroup>
-            <optgroup label="Combination Tours (Cycling + Adventure)">
-              <option value="Cycling + River Tubing">Cycling + River Tubing Combo</option>
-              <option value="Cycling + River Rafting">Cycling + River Rafting Combo</option>
-              <option value="Cycling + ATV Quad Bike">Cycling + ATV Quad Bike Combo</option>
+            <optgroup label="${m.catCombo}">
+              <option value="Cycling + River Tubing">${m.optComboTub}</option>
+              <option value="Cycling + River Rafting">${m.optComboRaf}</option>
+              <option value="Cycling + ATV Quad Bike">${m.optComboAtv}</option>
             </optgroup>
-            <optgroup label="Other Activities (Walking, Water &amp; Off-Road)">
-              <option value="Ubud Rice Field Trekking">Ubud: Balinese Village &amp; Rice Fields Guided Trek</option>
-              <option value="River Tubing">River Tubing (Rp 250.000 - Inc. Lunch)</option>
-              <option value="River Rafting">River Rafting Adventure</option>
-              <option value="ATV Adventures">ATV Quad Bike Adventure</option>
+            <optgroup label="${m.catOther}">
+              <option value="Ubud Rice Field Trekking">${m.optTrek}</option>
+              <option value="River Tubing">${m.optTub}</option>
+              <option value="River Rafting">${m.optRaf}</option>
+              <option value="ATV Adventures">${m.optAtv}</option>
             </optgroup>
           </select>
         </div>
 
         <div class="form-group" id="packageTierGroup">
-          <label>Package Tier</label>
+          <label>${m.tierLabel}</label>
           <div class="tier-radio-group">
             <label class="radio-card selected" data-tier-card="private">
               <input type="radio" name="modalTier" value="private" checked>
               <div class="radio-info">
-                <strong>PRIVATE</strong>
-                <span id="tierDescPrivate">Without sharing other group</span>
+                <strong>${m.tierPrivTitle}</strong>
+                <span id="tierDescPrivate">${m.tierPrivDesc}</span>
               </div>
             </label>
             <label class="radio-card" data-tier-card="sharing">
               <input type="radio" name="modalTier" value="sharing">
               <div class="radio-info">
-                <strong>SHARING</strong>
-                <span id="tierDescSharing">With a small group</span>
+                <strong>${m.tierSharTitle}</strong>
+                <span id="tierDescSharing">${m.tierSharDesc}</span>
               </div>
             </label>
           </div>
@@ -727,21 +915,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="datetime-row">
           <div class="form-group">
             <label for="modalDate" style="display: flex; justify-content: space-between; align-items: center;">
-              <span>Tour Date</span>
-              <span id="modalDateClosedBadge" class="badge-closed-tag" style="display: none;"><i class="fas fa-times-circle"></i> Closed</span>
+              <span>${m.dateLabel}</span>
+              <span id="modalDateClosedBadge" class="badge-closed-tag" style="display: none;"><i class="fas fa-times-circle"></i> ${m.closedTag}</span>
             </label>
             <input type="date" id="modalDate" required>
           </div>
           <div class="form-group">
-            <label for="modalTime" id="labelModalTime">Preferred Pick-Up Time</label>
-            <div class="time-trigger-box" id="timeTriggerBox" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Select preferred pick-up time">
+            <label for="modalTime" id="labelModalTime">${m.timeLabel}</label>
+            <div class="time-trigger-box" id="timeTriggerBox" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="${m.timeAria}">
               <span class="time-trigger-icon" aria-hidden="true">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
               </span>
-              <input type="text" id="modalTime" class="time-trigger-input" placeholder="e.g. 08:30 AM" value="08:30 AM" readonly required>
+              <input type="text" id="modalTime" class="time-trigger-input" placeholder="${m.timePlaceholder}" value="08:30 AM" readonly required>
             </div>
           </div>
         </div>
@@ -751,17 +939,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <label style="margin: 0; font-weight: 600;">Number of Guests by Age</label>
-            <span class="total-guests-pill" id="calcTotalGuestsPill">1 Guest</span>
+            <label style="margin: 0; font-weight: 600;">${m.guestsLabel}</label>
+            <span class="total-guests-pill" id="calcTotalGuestsPill">${m.guestsPill}</span>
           </div>
 
           <div class="age-category-list">
-            <!-- 1. Adult -->
             <div class="age-row" id="rowAdult">
               <div class="age-meta">
-                <span class="age-name" id="nameLabelAdult">Adults</span>
-                <span class="age-desc" id="descLabelAdult">Age 12+ years</span>
-                <span class="age-price" id="priceLabelAdult">Rp 600.000/pax</span>
+                <span class="age-name" id="nameLabelAdult">${m.adultName}</span>
+                <span class="age-desc" id="descLabelAdult">${m.adultDesc}</span>
+                <span class="age-price" id="priceLabelAdult">${m.priceAdult}</span>
               </div>
               <div class="number-stepper compact">
                 <button type="button" class="age-step-btn" data-target="guestAdult" data-dir="-">&minus;</button>
@@ -770,12 +957,11 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <!-- 2. Child 8 - 11 yrs -->
             <div class="age-row" id="row8_11">
               <div class="age-meta">
-                <span class="age-name" id="nameLabel8_11">Children</span>
-                <span class="age-desc" id="descLabel8_11">Age 8 &ndash; 11 years old</span>
-                <span class="age-price" id="priceLabel8_11">Rp 400.000/pax</span>
+                <span class="age-name" id="nameLabel8_11">${m.child8_11Name}</span>
+                <span class="age-desc" id="descLabel8_11">${m.child8_11Desc}</span>
+                <span class="age-price" id="priceLabel8_11">${m.price8_11}</span>
               </div>
               <div class="number-stepper compact">
                 <button type="button" class="age-step-btn" data-target="guest8_11" data-dir="-">&minus;</button>
@@ -784,12 +970,11 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <!-- 3. Child 6, 7 yrs -->
             <div class="age-row" id="row6_7">
               <div class="age-meta">
-                <span class="age-name" id="nameLabel6_7">Children</span>
-                <span class="age-desc" id="descLabel6_7">Age 6 &ndash; 7 years old</span>
-                <span class="age-price" id="priceLabel6_7">Rp 300.000/pax</span>
+                <span class="age-name" id="nameLabel6_7">${m.child6_7Name}</span>
+                <span class="age-desc" id="descLabel6_7">${m.child6_7Desc}</span>
+                <span class="age-price" id="priceLabel6_7">${m.price6_7}</span>
               </div>
               <div class="number-stepper compact">
                 <button type="button" class="age-step-btn" data-target="guest6_7" data-dir="-">&minus;</button>
@@ -798,12 +983,11 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <!-- 4. Child 3, 4, 5 yrs -->
             <div class="age-row" id="row3_5">
               <div class="age-meta">
-                <span class="age-name" id="nameLabel3_5">Young Children</span>
-                <span class="age-desc" id="descLabel3_5">Age 3, 4, 5 years old</span>
-                <span class="age-price" id="priceLabel3_5">Rp 200.000/pax</span>
+                <span class="age-name" id="nameLabel3_5">${m.child3_5Name}</span>
+                <span class="age-desc" id="descLabel3_5">${m.child3_5Desc}</span>
+                <span class="age-price" id="priceLabel3_5">${m.price3_5}</span>
               </div>
               <div class="number-stepper compact">
                 <button type="button" class="age-step-btn" data-target="guest3_5" data-dir="-">&minus;</button>
@@ -812,12 +996,11 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <!-- 5. Infant 1, 2 yrs -->
             <div class="age-row" id="row1_2">
               <div class="age-meta">
-                <span class="age-name" id="nameLabel1_2">Infants / Toddlers</span>
-                <span class="age-desc" id="descLabel1_2">Age 1 &ndash; 2 years old</span>
-                <span class="age-price" id="priceLabel1_2">Rp 50.000/pax</span>
+                <span class="age-name" id="nameLabel1_2">${m.infantName}</span>
+                <span class="age-desc" id="descLabel1_2">${m.infantDesc}</span>
+                <span class="age-price" id="priceLabel1_2">${m.price1_2}</span>
               </div>
               <div class="number-stepper compact">
                 <button type="button" class="age-step-btn" data-target="guest1_2" data-dir="-">&minus;</button>
@@ -829,88 +1012,85 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="form-group">
-          <label>Lead Guest Name <span style="color:#e53e3e;">*</span></label>
-          <input type="text" id="modalName" placeholder="Your Name / Lead Guest" required>
+          <label>${m.nameLabel} <span style="color:#e53e3e;">*</span></label>
+          <input type="text" id="modalName" placeholder="${m.namePh}" required>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Email Address <span style="color:#e53e3e;">*</span></label>
-            <input type="email" id="modalEmail" placeholder="e.g. name@example.com" required>
+            <label>${m.emailLabel} <span style="color:#e53e3e;">*</span></label>
+            <input type="email" id="modalEmail" placeholder="${m.emailPh}" required>
           </div>
           <div class="form-group">
-            <label>Phone / WhatsApp / Telegram (+ ..) <span style="color:#e53e3e;">*</span></label>
-            <input type="tel" id="modalPhone" placeholder="e.g. +61 412 345 678" required>
+            <label>${m.phoneLabel} <span style="color:#e53e3e;">*</span></label>
+            <input type="tel" id="modalPhone" placeholder="${m.phonePh}" required>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Nationality <span style="color:#e53e3e;">*</span></label>
-          <input type="text" id="modalNationality" placeholder="e.g. Australia, Germany, Indonesia" required>
+          <label>${m.natLabel} <span style="color:#e53e3e;">*</span></label>
+          <input type="text" id="modalNationality" placeholder="${m.natPh}" required>
         </div>
 
         <div class="form-group">
-          <label>Rider Height(s) <span style="color:#e53e3e;">*</span></label>
-          <input type="text" id="modalHeight" placeholder="e.g. Rider 1: 175 cm, Rider 2: 162 cm" required>
+          <label>${m.heightLabel} <span style="color:#e53e3e;">*</span></label>
+          <input type="text" id="modalHeight" placeholder="${m.heightPh}" required>
           <div class="bike-size-guide" id="bikeSizeGuide">
             <div class="bike-size-header">
               <span class="bike-icon">🚲</span>
-              <span id="bikeSizeTitle">Normal Bike Sizes: S to XL</span>
+              <span id="bikeSizeTitle">${m.sizeTitle}</span>
             </div>
-            <span class="bike-size-hint" id="bikeSizeHint">Normal bikes are available in sizes S to XL. Please specify each rider's height so we can prepare the perfect bike frame.</span>
+            <span class="bike-size-hint" id="bikeSizeHint">${m.sizeHint}</span>
           </div>
         </div>
 
         <div class="form-group" id="groupHotel">
-          <label>Hotel Pickup</label>
-          <input type="text" id="modalHotel" placeholder="Hotel Name or Pickup Location">
+          <label>${m.hotelLabel}</label>
+          <input type="text" id="modalHotel" placeholder="${m.hotelPh}">
         </div>
 
         <div class="form-group" id="groupMessage">
-          <label>Message / Special Requests</label>
-          <input type="text" id="modalMessage" placeholder="e.g. Dietary requirements, vegetarian lunch, or special requests">
+          <label>${m.msgLabel}</label>
+          <input type="text" id="modalMessage" placeholder="${m.msgPh}">
         </div>
 
         <!-- Live Price Calculation Box -->
         <div class="price-calculation-box">
           <div class="calc-breakdown-items" id="calcBreakdownList">
             <div class="calc-row">
-              <span>Adults (1x Rp 600.000):</span>
+              <span>${m.breakdownSample}</span>
               <strong>Rp 600.000</strong>
             </div>
             <div class="calc-row" style="color: var(--text-muted); font-size: 0.92rem;">
-              <span>Total participants:</span>
-              <strong>1 guest</strong>
+              <span>${m.totalPartLabel}</span>
+              <strong>${m.totalPartSample}</strong>
             </div>
           </div>
           <div class="calc-divider"></div>
           <div class="calc-row total-row">
-            <span>Estimated Total Cost:</span>
+            <span>${m.estTotalLabel}</span>
             <div class="total-wrap">
               <span class="total-idr" id="calcTotalIdr">Rp 600.000</span>
-              <span class="total-usd" id="calcTotalUsd">(Approx. ~$39 USD)</span>
+              <span class="total-usd" id="calcTotalUsd">${m.estUsdSample}</span>
             </div>
           </div>
           <div class="calc-divider"></div>
-          <div class="calc-payment-notice">
-            Payment by <strong>Cash rupiah money, Transfer via Wise, or Card</strong><br>
-            <span class="calc-payment-sub">• Payment by Card needs 3% fee for our EDC machine</span>
-          </div>
+          <div class="calc-payment-notice">${m.paymentNotice}</div>
         </div>
 
         <!-- Booking Action Buttons -->
         <div class="modal-booking-actions">
           <button type="button" class="btn btn-booking-now" id="btnSubmitModalDirect">
-            Booking Now
+            ${m.btnDirect}
           </button>
           <div class="modal-secondary-actions">
             <button type="button" class="btn btn-whatsapp" id="btnSubmitModalBooking">
               <svg width="18" height="18" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-              <span>Confirm book on Whatsapp</span>
+              <span>${m.btnWa}</span>
             </button>
             <button type="button" class="btn btn-email" id="btnSubmitModalEmail">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              <span>Confirm book via Email</span>
+              <span>${m.btnEmail}</span>
             </button>
           </div>
         </div>
@@ -936,6 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const customGlassMenu = document.getElementById('customGlassMenu');
 
   const syncCustomGlassSelect = (tourKey) => {
+    const placeholderTxt = IS_ID ? '-- Pilih Paket Tur --' : '-- Select a Tour Package --';
     if (!customGlassTriggerText) return;
     if (tourKey && modalTourSelect) {
       const opt = modalTourSelect.querySelector(`option[value="${tourKey}"]`);
@@ -943,11 +1124,11 @@ document.addEventListener('DOMContentLoaded', () => {
         customGlassTriggerText.textContent = opt.textContent.trim();
         customGlassTriggerText.classList.remove('placeholder');
       } else {
-        customGlassTriggerText.textContent = '-- Select a Tour Package --';
+        customGlassTriggerText.textContent = placeholderTxt;
         customGlassTriggerText.classList.add('placeholder');
       }
     } else {
-      customGlassTriggerText.textContent = '-- Select a Tour Package --';
+      customGlassTriggerText.textContent = placeholderTxt;
       customGlassTriggerText.classList.add('placeholder');
     }
     if (customGlassTrigger) customGlassTrigger.classList.remove('input-error');
@@ -1094,12 +1275,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bikeSizeGuide && bikeSizeTitle && bikeSizeHint) {
       if (isEBike) {
         bikeSizeGuide.classList.add('ebike-mode');
-        bikeSizeTitle.innerHTML = '⚡ E-Bike Sizes: S and M only';
-        bikeSizeHint.textContent = 'Electric bikes (E-Bikes) are available in sizes S and M only. Please specify each rider\'s height so we can prepare the perfect bike frame.';
+        bikeSizeTitle.innerHTML = IS_ID ? '⚡ Ukuran E-Bike: Hanya S &amp; M' : '⚡ E-Bike Sizes: S and M only';
+        bikeSizeHint.textContent = IS_ID
+          ? 'Sepeda listrik (E-Bike) hanya tersedia ukuran S dan M. Mohon tuliskan tinggi badan tiap peserta agar kami dapat menyiapkan ukuran sepeda yang pas.'
+          : 'Electric bikes (E-Bikes) are available in sizes S and M only. Please specify each rider\'s height so we can prepare the perfect bike frame.';
       } else {
         bikeSizeGuide.classList.remove('ebike-mode');
-        bikeSizeTitle.innerHTML = '🚲 Normal Bike Sizes: S to XL';
-        bikeSizeHint.textContent = 'Normal bikes are available in sizes S to XL. Please specify each rider\'s height so we can prepare the perfect bike frame.';
+        bikeSizeTitle.innerHTML = IS_ID ? '🚲 Ukuran Sepeda Reguler: S hingga XL' : '🚲 Normal Bike Sizes: S to XL';
+        bikeSizeHint.textContent = IS_ID
+          ? 'Sepeda reguler tersedia ukuran S hingga XL. Mohon tuliskan tinggi badan tiap peserta agar kami dapat menyiapkan ukuran rangka sepeda yang sesuai.'
+          : 'Normal bikes are available in sizes S to XL. Please specify each rider\'s height so we can prepare the perfect bike frame.';
       }
     }
 
@@ -1110,7 +1295,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const labelModalTime = document.getElementById('labelModalTime');
     if (labelModalTime) {
-      labelModalTime.textContent = isSaving ? 'Preferred Tour Time' : 'Preferred Pick-Up Time';
+      labelModalTime.textContent = isSaving
+        ? (IS_ID ? 'Waktu Mulai Tur Pilihan' : 'Preferred Tour Time')
+        : (IS_ID ? 'Waktu Penjemputan Pilihan' : 'Preferred Pick-Up Time');
     }
 
     // References to row elements
@@ -1152,32 +1339,36 @@ document.addEventListener('DOMContentLoaded', () => {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
       if (groupHeight) groupHeight.style.display = 'none';
       if (groupHotel) groupHotel.style.display = 'block';
-      if (labelModalTime) labelModalTime.textContent = 'Preferred Session';
+      if (labelModalTime) labelModalTime.textContent = IS_ID ? 'Sesi Pilihan' : 'Preferred Session';
       if (row8_11) row8_11.style.display = 'flex';
       if (row6_7) row6_7.style.display = 'none';
       if (row3_5) row3_5.style.display = 'none';
       if (row1_2) row1_2.style.display = 'flex';
       if (rowAdult) rowAdult.style.display = 'flex';
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults (Age 11+)';
-      if (descLabelAdult) descLabelAdult.textContent = 'Age 11+ years old';
-      if (nameLabel8_11) nameLabel8_11.textContent = 'Children (Age 5 – 10)';
-      if (descLabel8_11) descLabel8_11.textContent = 'Age 5 – 10 years old';
-      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants (Age 1 – 4)';
-      if (descLabel1_2) descLabel1_2.textContent = 'Free of charge (Age 1 – 4)';
+      if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Dewasa (Usia 11+)' : 'Adults (Age 11+)';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Usia 11 tahun ke atas' : 'Age 11+ years old';
+      if (nameLabel8_11) nameLabel8_11.textContent = IS_ID ? 'Anak (Usia 5 – 10)' : 'Children (Age 5 – 10)';
+      if (descLabel8_11) descLabel8_11.textContent = IS_ID ? 'Usia 5 – 10 tahun' : 'Age 5 – 10 years old';
+      if (nameLabel1_2) nameLabel1_2.textContent = IS_ID ? 'Balita (Usia 1 – 4)' : 'Infants (Age 1 – 4)';
+      if (descLabel1_2) descLabel1_2.textContent = IS_ID ? 'Gratis (Usia 1 – 4 tahun)' : 'Free of charge (Age 1 – 4)';
     } else if (activityPrice) {
       if (packageTierGroup) packageTierGroup.style.display = 'none';
       if (groupHeight) groupHeight.style.display = 'none';
       if (groupHotel) groupHotel.style.display = 'block';
-      if (labelModalTime) labelModalTime.textContent = 'Preferred Time';
+      if (labelModalTime) labelModalTime.textContent = IS_ID ? 'Jam Pilihan' : 'Preferred Time';
       if (row8_11) row8_11.style.display = 'none';
       if (row6_7) row6_7.style.display = 'none';
       if (row3_5) row3_5.style.display = 'none';
       if (row1_2) row1_2.style.display = 'none';
       if (rowAdult) rowAdult.style.display = 'flex';
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Participants';
-      if (descLabelAdult) descLabelAdult.textContent = 'Adults & Children';
+      if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Peserta' : 'Participants';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Dewasa & Anak-anak' : 'Adults & Children';
     } else {
-      if (labelModalTime) labelModalTime.textContent = isSaving ? 'Preferred Tour Time' : 'Preferred Pick-Up Time';
+      if (labelModalTime) {
+        labelModalTime.textContent = isSaving
+          ? (IS_ID ? 'Waktu Mulai Tur Pilihan' : 'Preferred Tour Time')
+          : (IS_ID ? 'Waktu Penjemputan Pilihan' : 'Preferred Pick-Up Time');
+      }
     }
     
     if (selectedTourKey === 'Ubud Rice Field Trekking' || activityPrice) {
@@ -1189,8 +1380,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (row3_5) row3_5.style.display = 'none';
       if (row1_2) row1_2.style.display = 'none';
       if (rowAdult) rowAdult.style.display = 'flex';
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Guests (Combo Package)';
-      if (descLabelAdult) descLabelAdult.textContent = 'Private Cycling + Adventure Combo';
+      if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Peserta (Paket Kombinasi)' : 'Guests (Combo Package)';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Privat Tur Sepeda + Petualangan' : 'Private Cycling + Adventure Combo';
     } else if (isEBike && !isSaving) {
       // E-Bike Regular (Gambar 1)
       if (row8_11) row8_11.style.display = 'none';
@@ -1199,12 +1390,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (row1_2) row1_2.style.display = 'flex';
       if (rowAdult) rowAdult.style.display = 'flex';
 
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults (Solo E-Bike)';
-      if (descLabelAdult) descLabelAdult.textContent = 'Age 12+ years';
-      if (nameLabel3_5) nameLabel3_5.textContent = 'Children (Baby Seat)';
-      if (descLabel3_5) descLabel3_5.textContent = 'Age 3, 4 years old (middle baby seat)';
-      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants (Baby Seat)';
-      if (descLabel1_2) descLabel1_2.textContent = 'Age 1, 2 years old (middle baby seat)';
+      if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Dewasa (Sepeda E-Bike Sendiri)' : 'Adults (Solo E-Bike)';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Usia 12+ tahun' : 'Age 12+ years';
+      if (nameLabel3_5) nameLabel3_5.textContent = IS_ID ? 'Anak (Kursi Bayi Tengah)' : 'Children (Baby Seat)';
+      if (descLabel3_5) descLabel3_5.textContent = IS_ID ? 'Usia 3, 4 tahun (kursi bayi di tengah)' : 'Age 3, 4 years old (middle baby seat)';
+      if (nameLabel1_2) nameLabel1_2.textContent = IS_ID ? 'Balita (Kursi Bayi Tengah)' : 'Infants (Baby Seat)';
+      if (descLabel1_2) descLabel1_2.textContent = IS_ID ? 'Usia 1, 2 tahun (kursi bayi di tengah)' : 'Age 1, 2 years old (middle baby seat)';
     } else if (isEBike && isSaving) {
       // E-Bike Saving (Gambar 3)
       if (row8_11) row8_11.style.display = 'none';
@@ -1213,10 +1404,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (row1_2) row1_2.style.display = 'flex';
       if (rowAdult) rowAdult.style.display = 'flex';
 
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults / Over 11 yrs';
-      if (descLabelAdult) descLabelAdult.textContent = 'Over 11 years of age';
-      if (nameLabel1_2) nameLabel1_2.textContent = 'Baby / Toddler (Baby Seat)';
-      if (descLabel1_2) descLabel1_2.textContent = 'Age 1, 2, 3 years old (baby seat)';
+      if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Dewasa / Di Atas 11 Thn' : 'Adults / Over 11 yrs';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Usia di atas 11 tahun' : 'Over 11 years of age';
+      if (nameLabel1_2) nameLabel1_2.textContent = IS_ID ? 'Bayi / Balita (Kursi Bayi)' : 'Baby / Toddler (Baby Seat)';
+      if (descLabel1_2) descLabel1_2.textContent = IS_ID ? 'Usia 1, 2, 3 tahun (kursi bayi)' : 'Age 1, 2, 3 years old (baby seat)';
     } else if (!isEBike && isSaving) {
       // Normal Bike Saving (Gambar 2)
       if (rowAdult) rowAdult.style.display = 'flex';
@@ -1225,16 +1416,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (row3_5) row3_5.style.display = 'flex';
       if (row1_2) row1_2.style.display = 'flex';
 
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults';
-      if (descLabelAdult) descLabelAdult.textContent = 'Age 12+ years';
-      if (nameLabel8_11) nameLabel8_11.textContent = 'Child (Under 11 yo)';
-      if (descLabel8_11) descLabel8_11.textContent = 'Age 8 – 11 years old';
-      if (nameLabel6_7) nameLabel6_7.textContent = 'Young Child (3-7 yo)';
-      if (descLabel6_7) descLabel6_7.textContent = 'Age 6 – 7 years old';
-      if (nameLabel3_5) nameLabel3_5.textContent = 'Young Child (3-7 yo)';
-      if (descLabel3_5) descLabel3_5.textContent = 'Age 3, 4, 5 years old';
-      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants / Toddlers';
-      if (descLabel1_2) descLabel1_2.textContent = 'Age 1 and 2 years old';
+      if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Dewasa' : 'Adults';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Usia 12+ tahun' : 'Age 12+ years';
+      if (nameLabel8_11) nameLabel8_11.textContent = IS_ID ? 'Anak (Di bawah 11 thn)' : 'Child (Under 11 yo)';
+      if (descLabel8_11) descLabel8_11.textContent = IS_ID ? 'Usia 8 – 11 tahun' : 'Age 8 – 11 years old';
+      if (nameLabel6_7) nameLabel6_7.textContent = IS_ID ? 'Anak Kecil (3–7 thn)' : 'Young Child (3-7 yo)';
+      if (descLabel6_7) descLabel6_7.textContent = IS_ID ? 'Usia 6 – 7 tahun' : 'Age 6 – 7 years old';
+      if (nameLabel3_5) nameLabel3_5.textContent = IS_ID ? 'Anak Kecil (3–7 thn)' : 'Young Child (3-7 yo)';
+      if (descLabel3_5) descLabel3_5.textContent = IS_ID ? 'Usia 3, 4, 5 tahun' : 'Age 3, 4, 5 years old';
+      if (nameLabel1_2) nameLabel1_2.textContent = IS_ID ? 'Bayi / Balita' : 'Infants / Toddlers';
+      if (descLabel1_2) descLabel1_2.textContent = IS_ID ? 'Usia 1 dan 2 tahun' : 'Age 1 and 2 years old';
     } else {
       // Normal Bike Regular
       if (rowAdult) rowAdult.style.display = 'flex';
@@ -1243,16 +1434,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (row3_5) row3_5.style.display = 'flex';
       if (row1_2) row1_2.style.display = 'flex';
 
-      if (nameLabelAdult) nameLabelAdult.textContent = 'Adults';
-      if (descLabelAdult) descLabelAdult.textContent = 'Age 12+ years';
-      if (nameLabel8_11) nameLabel8_11.textContent = 'Children';
-      if (descLabel8_11) descLabel8_11.textContent = 'Age 8 – 11 years old';
-      if (nameLabel6_7) nameLabel6_7.textContent = 'Children';
-      if (descLabel6_7) descLabel6_7.textContent = 'Age 6 – 7 years old';
-      if (nameLabel3_5) nameLabel3_5.textContent = 'Young Children';
-      if (descLabel3_5) descLabel3_5.textContent = 'Age 3, 4, 5 years old';
-      if (nameLabel1_2) nameLabel1_2.textContent = 'Infants / Toddlers';
-      if (descLabel1_2) descLabel1_2.textContent = 'Age 1 – 2 years old';
+      if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Dewasa' : 'Adults';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Usia 12+ tahun' : 'Age 12+ years';
+      if (nameLabel8_11) nameLabel8_11.textContent = IS_ID ? 'Anak-anak' : 'Children';
+      if (descLabel8_11) descLabel8_11.textContent = IS_ID ? 'Usia 8 – 11 tahun' : 'Age 8 – 11 years old';
+      if (nameLabel6_7) nameLabel6_7.textContent = IS_ID ? 'Anak-anak' : 'Children';
+      if (descLabel6_7) descLabel6_7.textContent = IS_ID ? 'Usia 6 – 7 tahun' : 'Age 6 – 7 years old';
+      if (nameLabel3_5) nameLabel3_5.textContent = IS_ID ? 'Anak Kecil' : 'Young Children';
+      if (descLabel3_5) descLabel3_5.textContent = IS_ID ? 'Usia 3, 4, 5 tahun' : 'Age 3, 4, 5 years old';
+      if (nameLabel1_2) nameLabel1_2.textContent = IS_ID ? 'Bayi / Balita' : 'Infants / Toddlers';
+      if (descLabel1_2) descLabel1_2.textContent = IS_ID ? 'Usia 1 – 2 tahun' : 'Age 1 – 2 years old';
     }
 
     // Read participant counts (ignore hidden rows)
@@ -1267,7 +1458,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update pill badge
     const pill = document.getElementById('calcTotalGuestsPill');
     if (pill) {
-      pill.textContent = `${totalGuests} ${totalGuests > 1 ? 'Guests' : 'Guest'}`;
+      pill.textContent = IS_ID ? `${totalGuests} Tamu` : `${totalGuests} ${totalGuests > 1 ? 'Guests' : 'Guest'}`;
     }
 
     if (!selectedTourKey) {
@@ -1279,10 +1470,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const listEl = document.getElementById('calcBreakdownList');
       if (listEl) {
-        listEl.innerHTML = `<div class="calc-row" style="color: var(--text-muted);"><span>Please select a tour package above to calculate price.</span></div>`;
+        listEl.innerHTML = `<div class="calc-row" style="color: var(--text-muted);"><span>${IS_ID ? 'Silakan pilih paket tur di atas untuk menghitung harga.' : 'Please select a tour package above to calculate price.'}</span></div>`;
       }
       if (calcTotalIdr) calcTotalIdr.textContent = 'Rp 0';
-      if (calcTotalUsd) calcTotalUsd.textContent = '(Select a package above)';
+      if (calcTotalUsd) calcTotalUsd.textContent = IS_ID ? '(Pilih paket di atas)' : '(Select a package above)';
       return;
     }
 
@@ -1368,15 +1559,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    const perUnit = IS_ID ? '/orang' : '/pax';
+    const freeTxt = IS_ID ? 'Gratis' : 'Free';
+    const unitNoun = IS_ID ? 'orang' : 'pax';
+
     // Update row price labels
     if (priceLabelAdult) {
       const isSingleSpecial = ((selectedTier === 'private' && !isSaving && !comboPrice && !activityPrice && selectedTourKey !== 'Ubud Rice Field Trekking' && totalGuests === 1) || (comboPrice && comboSinglePrice && totalGuests === 1));
-      priceLabelAdult.textContent = formatIDR(pAdult) + (isSingleSpecial ? ' (1 pax)' : '/pax');
+      priceLabelAdult.textContent = formatIDR(pAdult) + (isSingleSpecial ? (IS_ID ? ' (1 orang)' : ' (1 pax)') : perUnit);
     }
-    if (priceLabel8_11) priceLabel8_11.textContent = formatIDR(p8_11) + '/pax';
-    if (priceLabel6_7) priceLabel6_7.textContent = formatIDR(p6_7) + '/pax';
-    if (priceLabel3_5) priceLabel3_5.textContent = formatIDR(p3_5) + '/pax';
-    if (priceLabel1_2) priceLabel1_2.textContent = p1_2 === 0 ? 'Free' : (formatIDR(p1_2) + (isEBike ? '' : '/pax'));
+    if (priceLabel8_11) priceLabel8_11.textContent = formatIDR(p8_11) + perUnit;
+    if (priceLabel6_7) priceLabel6_7.textContent = formatIDR(p6_7) + perUnit;
+    if (priceLabel3_5) priceLabel3_5.textContent = formatIDR(p3_5) + perUnit;
+    if (priceLabel1_2) priceLabel1_2.textContent = p1_2 === 0 ? freeTxt : (formatIDR(p1_2) + (isEBike ? '' : perUnit));
 
     // Calculate costs
     const costAdult = nAdult * pAdult;
@@ -1393,31 +1588,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (listEl) {
       let html = '';
       if (nAdult > 0) {
-        const titleAdult = (selectedTourKey === 'Ubud Rice Field Trekking') ? 'Adults (Age 11+)' : (nameLabelAdult?.textContent || 'Adults');
-        html += `<div class="calc-row"><span>${titleAdult}:</span><strong>${nAdult} pax (${formatIDR(costAdult)})</strong></div>`;
+        const titleAdult = (selectedTourKey === 'Ubud Rice Field Trekking')
+          ? (IS_ID ? 'Dewasa (Usia 11+)' : 'Adults (Age 11+)')
+          : (nameLabelAdult?.textContent || (IS_ID ? 'Dewasa' : 'Adults'));
+        html += `<div class="calc-row"><span>${titleAdult}:</span><strong>${nAdult} ${unitNoun} (${formatIDR(costAdult)})</strong></div>`;
       }
       if (n8_11 > 0) {
-        const title8_11 = (selectedTourKey === 'Ubud Rice Field Trekking') ? 'Children (Age 5 – 10)' : 'Children (Age 8 – 11)';
-        html += `<div class="calc-row"><span>${title8_11}:</span><strong>${n8_11} pax (${formatIDR(cost8_11)})</strong></div>`;
+        const title8_11 = (selectedTourKey === 'Ubud Rice Field Trekking')
+          ? (IS_ID ? 'Anak (Usia 5 – 10)' : 'Children (Age 5 – 10)')
+          : (IS_ID ? 'Anak (Usia 8 – 11)' : 'Children (Age 8 – 11)');
+        html += `<div class="calc-row"><span>${title8_11}:</span><strong>${n8_11} ${unitNoun} (${formatIDR(cost8_11)})</strong></div>`;
       }
       if (n6_7 > 0) {
-        const title6_7 = 'Children (Age 6 – 7)';
-        html += `<div class="calc-row"><span>${title6_7}:</span><strong>${n6_7} pax (${formatIDR(cost6_7)})</strong></div>`;
+        const title6_7 = IS_ID ? 'Anak (Usia 6 – 7)' : 'Children (Age 6 – 7)';
+        html += `<div class="calc-row"><span>${title6_7}:</span><strong>${n6_7} ${unitNoun} (${formatIDR(cost6_7)})</strong></div>`;
       }
       if (n3_5 > 0) {
-        const title3_5 = isEBike ? 'Children (Age 3 – 4) [Baby Seat]' : 'Children (Age 3 – 5)';
-        html += `<div class="calc-row"><span>${title3_5}:</span><strong>${n3_5} pax (${formatIDR(cost3_5)})</strong></div>`;
+        const title3_5 = isEBike
+          ? (IS_ID ? 'Anak (Usia 3 – 4) [Kursi Bayi]' : 'Children (Age 3 – 4) [Baby Seat]')
+          : (IS_ID ? 'Anak (Usia 3 – 5)' : 'Children (Age 3 – 5)');
+        html += `<div class="calc-row"><span>${title3_5}:</span><strong>${n3_5} ${unitNoun} (${formatIDR(cost3_5)})</strong></div>`;
       }
       if (n1_2 > 0) {
-        const title1_2 = (selectedTourKey === 'Ubud Rice Field Trekking') ? 'Infants (Age 1 – 4)' : 'Infant / Baby Seat (Age 1 – 2)';
-        html += `<div class="calc-row"><span>${title1_2}:</span><strong>${n1_2} pax (${p1_2 === 0 ? 'Free' : formatIDR(cost1_2)})</strong></div>`;
+        const title1_2 = (selectedTourKey === 'Ubud Rice Field Trekking')
+          ? (IS_ID ? 'Balita (Usia 1 – 4)' : 'Infants (Age 1 – 4)')
+          : (IS_ID ? 'Balita / Kursi Bayi (Usia 1 – 2)' : 'Infant / Baby Seat (Age 1 – 2)');
+        html += `<div class="calc-row"><span>${title1_2}:</span><strong>${n1_2} ${unitNoun} (${p1_2 === 0 ? freeTxt : formatIDR(cost1_2)})</strong></div>`;
       }
-      html += `<div class="calc-row" style="color: var(--text-muted); font-size: 0.92rem;"><span>Total participants:</span><strong>${totalGuests} ${totalGuests > 1 ? 'guests' : 'guest'}</strong></div>`;
+      const totalPartTxt = IS_ID ? 'Total peserta:' : 'Total participants:';
+      const guestSuffix = IS_ID ? 'tamu' : (totalGuests > 1 ? 'guests' : 'guest');
+      html += `<div class="calc-row" style="color: var(--text-muted); font-size: 0.92rem;"><span>${totalPartTxt}</span><strong>${totalGuests} ${guestSuffix}</strong></div>`;
       listEl.innerHTML = html;
     }
 
     if (calcTotalIdr) calcTotalIdr.textContent = formatIDR(totalIDR);
-    if (calcTotalUsd) calcTotalUsd.textContent = `(Approx. ~$${totalUSD} USD)`;
+    if (calcTotalUsd) calcTotalUsd.textContent = IS_ID ? `(Sekitar ~$${totalUSD} USD)` : `(Approx. ~$${totalUSD} USD)`;
   };
 
   // Open Modal logic
@@ -1437,12 +1642,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tourKey && packageData[tourKey]) {
         modalTourSelect.value = tourKey;
         if (modalTourTitle) {
-          modalTourTitle.textContent = `Book: ${packageData[tourKey].title || tourKey}`;
+          modalTourTitle.textContent = `${IS_ID ? 'Pesan' : 'Book'}: ${getPkgTitle(tourKey)}`;
         }
       } else {
         modalTourSelect.value = '';
         if (modalTourTitle) {
-          modalTourTitle.textContent = 'Book Dewa Bike Tour';
+          modalTourTitle.textContent = IS_ID ? 'Pesan Dewa Bike Tour' : 'Book Dewa Bike Tour';
         }
       }
       if (tourKey === 'Ubud Rice Field Trekking') {
@@ -1569,9 +1774,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const selected = modalTourSelect.value;
       syncCustomGlassSelect(selected);
       if (packageData[selected]) {
-        modalTourTitle.textContent = `Book: ${packageData[selected].title}`;
+        modalTourTitle.textContent = `${IS_ID ? 'Pesan' : 'Book'}: ${getPkgTitle(selected)}`;
       } else if (modalTourTitle) {
-        modalTourTitle.textContent = 'Book Dewa Bike Tour';
+        modalTourTitle.textContent = IS_ID ? 'Pesan Dewa Bike Tour' : 'Book Dewa Bike Tour';
       }
       if (modalDate) {
         updateClosedNotice(modalDate.value, 'modalClosedDateNotice', modalDate, selected || 'Kintamani Downhill');
@@ -1594,7 +1799,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const getBookingDetails = () => {
     const tourKey = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : 'Kintamani Downhill';
     const pkg = packageData[tourKey] || {};
-    const baseTitle = pkg.title || tourKey;
+    const baseTitle = getPkgTitle(tourKey);
     let selectedTier = 'private';
     const checkedRadio = document.querySelector('input[name="modalTier"]:checked');
     if (checkedRadio) selectedTier = checkedRadio.value;
@@ -1604,22 +1809,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const isActivity = !!pkg.activityPrice;
     const isTrekking = (tourKey === 'Ubud Rice Field Trekking');
     const noBike = !!pkg.noBike;
-    const tierSuffix = (isCombo || isTrekking || isActivity) ? '' : ` | ${selectedTier === 'sharing' ? 'Sharing' : 'Private'}`;
+    const tierSuffix = (isCombo || isTrekking || isActivity)
+      ? ''
+      : ` | ${selectedTier === 'sharing' ? 'Sharing' : (IS_ID ? 'Privat' : 'Private')}`;
     const tourName = `${baseTitle}${tierSuffix}`;
 
-    let tierLabel = (selectedTier === 'private') 
-      ? 'PRIVATE (Without sharing other group)'
-      : 'SHARING (With a small group)';
+    let tierLabel = IS_ID
+      ? ((selectedTier === 'private') ? 'PRIVAT (Tanpa digabung rombongan lain)' : 'SHARING (Digabung grup kecil)')
+      : ((selectedTier === 'private') ? 'PRIVATE (Without sharing other group)' : 'SHARING (With a small group)');
     if (isTrekking) {
-      tierLabel = 'Guided Walking Trek (Morning / Afternoon Session)';
+      tierLabel = IS_ID ? 'Jalan Kaki Santai dengan Pemandu (Sesi Pagi / Sore)' : 'Guided Walking Trek (Morning / Afternoon Session)';
     } else if (isActivity) {
-      tierLabel = 'Outdoor Activity Package';
+      tierLabel = IS_ID ? 'Paket Aktivitas Wisata Alam' : 'Outdoor Activity Package';
     } else if (isCombo) {
-      tierLabel = 'PRIVATE (Combination Cycling + Adventure Package)';
+      tierLabel = IS_ID ? 'PRIVAT (Paket Kombinasi Sepeda + Petualangan)' : 'PRIVATE (Combination Cycling + Adventure Package)';
     } else if (isSaving) {
-      tierLabel += ' [Saving Package - Ride Only]';
+      tierLabel += IS_ID ? ' [Paket Hemat - Tanpa Makan & Antar-Jemput]' : ' [Saving Package - Ride Only]';
     } else {
-      tierLabel += ' [Regular Package - Inc. Lunch & Hotel Transfer]';
+      tierLabel += IS_ID ? ' [Paket Reguler - Termasuk Makan Siang & Antar-Jemput]' : ' [Regular Package - Inc. Lunch & Hotel Transfer]';
     }
 
     const row8_11 = document.getElementById('row8_11');
@@ -1634,29 +1841,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const n1_2 = (row1_2 && row1_2.style.display !== 'none') ? parseInt(document.getElementById('guest1_2')?.value || '0', 10) : 0;
     const totalGuests = nAdult + n8_11 + n6_7 + n3_5 + n1_2;
 
+    const unitNoun = IS_ID ? 'orang' : 'pax';
     const parts = [];
     if (nAdult > 0) {
-      const lbl = (document.getElementById('nameLabelAdult')?.textContent || 'Adults').trim();
-      const cleanLbl = isTrekking ? 'Adults (Age 11+)' : (lbl.toLowerCase().includes('adult') ? 'Adults' : lbl);
-      parts.push(`${cleanLbl}: *${nAdult} pax*`);
+      const lbl = (document.getElementById('nameLabelAdult')?.textContent || (IS_ID ? 'Dewasa' : 'Adults')).trim();
+      const cleanLbl = isTrekking
+        ? (IS_ID ? 'Dewasa (Usia 11+)' : 'Adults (Age 11+)')
+        : (lbl.toLowerCase().includes('adult') ? 'Adults' : (lbl.toLowerCase().includes('dewasa') ? 'Dewasa' : lbl));
+      parts.push(`${cleanLbl}: *${nAdult} ${unitNoun}*`);
     }
     if (n8_11 > 0) {
-      const lbl8_11 = isTrekking ? 'Children (Age 5 – 10)' : 'Children (Age 8 – 11)';
-      parts.push(`${lbl8_11}: *${n8_11} pax*`);
+      const lbl8_11 = isTrekking
+        ? (IS_ID ? 'Anak (Usia 5 – 10)' : 'Children (Age 5 – 10)')
+        : (IS_ID ? 'Anak (Usia 8 – 11)' : 'Children (Age 8 – 11)');
+      parts.push(`${lbl8_11}: *${n8_11} ${unitNoun}*`);
     }
     if (n6_7 > 0) {
-      parts.push(`Children (Age 6 – 7): *${n6_7} pax*`);
+      parts.push(`${IS_ID ? 'Anak (Usia 6 – 7)' : 'Children (Age 6 – 7)'}: *${n6_7} ${unitNoun}*`);
     }
     if (n3_5 > 0) {
       const isBabySeat = !!pkg.isEBike;
-      parts.push(isBabySeat ? `Children (Age 3 – 4) [Baby Seat]: *${n3_5} pax*` : `Children (Age 3 – 5): *${n3_5} pax*`);
+      if (IS_ID) {
+        parts.push(isBabySeat ? `Anak (Usia 3 – 4) [Kursi Bayi]: *${n3_5} orang*` : `Anak (Usia 3 – 5): *${n3_5} orang*`);
+      } else {
+        parts.push(isBabySeat ? `Children (Age 3 – 4) [Baby Seat]: *${n3_5} pax*` : `Children (Age 3 – 5): *${n3_5} pax*`);
+      }
     }
     if (n1_2 > 0) {
-      const lbl1_2 = isTrekking ? 'Infants (Age 1 – 4)' : 'Infant / Baby Seat (Age 1 – 2)';
-      parts.push(`${lbl1_2}: *${n1_2} pax*`);
+      const lbl1_2 = isTrekking
+        ? (IS_ID ? 'Balita (Usia 1 – 4)' : 'Infants (Age 1 – 4)')
+        : (IS_ID ? 'Balita / Kursi Bayi (Usia 1 – 2)' : 'Infant / Baby Seat (Age 1 – 2)');
+      parts.push(`${lbl1_2}: *${n1_2} ${unitNoun}*`);
     }
 
-    let formattedDate = 'Flexible';
+    let formattedDate = IS_ID ? 'Fleksibel' : 'Flexible';
     if (modalDate && modalDate.value) {
       const dateParts = modalDate.value.split('-');
       if (dateParts.length === 3) {
@@ -1667,10 +1885,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const modalTimeEl = document.getElementById('modalTime');
     const selectedTime = (modalTimeEl && modalTimeEl.value.trim()) ? modalTimeEl.value.trim() : '08:30 AM';
-    const dateTime = (formattedDate !== 'Flexible') ? `${formattedDate} ${selectedTime}` : 'Flexible';
+    const dateTime = (formattedDate !== 'Flexible' && formattedDate !== 'Fleksibel') ? `${formattedDate} ${selectedTime}` : formattedDate;
     const date = formattedDate;
 
-    const name = (modalName && modalName.value.trim()) ? modalName.value.trim() : 'Guest';
+    const name = (modalName && modalName.value.trim()) ? modalName.value.trim() : (IS_ID ? 'Tamu' : 'Guest');
     const email = (modalEmail && modalEmail.value.trim()) ? modalEmail.value.trim() : '-';
     const phone = (modalPhone && modalPhone.value.trim()) ? modalPhone.value.trim() : '-';
     const nationality = (modalNationality && modalNationality.value.trim()) ? modalNationality.value.trim() : '-';
@@ -1710,7 +1928,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (modalTourSelect) {
         modalTourSelect.focus();
       }
-      alert('Please select a Tour Package first.');
+      alert(IS_ID ? 'Silakan pilih Paket Tur terlebih dahulu.' : 'Please select a Tour Package first.');
       return false;
     }
 
@@ -1727,7 +1945,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elName.classList.add('input-error');
         elName.focus();
       }
-      alert('Please enter your Full Name (Lead Guest).');
+      alert(IS_ID ? 'Mohon isi Nama Lengkap Pemesan (Ketua Rombongan).' : 'Please enter your Full Name (Lead Guest).');
       return false;
     }
 
@@ -1736,7 +1954,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elEmail.classList.add('input-error');
         elEmail.focus();
       }
-      alert('Please enter a valid Email Address.');
+      alert(IS_ID ? 'Mohon masukkan alamat Email yang valid.' : 'Please enter a valid Email Address.');
       return false;
     }
 
@@ -1745,7 +1963,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elPhone.classList.add('input-error');
         elPhone.focus();
       }
-      alert('Please enter your Phone / WhatsApp / Telegram number.');
+      alert(IS_ID ? 'Mohon masukkan nomor HP / WhatsApp / Telegram Anda.' : 'Please enter your Phone / WhatsApp / Telegram number.');
       return false;
     }
 
@@ -1754,7 +1972,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elNationality.classList.add('input-error');
         elNationality.focus();
       }
-      alert('Please enter your Nationality.');
+      alert(IS_ID ? 'Mohon isi Asal Negara / Kota Domisili Anda.' : 'Please enter your Nationality.');
       return false;
     }
 
@@ -1767,7 +1985,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elHeight.classList.add('input-error');
         elHeight.focus();
       }
-      alert('Please enter Rider Height(s) for bike sizing.');
+      alert(IS_ID ? 'Mohon isi Tinggi Badan peserta untuk penyesuaian ukuran sepeda.' : 'Please enter Rider Height(s) for bike sizing.');
       return false;
     }
 
@@ -1776,7 +1994,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elDate.classList.add('input-error');
         elDate.focus();
       }
-      alert('Please select your preferred Tour Date.');
+      alert(IS_ID ? 'Silakan pilih Tanggal Tur yang diinginkan.' : 'Please select your preferred Tour Date.');
       return false;
     }
 
@@ -1789,8 +2007,10 @@ document.addEventListener('DOMContentLoaded', () => {
         elDate.focus();
       }
       updateClosedNotice(date, 'modalClosedDateNotice', elDate, currentTour);
-      const pkgTitle = packageData[currentTour]?.title || currentTour;
-      alert(`We are sorry, the "${pkgTitle}" package is CLOSED on ${date} (${translateReasonToEn(closedCheck.reason)}).\n\nPlease select another date or explore our other tour packages.`);
+      const pkgTitle = getPkgTitle(currentTour) || currentTour;
+      alert(IS_ID
+        ? `Mohon maaf, paket "${pkgTitle}" TUTUP pada ${date} (${formatClosedReason(closedCheck.reason)}).\n\nSilakan pilih tanggal lain atau lihat paket tur kami lainnya.`
+        : `We are sorry, the "${pkgTitle}" package is CLOSED on ${date} (${translateReasonToEn(closedCheck.reason)}).\n\nPlease select another date or explore our other tour packages.`);
       return false;
     }
 
@@ -1799,7 +2019,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elTime.classList.add('input-error');
         elTime.focus();
       }
-      alert('Please enter your preferred Tour Time (e.g. 08:30 AM).');
+      alert(IS_ID ? 'Silakan pilih Jam Tur yang diinginkan (mis. 08:30 AM).' : 'Please enter your preferred Tour Time (e.g. 08:30 AM).');
       return false;
     }
 
@@ -1899,8 +2119,15 @@ ${b.noBike ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTime}
 
     const partsList = b.parts.map(p => `   • ${p}`).join('\n');
     const pkgEmoji = b.isTrekking ? '🌾' : (b.noBike ? '🌴' : '🚲');
-    let message = 
-`*NEW RESERVATION - DEWA BIKE TOUR*
+    let message = IS_ID
+      ? `*RESERVASI BARU - DEWA BIKE TOUR*
+---------------------------------------
+👤 *Nama Pemesan*: ${b.name}
+${pkgEmoji} *Paket Tur*: ${b.tourName}
+👥 *Total Peserta*: ${b.totalGuests} Tamu
+${partsList}
+${b.noBike ? '' : `📏 *Tinggi Badan*: ${b.riderHeight}\n`}📅 *Tanggal Tur*: ${b.dateTime}`
+      : `*NEW RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
 👤 *Lead Guest Name*: ${b.name}
 ${pkgEmoji} *Tour Package*: ${b.tourName}
@@ -1909,14 +2136,23 @@ ${partsList}
 ${b.noBike ? '' : `📏 *Rider Height(s)*: ${b.riderHeight}\n`}📅 *Tour Date*: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
-      message += `\n🏨 *Hotel Pickup*: ${b.hotel}`;
+      message += `\n🏨 *${IS_ID ? 'Hotel Penjemputan' : 'Hotel Pickup'}*: ${b.hotel}`;
     }
 
     if (b.specialRequests && b.specialRequests !== '-') {
-      message += `\n📝 *Special Requests*: ${b.specialRequests}`;
+      message += `\n📝 *${IS_ID ? 'Permintaan Khusus' : 'Special Requests'}*: ${b.specialRequests}`;
     }
 
-    message += `\n💰 *Estimated Total*: ${b.totalCost} ${b.totalUsd}
+    message += IS_ID
+      ? `\n💰 *Estimasi Total*: ${b.totalCost} ${b.totalUsd}
+---------------------------------------
+📧 *Email*: ${b.email}
+📞 *HP / Telegram*: ${b.phone}
+🌍 *Asal / Domisili*: ${b.nationality}
+📦 *Tipe Paket*: ${b.tierLabel}
+---------------------------------------
+Halo Tim Dewa Bike Tour, mohon bantuannya untuk cek ketersediaan jadwal di atas. Terima kasih! 🙏`
+      : `\n💰 *Estimated Total*: ${b.totalCost} ${b.totalUsd}
 ---------------------------------------
 📧 *Email*: ${b.email}
 📞 *Phone / Telegram*: ${b.phone}
@@ -1957,9 +2193,20 @@ Hello Dewa Bike Tour Team, please check slot availability for the schedule above
     }
 
     const partsList = b.parts.map(p => `   • ${p}`).join('\n');
-    const subject = `New Tour Reservation: ${b.tourName} - ${b.name} (${b.dateTime})`;
-    let body = 
-`Hello Dewa Bike Tour Team,
+    const subject = IS_ID
+      ? `Reservasi Tur Baru: ${b.tourName} - ${b.name} (${b.dateTime})`
+      : `New Tour Reservation: ${b.tourName} - ${b.name} (${b.dateTime})`;
+    let body = IS_ID
+      ? `Halo Tim Dewa Bike Tour,
+
+Saya ingin memesan paket tur bersama Dewa Bike Tour. Berikut detail pesanan saya:
+
+- Nama Pemesan: ${b.name}
+- Paket Tur: ${b.tourName}
+- Total Peserta: ${b.totalGuests} Tamu
+${partsList}
+${b.noBike ? '' : `- Tinggi Badan: ${b.riderHeight}\n`}- Tanggal Tur: ${b.dateTime}`
+      : `Hello Dewa Bike Tour Team,
 
 I would like to book a tour with Dewa Bike Tour. Here are my booking details:
 
@@ -1970,14 +2217,26 @@ ${partsList}
 ${b.noBike ? '' : `- Height: ${b.riderHeight}\n`}- Tour Date: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
-      body += `\n- Hotel Pickup: ${b.hotel}`;
+      body += `\n- ${IS_ID ? 'Hotel Penjemputan' : 'Hotel Pickup'}: ${b.hotel}`;
     }
 
     if (b.specialRequests && b.specialRequests !== '-') {
-      body += `\n- Message / Special Requests: ${b.specialRequests}`;
+      body += `\n- ${IS_ID ? 'Pesan / Permintaan Khusus' : 'Message / Special Requests'}: ${b.specialRequests}`;
     }
 
-    body += `\n- Estimated Total Cost: ${b.totalCost} ${b.totalUsd}
+    body += IS_ID
+      ? `\n- Estimasi Total Biaya: ${b.totalCost} ${b.totalUsd}
+- Alamat Email: ${b.email}
+- No. HP / WhatsApp / Telegram: ${b.phone}
+- Asal / Domisili: ${b.nationality}
+- Tipe Paket: ${b.tierLabel}
+
+Mohon bantuannya untuk cek ketersediaan dan konfirmasi jadwal saya.
+
+Terima kasih!
+Salam hangat,
+${b.name}`
+      : `\n- Estimated Total Cost: ${b.totalCost} ${b.totalUsd}
 - Email Address: ${b.email}
 - Phone / WhatsApp / Telegram: ${b.phone}
 - Nationality: ${b.nationality}
@@ -2010,7 +2269,7 @@ ${b.name}`;
     if (btn) {
       btn.style.pointerEvents = 'none';
       btn.style.opacity = '0.75';
-      btn.innerHTML = '<span>Submitting Booking...</span>';
+      btn.innerHTML = `<span>${IS_ID ? 'Mengirim Pesanan...' : 'Submitting Booking...'}</span>`;
     }
 
     // Send booking data to Google Sheets & Apps Script
@@ -2026,7 +2285,9 @@ ${b.name}`;
       btn.innerHTML = origHtml;
     }
 
-    alert('Someone will reconfirm your booking via WhatsApp or Email');
+    alert(IS_ID
+      ? 'Terima kasih! Tim kami akan segera mengonfirmasi ulang pesanan Anda melalui WhatsApp atau Email.'
+      : 'Someone will reconfirm your booking via WhatsApp or Email');
     closeModal();
   };
 
@@ -2081,7 +2342,7 @@ ${b.name}`;
 
       overlay.innerHTML = `
         <div class="time-picker-backdrop" id="timePickerBackdrop"></div>
-        <div class="time-picker-card" role="dialog" aria-modal="true" aria-label="Select Preferred Pick-Up Time">
+        <div class="time-picker-card" role="dialog" aria-modal="true" aria-label="${IS_ID ? 'Pilih Jam Penjemputan' : 'Select Preferred Pick-Up Time'}">
           <div class="time-picker-highlight"></div>
           <div class="time-picker-wheels">
             <div class="time-wheel-col" id="wheelColHour" data-type="hour" tabindex="0">
@@ -2098,9 +2359,9 @@ ${b.name}`;
           <div class="time-picker-fade-bottom"></div>
           <div class="time-picker-footer">
             <button type="button" class="btn-time-reset" id="btnTimePickerReset">
-              Reset
+              ${IS_ID ? 'Atur Ulang' : 'Reset'}
             </button>
-            <button type="button" class="btn-time-confirm" id="btnTimePickerConfirm" aria-label="Confirm time">
+            <button type="button" class="btn-time-confirm" id="btnTimePickerConfirm" aria-label="${IS_ID ? 'Konfirmasi jam' : 'Confirm time'}">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
@@ -2371,27 +2632,27 @@ ${b.name}`;
 
       // Validation
       if (!name) {
-        alert('Please enter your Full Name.');
+        alert(IS_ID ? 'Mohon masukkan Nama Lengkap Anda.' : 'Please enter your Full Name.');
         if (elName) elName.focus();
         return null;
       }
       if (!email || !email.includes('@') || !email.includes('.')) {
-        alert('Please enter a valid Email Address.');
+        alert(IS_ID ? 'Mohon masukkan alamat Email yang valid.' : 'Please enter a valid Email Address.');
         if (elEmail) elEmail.focus();
         return null;
       }
       if (!phone || phone.length < 5) {
-        alert('Please enter your Phone / WhatsApp / Telegram number.');
+        alert(IS_ID ? 'Mohon masukkan nomor HP / WhatsApp / Telegram Anda.' : 'Please enter your Phone / WhatsApp / Telegram number.');
         if (elPhone) elPhone.focus();
         return null;
       }
       if (!nationality) {
-        alert('Please enter your Nationality.');
+        alert(IS_ID ? 'Mohon isi Asal Negara / Kota Domisili Anda.' : 'Please enter your Nationality.');
         if (elNationality) elNationality.focus();
         return null;
       }
       if (!date) {
-        alert('Please select your preferred Tour Date.');
+        alert(IS_ID ? 'Silakan pilih Tanggal Tur yang diinginkan.' : 'Please select your preferred Tour Date.');
         if (elDate) elDate.focus();
         return null;
       }
@@ -2404,11 +2665,13 @@ ${b.name}`;
           elDate.focus();
         }
         updateClosedNotice(date, 'contactClosedDateNotice', elDate);
-        alert(`We are sorry, Dewa Bike Tour is CLOSED on ${date} (${translateReasonToEn(closedCheck.reason)}).\n\nPlease select another date.`);
+        alert(IS_ID
+          ? `Mohon maaf, Dewa Bike Tour TUTUP pada ${date} (${formatClosedReason(closedCheck.reason)}).\n\nSilakan pilih tanggal lain.`
+          : `We are sorry, Dewa Bike Tour is CLOSED on ${date} (${translateReasonToEn(closedCheck.reason)}).\n\nPlease select another date.`);
         return null;
       }
       if (!notes) {
-        alert('Please enter your Message / Inquiries.');
+        alert(IS_ID ? 'Mohon tuliskan Pesan atau Pertanyaan Anda.' : 'Please enter your Message / Inquiries.');
         if (elNotes) elNotes.focus();
         return null;
       }
@@ -2492,7 +2755,7 @@ ${b.name}`;
       if (btn) {
         btn.disabled = true;
         btn.style.opacity = '0.75';
-        btn.innerHTML = '<span>Sending Message...</span>';
+        btn.innerHTML = `<span>${IS_ID ? 'Mengirim Pesan...' : 'Sending Message...'}</span>`;
       }
 
       await sendContactToGoogleSheets(data, 'Direct Message (Website Contact Form)');
@@ -2503,7 +2766,9 @@ ${b.name}`;
         btn.innerHTML = origHtml;
       }
 
-      alert('Thank you! Your message has been sent successfully. Our team will contact you shortly via WhatsApp or Email.');
+      alert(IS_ID
+        ? 'Terima kasih! Pesan Anda berhasil terkirim. Tim kami akan segera menghubungi Anda melalui WhatsApp atau Email.'
+        : 'Thank you! Your message has been sent successfully. Our team will contact you shortly via WhatsApp or Email.');
       quickContactForm.reset();
       if (cDateInput) {
         const tomorrow = new Date();
@@ -2527,8 +2792,20 @@ ${b.name}`;
       // Send to Google Sheets in background
       sendContactToGoogleSheets(data, 'Contact Page (WhatsApp)');
 
-      let message = 
-`*NEW MESSAGE & INQUIRY - DEWA BIKE TOUR*
+      let message = IS_ID
+        ? `*PESAN & PERTANYAAN BARU - DEWA BIKE TOUR*
+---------------------------------------
+👤 *Nama*: ${data.name}
+📧 *Email*: ${data.email}
+📞 *HP / Telegram*: ${data.phone}
+🌍 *Asal / Domisili*: ${data.nationality}
+👥 *Jumlah Peserta*: ${data.guests} Tamu
+📅 *Tanggal Pilihan*: ${data.formattedDate}
+⏰ *Jam Pilihan*: ${data.timeVal}
+📝 *Pesan*: ${data.notes}
+---------------------------------------
+Halo Tim Dewa Bike Tour, saya ingin menanyakan informasi tur dengan detail di atas. Terima kasih! 🙏`
+        : `*NEW MESSAGE & INQUIRY - DEWA BIKE TOUR*
 ---------------------------------------
 👤 *Name*: ${data.name}
 📧 *Email*: ${data.email}
@@ -2566,9 +2843,29 @@ Hello Dewa Bike Tour, I would like to send an inquiry with the details above. Th
       // Send to Google Sheets in background
       sendContactToGoogleSheets(data, 'Contact Page (Email)');
 
-      const subject = `New Inquiry from ${data.name} (${data.formattedDate})`;
-      let body = 
-`Hello Dewa Bike Tour Team,
+      const subject = IS_ID
+        ? `Pertanyaan Tur Baru dari ${data.name} (${data.formattedDate})`
+        : `New Inquiry from ${data.name} (${data.formattedDate})`;
+      let body = IS_ID
+        ? `Halo Tim Dewa Bike Tour,
+
+Saya ingin mengirimkan pesan / pertanyaan kepada Dewa Bike Tour:
+
+- Nama: ${data.name}
+- Email: ${data.email}
+- No. HP / WhatsApp / Telegram: ${data.phone}
+- Asal / Domisili: ${data.nationality}
+- Jumlah Peserta: ${data.guests} Tamu
+- Tanggal Pilihan: ${data.dateTime}
+- Pesan / Detail Pertanyaan:
+${data.notes}
+
+Mohon informasinya kembali ya.
+
+Terima kasih!
+Salam hangat,
+${data.name}`
+        : `Hello Dewa Bike Tour Team,
 
 I would like to send an inquiry / message to Dewa Bike Tour:
 
@@ -3126,10 +3423,10 @@ ${data.name}`;
       modal.className = 'lightbox-backdrop';
       modal.setAttribute('role', 'dialog');
       modal.setAttribute('aria-modal', 'true');
-      modal.setAttribute('aria-label', 'Photo Gallery Lightbox');
+      modal.setAttribute('aria-label', IS_ID ? 'Galeri Foto Lightbox' : 'Photo Gallery Lightbox');
       modal.innerHTML = `
         <div class="lightbox-container">
-          <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close gallery">
+          <button type="button" class="lightbox-close" id="lightboxClose" aria-label="${IS_ID ? 'Tutup galeri' : 'Close gallery'}">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -3140,21 +3437,21 @@ ${data.name}`;
             <span class="lightbox-counter" id="lightboxCounter">1 / 1</span>
           </div>
 
-          <button type="button" class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous photo">
+          <button type="button" class="lightbox-nav prev" id="lightboxPrev" aria-label="${IS_ID ? 'Foto sebelumnya' : 'Previous photo'}">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
 
-          <button type="button" class="lightbox-nav next" id="lightboxNext" aria-label="Next photo">
+          <button type="button" class="lightbox-nav next" id="lightboxNext" aria-label="${IS_ID ? 'Foto berikutnya' : 'Next photo'}">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
           </button>
 
           <div class="lightbox-stage" id="lightboxStage">
             <div class="lightbox-img-wrap" id="lightboxImgWrap">
-              <img id="lightboxImg" src="" alt="Gallery photo">
+              <img id="lightboxImg" src="" alt="${IS_ID ? 'Foto galeri' : 'Gallery photo'}">
             </div>
             <div class="lightbox-caption" id="lightboxCaption"></div>
             <div class="lightbox-thumbnails-wrap" id="lightboxThumbnailsWrap">
-              <div class="lightbox-thumbnails" id="lightboxThumbnails" role="tablist" aria-label="Photo thumbnails"></div>
+              <div class="lightbox-thumbnails" id="lightboxThumbnails" role="tablist" aria-label="${IS_ID ? 'Thumbnail foto' : 'Photo thumbnails'}"></div>
             </div>
           </div>
         </div>
@@ -3191,13 +3488,13 @@ ${data.name}`;
       currentList.forEach((item, idx) => {
         const img = item.querySelector('img');
         const overlaySpan = item.querySelector('.gallery-overlay span');
-        const captionText = overlaySpan ? overlaySpan.textContent.trim() : (img ? img.alt : `Photo ${idx + 1}`);
+        const captionText = overlaySpan ? overlaySpan.textContent.trim() : (img ? img.alt : `${IS_ID ? 'Foto' : 'Photo'} ${idx + 1}`);
         const src = img ? (img.getAttribute('src') || '') : '';
 
         const thumbBtn = document.createElement('button');
         thumbBtn.type = 'button';
         thumbBtn.className = `lightbox-thumb${idx === currentIndex ? ' active' : ''}`;
-        thumbBtn.setAttribute('aria-label', `Go to photo ${idx + 1}: ${captionText}`);
+        thumbBtn.setAttribute('aria-label', `${IS_ID ? 'Buka foto' : 'Go to photo'} ${idx + 1}: ${captionText}`);
         thumbBtn.setAttribute('data-index', idx);
         thumbBtn.innerHTML = `<img src="${src}" alt="${captionText}" loading="lazy">`;
 
@@ -3305,7 +3602,7 @@ ${data.name}`;
       item.setAttribute('tabindex', '0');
       const titleSpan = item.querySelector('.gallery-overlay span');
       if (titleSpan) {
-        item.setAttribute('aria-label', `View photo: ${titleSpan.textContent.trim()}`);
+        item.setAttribute('aria-label', `${IS_ID ? 'Lihat foto' : 'View photo'}: ${titleSpan.textContent.trim()}`);
       }
 
       item.addEventListener('click', () => openLightbox(item));
@@ -3414,7 +3711,11 @@ ${data.name}`;
       }
 
       if (base.startsWith('/') && rootPrefix) {
-        window.location.href = rootPrefix + base.slice(1) + '.html' + query + hash;
+        if (base.endsWith('/')) {
+          window.location.href = rootPrefix + base.slice(1) + 'index.html' + query + hash;
+        } else {
+          window.location.href = rootPrefix + base.slice(1) + '.html' + query + hash;
+        }
         return;
       }
 
@@ -3431,7 +3732,44 @@ ${data.name}`;
    * 11B. BIKE SIZING PHOTO POPUP MODAL
    * ------------------------------------------------------------- */
   const initBikePhotoModal = () => {
-    const BIKE_PHOTOS_DATA = {
+    const BIKE_PHOTOS_DATA = IS_ID ? {
+      childseat: {
+        file: 'bike-childseat.jpg',
+        title: 'Kursi Bayi Depan (Usia 1 – 4 Tahun)',
+        subtitle: 'Kursi anak bagian depan pada E-Bike',
+        desc: 'Kursi anak di bagian depan yang nyaman dan aman, dilengkapi pijakan kaki dan sabuk pengaman sehingga balita Anda (1 hingga 4 tahun) dapat ikut bersepeda dengan aman bersama orang tua.'
+      },
+      backseat: {
+        file: 'bike-backseat.jpg',
+        title: 'Boncengan Anak (Usia 5 – 7 Tahun)',
+        subtitle: 'Kursi belakang pada sepeda dewasa (Hanya ukuran M)',
+        desc: 'Dudukan kursi belakang yang kokoh dengan pegangan pengaman dan pijakan kaki, dirancang khusus agar anak usia 5–7 tahun dapat dibonceng dengan aman di belakang orang dewasa.'
+      },
+      small120: {
+        file: 'bike-small-120cm.jpg',
+        title: 'Sepeda Anak (Min. Tinggi 120 cm)',
+        subtitle: 'Sepeda gunung junior untuk tinggi 120 cm ke atas',
+        desc: 'Sepeda gunung junior yang ringan dengan suspensi depan dan tuas rem sesuai genggaman anak. Untuk tinggi di bawah 120 cm dapat menggunakan kursi boncengan.'
+      },
+      small135: {
+        file: 'bike-small-135cm.jpg',
+        title: 'Sepeda Remaja (Min. Tinggi 135 cm)',
+        subtitle: 'Sepeda gunung remaja untuk tinggi 135 cm ke atas',
+        desc: 'Sepeda gunung remaja dengan suspensi depan dan perpindahan gigi Shimano, sangat pas untuk anak yang lebih besar atau remaja awal dengan tinggi minimal 135 cm.'
+      },
+      adults: {
+        file: 'bike-adults.jpg',
+        title: 'Sepeda Dewasa (Ukuran S – XL)',
+        subtitle: 'Sepeda gunung hardtail dengan gigi Shimano & rem cakram hidrolik',
+        desc: 'Sepeda gunung dewasa berkualitas tinggi tersedia lengkap dalam ukuran rangka S hingga XL. Selalu dirawat dan diperiksa keamanannya oleh mekanik internal kami.'
+      },
+      ebike: {
+        file: 'bike-ebike.jpg',
+        title: 'E-Bike / Sepeda Listrik (Ukuran S – M)',
+        subtitle: 'Sepeda dengan bantuan kayuhan listrik (Min. tinggi 150 cm)',
+        desc: 'Sepeda listrik yang nyaman dan ringan dikendarai dengan bantuan tenaga baterai halus, suspensi depan, dan rem cakram handal. Sangat cocok untuk menyusuri persawahan dan jalan desa tanpa lelah. Minimal tinggi pengendara 150 cm.'
+      }
+    } : {
       childseat: {
         file: 'bike-childseat.jpg',
         title: 'Childseat (Age 1 – 4 Years)',
@@ -3480,13 +3818,14 @@ ${data.name}`;
         }
       }
       const path = window.location.pathname;
+      const prefix = IS_ID ? '../' : '';
       if (path.includes('/regular-packages/') || path.includes('/saving-packages/') || path.includes('/combination-tours/') || path.includes('/other-activities/')) {
-        return '../../images/';
+        return prefix + '../../images/';
       }
       if (path.includes('/bike-tours/') || path.includes('/other-tours/') || path.includes('/about/')) {
-        return '../images/';
+        return prefix + '../images/';
       }
-      return 'images/';
+      return prefix + 'images/';
     };
 
     let currentKeyIndex = 0;
@@ -3532,7 +3871,7 @@ ${data.name}`;
         if (isMulti) {
           dotsEl.style.display = 'flex';
           dotsEl.innerHTML = activeKeys.map((k, i) => `
-            <button type="button" class="bike-popup-dot ${i === currentKeyIndex ? 'active' : ''}" data-index="${i}" aria-label="Go to photo ${i + 1}"></button>
+            <button type="button" class="bike-popup-dot ${i === currentKeyIndex ? 'active' : ''}" data-index="${i}" aria-label="${IS_ID ? 'Lihat foto' : 'Go to photo'} ${i + 1}"></button>
           `).join('');
         } else {
           dotsEl.style.display = 'none';
@@ -3564,7 +3903,9 @@ ${data.name}`;
       let subtitleText = data.subtitle;
       if (key === 'childseat') {
         const isEBikePage = activeKeys.includes('ebike') || window.location.pathname.includes('e-bike');
-        subtitleText = isEBikePage ? 'Front mounted childseat on E-Bike' : 'Front mounted childseat on adult bike (Size M – XL)';
+        subtitleText = IS_ID
+          ? (isEBikePage ? 'Kursi anak bagian depan pada E-Bike' : 'Kursi anak bagian depan pada sepeda dewasa (Ukuran M – XL)')
+          : (isEBikePage ? 'Front mounted childseat on E-Bike' : 'Front mounted childseat on adult bike (Size M – XL)');
       }
       if (subtitleEl) subtitleEl.textContent = subtitleText;
       if (descEl) descEl.textContent = data.desc;
@@ -3583,7 +3924,7 @@ ${data.name}`;
         modal.innerHTML = `
           <div class="bike-popup-backdrop" id="bikePhotoBackdrop"></div>
           <div class="bike-popup-card" role="dialog" aria-modal="true" aria-labelledby="bikePhotoTitle">
-            <button type="button" class="bike-popup-close" id="bikePhotoClose" aria-label="Close photo">
+            <button type="button" class="bike-popup-close" id="bikePhotoClose" aria-label="${IS_ID ? 'Tutup foto' : 'Close photo'}">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -3591,21 +3932,21 @@ ${data.name}`;
             </button>
             <div class="bike-popup-img-wrap" id="bikePhotoImgWrap">
               <span class="bike-popup-counter" id="bikePhotoCounter">1 / 5</span>
-              <button type="button" class="bike-popup-nav prev" id="bikePhotoPrev" aria-label="Previous bike photo">
+              <button type="button" class="bike-popup-nav prev" id="bikePhotoPrev" aria-label="${IS_ID ? 'Foto sepeda sebelumnya' : 'Previous bike photo'}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
               </button>
-              <button type="button" class="bike-popup-nav next" id="bikePhotoNext" aria-label="Next bike photo">
+              <button type="button" class="bike-popup-nav next" id="bikePhotoNext" aria-label="${IS_ID ? 'Foto sepeda berikutnya' : 'Next bike photo'}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
               </button>
-              <img id="bikePhotoImg" src="" alt="Bike photo" loading="lazy">
+              <img id="bikePhotoImg" src="" alt="${IS_ID ? 'Foto sepeda' : 'Bike photo'}" loading="lazy">
               <div class="bike-popup-dots" id="bikePhotoDots"></div>
             </div>
             <div class="bike-popup-info">
-              <span class="bike-popup-tag">BIKE &amp; SEATING SPECIFICATION</span>
+              <span class="bike-popup-tag">${IS_ID ? 'SPESIFIKASI SEPEDA &amp; KURSI' : 'BIKE &amp; SEATING SPECIFICATION'}</span>
               <h3 id="bikePhotoTitle"></h3>
               <p class="bike-popup-subtitle" id="bikePhotoSubtitle"></p>
               <p class="bike-popup-desc" id="bikePhotoDesc"></p>
