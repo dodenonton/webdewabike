@@ -208,7 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* -------------------------------------------------------------
-   * 1.1 DESKTOP STICKY SIDEBAR SCROLL SYNC (ZERO JITTER)
+   * 1.1 DESKTOP STICKY SIDEBAR SCROLL SYNC (ZERO JITTER & PROPORTIONAL)
+   * Sinkronisasi scroll untuk semua halaman paket:
+   * - Scroll kiri: kanan ikut scroll otomatis secara proporsional (70% kiri = 100% kanan)
+   * - Scroll kanan: kartu kanan scroll independen/bebas, kiri TIDAK ikut kescroll
    * ------------------------------------------------------------- */
   const initDesktopStickySidebar = () => {
     const sidebarCards = document.querySelectorAll('.tour-sidebar-card');
@@ -223,48 +226,75 @@ document.addEventListener('DOMContentLoaded', () => {
       const grid = card.closest('.tour-detail-grid');
       if (!grid) return;
 
-      let isHovered = false;
-      card.addEventListener('mouseenter', () => { isHovered = true; });
-      card.addEventListener('mouseleave', () => { isHovered = false; });
+      const mainCard = grid.querySelector('.tour-main-card') || grid;
 
       let ticking = false;
 
-      const updateScrollSync = () => {
+      const getMetrics = () => {
+        const topOffset = 16; // 1rem
+        const gridRect = grid.getBoundingClientRect();
+        const vh = window.innerHeight || 800;
+        const mainHeight = mainCard.offsetHeight || grid.offsetHeight;
+        // Total jarak scroll konten kiri dari atas kartu ke dasar kartu:
+        const totalLeftRange = Math.max(1, mainHeight - (vh - topOffset));
+        // Rasio proporsional 70% untuk seluruh halaman paket:
+        const syncDistance = 0.70 * totalLeftRange;
+        const maxInternalScroll = Math.max(0, card.scrollHeight - card.clientHeight);
+        return { topOffset, gridRect, totalLeftRange, syncDistance, maxInternalScroll };
+      };
+
+      // 1. Saat konten kiri / halaman discroll: kartu kanan ikut ter-scroll otomatis
+      const updateScrollFromWindow = () => {
         if (window.innerWidth <= 1024) return;
 
-        const topOffset = 16;
-        const gridRect = grid.getBoundingClientRect();
+        const { topOffset, gridRect, syncDistance, maxInternalScroll } = getMetrics();
+        if (maxInternalScroll <= 0) return;
 
-        // Dynamic Scroll Sync: saat bagian kiri discroll turun, bagian kanan ikut turun menampilkan tombol booking
-        if (!isHovered) {
-          const maxInternalScroll = card.scrollHeight - card.clientHeight;
-          if (maxInternalScroll > 0) {
-            if (gridRect.top >= topOffset) {
-              card.scrollTop = 0;
-            } else {
-              const scrollPast = topOffset - gridRect.top;
-              const syncDistance = 450;
-              const progress = Math.min(1, Math.max(0, scrollPast / syncDistance));
-              card.scrollTop = Math.round(progress * maxInternalScroll);
-            }
+        if (gridRect.top >= topOffset) {
+          if (card.scrollTop !== 0) {
+            card.scrollTop = 0;
+          }
+        } else {
+          const scrollPast = topOffset - gridRect.top;
+          const progress = Math.min(1, Math.max(0, scrollPast / syncDistance));
+          const targetScrollTop = Math.round(progress * maxInternalScroll);
+
+          if (Math.abs(card.scrollTop - targetScrollTop) > 1) {
+            card.scrollTop = targetScrollTop;
           }
         }
       };
 
-      const onScroll = () => {
+      const onWindowScroll = () => {
         if (!ticking) {
           window.requestAnimationFrame(() => {
-            updateScrollSync();
+            updateScrollFromWindow();
             ticking = false;
           });
           ticking = true;
         }
       };
 
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
-      window.addEventListener('load', updateScrollSync);
-      updateScrollSync();
+      // 2. Fitur scroll khusus untuk kartu kanan:
+      // Ketika kartu kanan discroll langsung (wheel/trackpad), kartu kanan scroll bebas,
+      // dan konten kiri (window) TIDAK IKUT KESCROLL sama sekali.
+      card.addEventListener('wheel', (e) => {
+        const maxScroll = card.scrollHeight - card.clientHeight;
+        if (maxScroll <= 0) return;
+
+        const atTop = card.scrollTop <= 0;
+        const atBottom = card.scrollTop >= maxScroll - 1;
+
+        // Cegah scroll tembus ke halaman utama saat sudah mentok atas atau bawah
+        if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      window.addEventListener('scroll', onWindowScroll, { passive: true });
+      window.addEventListener('resize', onWindowScroll, { passive: true });
+      window.addEventListener('load', updateScrollFromWindow);
+      updateScrollFromWindow();
     });
   };
 
