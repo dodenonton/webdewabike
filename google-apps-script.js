@@ -281,6 +281,36 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // Tentukan tema warna email berdasarkan jenis paket tur
+    var tourLower = String(tourName || "").toLowerCase();
+    var theme = {
+      headerBg: "#475569",   // Abu (Other Tours default)
+      accentColor: "#475569",
+      softBg: "#f8fafc"
+    };
+    if (tourLower.indexOf("trek") !== -1) {
+      // Hijau muda untuk Trekking Tour
+      theme = { headerBg: "#22c55e", accentColor: "#16a34a", softBg: "#f0fdf4" };
+    } else if (tourLower.indexOf("e-bike") !== -1 || tourLower.indexOf("ebike") !== -1) {
+      // Biru untuk trip E-Bike Tour
+      theme = { headerBg: "#1d4ed8", accentColor: "#1d4ed8", softBg: "#eff6ff" };
+    } else if (tourLower.indexOf("kintamani") !== -1) {
+      // Orange agak sedikit kuning untuk trip Kintamani Downhill
+      theme = { headerBg: "#ea8c00", accentColor: "#b45309", softBg: "#fffbeb" };
+    } else if (
+      tourLower.indexOf("tubing") !== -1 ||
+      tourLower.indexOf("rafting") !== -1 ||
+      tourLower.indexOf("atv") !== -1 ||
+      tourLower.indexOf("combo") !== -1 ||
+      tourLower.indexOf("other") !== -1
+    ) {
+      // Warna Abu untuk Other Tours
+      theme = { headerBg: "#64748b", accentColor: "#475569", softBg: "#f8fafc" };
+    } else if (tourLower.indexOf("ubud") !== -1 || tourLower.indexOf("rice field") !== -1) {
+      // Hijau untuk trip Ubud Rice Field
+      theme = { headerBg: "#105b38", accentColor: "#105b38", softBg: "#f7faf8" };
+    }
+
     // Ekstrak rincian peserta dengan format tebal (bold pax) untuk email Admin & Tamu
     var breakdownAdminHtmlRows = "";
     var breakdownGuestHtmlRows = "";
@@ -293,8 +323,8 @@ function doPost(e) {
         if (colonIdx !== -1) {
           var bLabel = bLine.substring(0, colonIdx).trim();
           var bCount = bLine.substring(colonIdx + 1).replace(/\*/g, '').trim();
-          breakdownAdminHtmlRows += '<tr style="border-bottom: 1px dashed #f0f0f0;"><td style="padding: 6px 0 6px 14px; color: #777; font-size: 13px;">↳ ' + bLabel + ':</td><td style="padding: 6px 0; font-weight: 800; color: #105b38; font-size: 13.5px;">' + bCount + '</td></tr>';
-          breakdownGuestHtmlRows += '<tr style="border-bottom: 1px dashed #e9ecef;"><td style="padding: 6px 0 6px 14px; color: #777; font-size: 13px;">↳ ' + bLabel + ':</td><td style="padding: 6px 0; font-weight: 800; color: #105b38; font-size: 13.5px;">' + bCount + '</td></tr>';
+          breakdownAdminHtmlRows += '<tr style="border-bottom: 1px dashed #f0f0f0;"><td style="padding: 6px 0 6px 14px; color: #777; font-size: 13px;">↳ ' + bLabel + ':</td><td style="padding: 6px 0; font-weight: 800; color: ' + theme.accentColor + '; font-size: 13.5px;">' + bCount + '</td></tr>';
+          breakdownGuestHtmlRows += '<tr style="border-bottom: 1px dashed #e9ecef;"><td style="padding: 6px 0 6px 14px; color: #777; font-size: 13px;">↳ ' + bLabel + ':</td><td style="padding: 6px 0; font-weight: 800; color: ' + theme.accentColor + '; font-size: 13.5px;">' + bCount + '</td></tr>';
           breakdownPlainRows += "   • " + bLabel + ": *" + bCount + "*\n";
         }
       }
@@ -304,7 +334,7 @@ function doPost(e) {
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/\*([^\*\n\r]+)\*/g, '<strong style="color: #105b38; font-weight: 800;">$1</strong>');
+      .replace(/\*([^\*\n\r]+)\*/g, '<strong style="color: ' + theme.accentColor + '; font-weight: 800;">$1</strong>');
 
     // 2. Kirim Notifikasi Email ke Pemilik (dewabiketour@gmail.com)
     var adminEmail = "dewabiketour@gmail.com";
@@ -333,26 +363,26 @@ function doPost(e) {
 
     var adminHtmlBody = 
       '<div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">' +
-        '<div style="background-color: #105b38; color: #ffffff; padding: 22px; text-align: center;">' +
+        '<div style="background-color: ' + theme.headerBg + '; color: #ffffff; padding: 22px; text-align: center;">' +
           '<h2 style="margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">DEWA BIKE TOUR BALI</h2>' +
           '<p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.9;">Reservasi Baru Masuk Melalui Website (' + method + ')</p>' +
         '</div>' +
         '<div style="padding: 24px 20px; background-color: #ffffff;">' +
           '<table style="width: 100%; border-collapse: collapse; font-size: 14px;">' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666; width: 40%;">Lead Guest Name:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + guestName + '</td></tr>' +
-            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Tour Package:</td><td style="padding: 9px 0; font-weight: bold; color: #105b38;">' + tourName + '</td></tr>' +
+            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Tour Package:</td><td style="padding: 9px 0; font-weight: bold; color: ' + theme.accentColor + ';">' + tourName + '</td></tr>' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Total Guests:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + totalGuestsClean + '</td></tr>' +
             breakdownAdminHtmlRows +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Height:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + riderHeight + '</td></tr>' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Tour Date:</td><td style="padding: 9px 0; font-weight: bold; color: #222;">' + tourDate + '</td></tr>' +
             hotelHtmlRow +
-            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 10px 0; color: #666;">Estimated Total Cost:</td><td style="padding: 10px 0; font-weight: 800; font-size: 16px; color: #105b38;">' + totalCost + '</td></tr>' +
+            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 10px 0; color: #666;">Estimated Total Cost:</td><td style="padding: 10px 0; font-weight: 800; font-size: 16px; color: ' + theme.accentColor + ';">' + totalCost + '</td></tr>' +
             reqHtmlRow +
-            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Email Address:</td><td style="padding: 9px 0; font-weight: bold; color: #222;"><a href="mailto:' + email + '" style="color: #105b38;">' + email + '</a></td></tr>' +
+            '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Email Address:</td><td style="padding: 9px 0; font-weight: bold; color: #222;"><a href="mailto:' + email + '" style="color: ' + theme.accentColor + ';">' + email + '</a></td></tr>' +
             '<tr style="border-bottom: 1px solid #f0f0f0;"><td style="padding: 9px 0; color: #666;">Phone / WhatsApp / Telegram:</td><td style="padding: 9px 0; font-weight: bold; color: #222;"><a href="https://wa.me/' + phone.replace(/[^0-9]/g, '') + '" style="color: #16a34a; text-decoration: none; font-weight: bold;">' + phone + ' 💬 Chat WA</a></td></tr>' +
             '<tr><td style="padding: 9px 0; color: #666;">Nationality:</td><td style="padding: 9px 0; color: #222;">' + nationality + '</td></tr>' +
           '</table>' +
-          '<div style="margin-top: 20px; padding: 14px; background-color: #f7faf8; border-left: 4px solid #105b38; border-radius: 4px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">' +
+          '<div style="margin-top: 20px; padding: 14px; background-color: ' + theme.softBg + '; border-left: 4px solid ' + theme.headerBg + '; border-radius: 4px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">' +
             '<strong>Detail Lengkap:</strong>\n' + detailHtml +
           '</div>' +
         '</div>' +
@@ -399,23 +429,23 @@ function doPost(e) {
 
       var guestHtmlBody = 
         '<div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">' +
-          '<div style="background-color: #105b38; color: #ffffff; padding: 24px; text-align: center;">' +
+          '<div style="background-color: ' + theme.headerBg + '; color: #ffffff; padding: 24px; text-align: center;">' +
             '<h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px;">DEWA BIKE TOUR BALI</h2>' +
             '<p style="margin: 8px 0 0 0; font-size: 14px; opacity: 0.95;">Thank you for your booking request!</p>' +
           '</div>' +
           '<div style="padding: 26px 22px; background-color: #ffffff; color: #333333; line-height: 1.6;">' +
             '<p style="margin-top: 0; font-size: 15px;">Dear <strong>' + guestName + '</strong>,</p>' +
             '<p style="font-size: 14px; color: #444;">We are delighted to receive your booking request with <strong>Dewa Bike Tour Bali</strong>. Here is a copy of your reservation details:</p>' +
-            '<div style="background-color: #f8faf9; border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 18px; margin: 18px 0;">' +
+            '<div style="background-color: ' + theme.softBg + '; border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 18px; margin: 18px 0;">' +
               '<table style="width: 100%; border-collapse: collapse; font-size: 14px;">' +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666; width: 42%;">Lead Guest Name:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + guestName + '</td></tr>' +
-                '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Tour Package:</td><td style="padding: 8px 0; font-weight: bold; color: #105b38;">' + tourName + '</td></tr>' +
+                '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Tour Package:</td><td style="padding: 8px 0; font-weight: bold; color: ' + theme.accentColor + ';">' + tourName + '</td></tr>' +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Total Guests:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + totalGuestsClean + '</td></tr>' +
                 breakdownGuestHtmlRows +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Height:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + riderHeight + '</td></tr>' +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Tour Date:</td><td style="padding: 8px 0; font-weight: bold; color: #222;">' + tourDate + '</td></tr>' +
                 hotelHtmlRow +
-                '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 10px 0; color: #666;">Estimated Total Cost:</td><td style="padding: 10px 0; font-weight: 800; font-size: 16px; color: #105b38;">' + totalCost + '</td></tr>' +
+                '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 10px 0; color: #666;">Estimated Total Cost:</td><td style="padding: 10px 0; font-weight: 800; font-size: 16px; color: ' + theme.accentColor + ';">' + totalCost + '</td></tr>' +
                 reqHtmlRow +
                 '<tr style="border-bottom: 1px solid #e9ecef;"><td style="padding: 8px 0; color: #666;">Phone / WhatsApp:</td><td style="padding: 8px 0; color: #222;">' + phone + '</td></tr>' +
                 '<tr><td style="padding: 8px 0; color: #666;">Email Address:</td><td style="padding: 8px 0; color: #222;">' + email + '</td></tr>' +
@@ -427,9 +457,9 @@ function doPost(e) {
             '</div>' +
             '<p style="font-size: 13.5px; color: #555; margin-bottom: 5px;">If you have any questions or urgent changes, feel free to contact us anytime:</p>' +
             '<ul style="font-size: 13.5px; color: #444; margin-top: 4px; padding-left: 20px;">' +
-              '<li><strong>WhatsApp:</strong> <a href="https://wa.me/6285238496766" style="color: #105b38;">+62 852 3849 6766</a></li>' +
-              '<li><strong>Email:</strong> <a href="mailto:dewabiketour@gmail.com" style="color: #105b38;">dewabiketour@gmail.com</a></li>' +
-              '<li><strong>Website:</strong> <a href="https://www.dewabike.com" style="color: #105b38;">https://www.dewabike.com</a></li>' +
+              '<li><strong>WhatsApp:</strong> <a href="https://wa.me/6285238496766" style="color: ' + theme.accentColor + ';">+62 852 3849 6766</a></li>' +
+              '<li><strong>Email:</strong> <a href="mailto:dewabiketour@gmail.com" style="color: ' + theme.accentColor + ';">dewabiketour@gmail.com</a></li>' +
+              '<li><strong>Website:</strong> <a href="https://www.dewabike.com" style="color: ' + theme.accentColor + ';">https://www.dewabike.com</a></li>' +
             '</ul>' +
             '<p style="margin-top: 22px; font-size: 14px; color: #333;">Warm regards,<br><strong>Dewa Bike Tour Bali Team</strong></p>' +
           '</div>' +
