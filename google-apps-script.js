@@ -383,7 +383,7 @@ function doPost(e) {
             '<tr><td style="padding: 9px 0; color: #666;">Nationality:</td><td style="padding: 9px 0; color: #222;">' + nationality + '</td></tr>' +
           '</table>' +
           '<div style="margin-top: 20px; padding: 14px; background-color: ' + theme.softBg + '; border-left: 4px solid ' + theme.headerBg + '; border-radius: 4px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">' +
-            '<strong>Detail Lengkap:</strong>\n' + detailHtml +
+            '<strong>Booking Details:</strong>\n' + detailHtml +
           '</div>' +
         '</div>' +
         '<div style="background-color: #f4f6f5; color: #777; padding: 14px; text-align: center; font-size: 12px;">' +
