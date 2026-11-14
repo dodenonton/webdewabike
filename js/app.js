@@ -157,16 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scrolling UP
         consecutiveUp++;
         consecutiveDown = 0;
-        const hasStickySidebar = window.innerWidth > 1024 && document.querySelector('.tour-sidebar-card');
-        const revealThreshold = hasStickySidebar ? 380 : 80;
 
-        if (scrollY <= revealThreshold) {
-          if (isHidden) {
-            header.classList.remove('header-hidden');
-            document.body.classList.remove('header-hidden-state');
-            isHidden = false;
-          }
-        } else if (!hasStickySidebar && consecutiveUp >= 3 && isHidden) {
+        if ((scrollY <= 80 || consecutiveUp >= 2) && isHidden) {
           header.classList.remove('header-hidden');
           document.body.classList.remove('header-hidden-state');
           isHidden = false;
