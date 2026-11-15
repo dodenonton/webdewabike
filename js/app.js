@@ -2332,15 +2332,159 @@ ${b.name}`;
     closeModal();
   };
 
+  const escapeDialogHtml = (str) => String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  const showBookingConfirmDialog = (b) => new Promise((resolve) => {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'dewa-dialog-backdrop';
+    backdrop.setAttribute('role', 'dialog');
+    backdrop.setAttribute('aria-modal', 'true');
+
+    const title = IS_ID ? 'Konfirmasi Pesanan Anda' : 'Confirm Your Booking';
+    const subtitle = IS_ID
+      ? 'Pastikan data di bawah ini sudah benar sebelum dikirim.'
+      : 'Please review your booking details before submitting.';
+    const guestUnit = IS_ID ? 'orang' : 'pax';
+
+    backdrop.innerHTML = `
+      <div class="dewa-dialog-card">
+        <div class="dewa-dialog-icon is-review" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <h3 class="dewa-dialog-title">${title}</h3>
+        <p class="dewa-dialog-subtitle">${subtitle}</p>
+        <div class="dewa-summary-box">
+          <div class="dewa-summary-row">
+            <span class="dewa-summary-label">${IS_ID ? 'Paket' : 'Tour'}</span>
+            <span class="dewa-summary-val">${escapeDialogHtml(b.tourName)}</span>
+          </div>
+          <div class="dewa-summary-row">
+            <span class="dewa-summary-label">${IS_ID ? 'Tanggal & Jam' : 'Date & Time'}</span>
+            <span class="dewa-summary-val">${escapeDialogHtml(b.dateTime)}</span>
+          </div>
+          <div class="dewa-summary-row">
+            <span class="dewa-summary-label">${IS_ID ? 'Nama' : 'Name'}</span>
+            <span class="dewa-summary-val">${escapeDialogHtml(b.name)}</span>
+          </div>
+          <div class="dewa-summary-row">
+            <span class="dewa-summary-label">${IS_ID ? 'Peserta' : 'Guests'}</span>
+            <span class="dewa-summary-val">${escapeDialogHtml(b.totalGuests)} ${guestUnit}</span>
+          </div>
+          <div class="dewa-summary-row is-total">
+            <span class="dewa-summary-label">${IS_ID ? 'Estimasi Total' : 'Estimated Total'}</span>
+            <span class="dewa-summary-val">${escapeDialogHtml(b.totalCost)}</span>
+          </div>
+        </div>
+        <div class="dewa-dialog-actions">
+          <button type="button" class="dewa-dialog-btn is-secondary" data-dialog-action="cancel">
+            ${IS_ID ? 'Ubah Data' : 'Edit Details'}
+          </button>
+          <button type="button" class="dewa-dialog-btn is-primary" data-dialog-action="confirm">
+            ${IS_ID ? 'Ya, Kirim Pesanan' : 'Confirm & Submit'}
+          </button>
+        </div>
+      </div>
+    `;
+
+    const cleanup = (result) => {
+      document.removeEventListener('keydown', onKeyDown);
+      backdrop.classList.remove('open');
+      setTimeout(() => backdrop.remove(), 220);
+      resolve(result);
+    };
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') cleanup(false);
+    };
+
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop || e.target.closest('[data-dialog-action="cancel"]')) {
+        cleanup(false);
+      } else if (e.target.closest('[data-dialog-action="confirm"]')) {
+        cleanup(true);
+      }
+    });
+
+    document.addEventListener('keydown', onKeyDown);
+    document.body.appendChild(backdrop);
+    requestAnimationFrame(() => backdrop.classList.add('open'));
+  });
+
+  const showBookingSuccessDialog = () => new Promise((resolve) => {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'dewa-dialog-backdrop';
+    backdrop.setAttribute('role', 'dialog');
+    backdrop.setAttribute('aria-modal', 'true');
+
+    const title = IS_ID ? 'Pesanan Terkirim!' : 'Booking Request Sent!';
+    const availabilityText = IS_ID
+      ? 'Ketersediaan akan segera dikonfirmasi oleh admin kami.'
+      : 'Availability will be confirmed by our admin shortly.';
+    const followUpText = IS_ID
+      ? 'Tim kami akan segera mengonfirmasi ulang pesanan Anda melalui WhatsApp atau Email.'
+      : 'Someone will reconfirm your booking via WhatsApp or Email.';
+
+    backdrop.innerHTML = `
+      <div class="dewa-dialog-card">
+        <div class="dewa-dialog-icon is-success" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3 class="dewa-dialog-title">${title}</h3>
+        <div class="dewa-notice-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>${availabilityText}</span>
+        </div>
+        <p class="dewa-success-note">${followUpText}</p>
+        <div class="dewa-dialog-actions">
+          <button type="button" class="dewa-dialog-btn is-primary" data-dialog-action="ok">
+            ${IS_ID ? 'Selesai' : 'OK, Got It'}
+          </button>
+        </div>
+      </div>
+    `;
+
+    const cleanup = () => {
+      document.removeEventListener('keydown', onKeyDown);
+      backdrop.classList.remove('open');
+      setTimeout(() => backdrop.remove(), 220);
+      resolve();
+    };
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === 'Enter') cleanup();
+    };
+
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop || e.target.closest('[data-dialog-action="ok"]')) {
+        cleanup();
+      }
+    });
+
+    document.addEventListener('keydown', onKeyDown);
+    document.body.appendChild(backdrop);
+    requestAnimationFrame(() => backdrop.classList.add('open'));
+  });
+
   // Direct Booking submission ("Booking Now")
   const handleDirectBooking = async () => {
     if (!validateBookingForm()) return;
 
     const b = getBookingDetails();
-    const confirmMsg = IS_ID
-      ? `Apakah data pemesanan Anda sudah benar?\n\n• Paket: ${b.tourName}\n• Tanggal & Jam: ${b.dateTime}\n• Nama: ${b.name}\n• Peserta: ${b.totalGuests} orang\n• Total Estimasi: ${b.totalCost}\n\nKlik OK untuk mengirim pesanan.`
-      : `Are your booking details correct?\n\n• Tour: ${b.tourName}\n• Date & Time: ${b.dateTime}\n• Name: ${b.name}\n• Guests: ${b.totalGuests} pax\n• Estimated Total: ${b.totalCost}\n\nClick OK to confirm and submit.`;
-    if (!window.confirm(confirmMsg)) return;
+    const confirmed = await showBookingConfirmDialog(b);
+    if (!confirmed) return;
 
     const btn = document.getElementById('btnSubmitModalDirect');
     const origHtml = btn ? btn.innerHTML : '';
@@ -2363,10 +2507,8 @@ ${b.name}`;
       btn.innerHTML = origHtml;
     }
 
-    alert(IS_ID
-      ? 'Terima kasih! Tim kami akan segera mengonfirmasi ulang pesanan Anda melalui WhatsApp atau Email.'
-      : 'Someone will reconfirm your booking via WhatsApp or Email');
     closeModal();
+    await showBookingSuccessDialog();
   };
 
   // Delegate click for Booking Now, WhatsApp & Email submit buttons in Modal

@@ -7588,3 +7588,219 @@ body.header-hidden-state .tour-sidebar-card {
   }
 }
 
+/* ==========================================================================
+   CUSTOM BOOKING CONFIRMATION & SUCCESS DIALOGS
+   ========================================================================== */
+.dewa-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.dewa-dialog-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.dewa-dialog-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 1.65rem 1.5rem 1.4rem;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  transform: translateY(14px) scale(0.96);
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  text-align: center;
+}
+
+.dewa-dialog-backdrop.open .dewa-dialog-card {
+  transform: translateY(0) scale(1);
+}
+
+.dewa-dialog-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  margin: 0 auto 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dewa-dialog-icon.is-review {
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  color: #ea580c;
+  box-shadow: 0 0 0 6px rgba(234, 88, 12, 0.08);
+}
+
+.dewa-dialog-icon.is-success {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #105b38;
+  box-shadow: 0 0 0 6px rgba(16, 91, 56, 0.1);
+}
+
+.dewa-dialog-title {
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+}
+
+.dewa-dialog-subtitle {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 1.1rem;
+  line-height: 1.45;
+}
+
+.dewa-summary-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+.dewa-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.42rem 0;
+  font-size: 0.86rem;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.dewa-summary-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dewa-summary-row:first-child {
+  padding-top: 0;
+}
+
+.dewa-summary-label {
+  color: #64748b;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.dewa-summary-val {
+  color: #0f172a;
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+
+.dewa-summary-row.is-total {
+  margin-top: 0.25rem;
+  padding-top: 0.6rem;
+  border-top: 1.5px solid #cbd5e1;
+  border-bottom: none;
+}
+
+.dewa-summary-row.is-total .dewa-summary-label {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.dewa-summary-row.is-total .dewa-summary-val {
+  color: #105b38;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.dewa-notice-pill {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.87rem;
+  font-weight: 600;
+  line-height: 1.45;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.dewa-success-note {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 1.3rem;
+}
+
+.dewa-dialog-actions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.dewa-dialog-btn {
+  flex: 1;
+  min-height: 46px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+  padding: 0.65rem 1rem;
+}
+
+.dewa-dialog-btn:active {
+  transform: scale(0.98);
+}
+
+.dewa-dialog-btn.is-secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.dewa-dialog-btn.is-secondary:hover {
+  background: #e2e8f0;
+}
+
+.dewa-dialog-btn.is-primary {
+  background: linear-gradient(135deg, #105b38 0%, #0d7a4a 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(16, 91, 56, 0.25);
+}
+
+.dewa-dialog-btn.is-primary:hover {
+  background: linear-gradient(135deg, #0c4329 0%, #105b38 100%);
+}
+
+@media (max-width: 380px) {
+  .dewa-dialog-card {
+    padding: 1.35rem 1.1rem 1.2rem;
+  }
+  .dewa-dialog-actions {
+    flex-direction: column-reverse;
+  }
+}
+
+
