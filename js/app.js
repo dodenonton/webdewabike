@@ -2337,6 +2337,11 @@ ${b.name}`;
     if (!validateBookingForm()) return;
 
     const b = getBookingDetails();
+    const confirmMsg = IS_ID
+      ? `Apakah data pemesanan Anda sudah benar?\n\n• Paket: ${b.tourName}\n• Tanggal & Jam: ${b.dateTime}\n• Nama: ${b.name}\n• Peserta: ${b.totalGuests} orang\n• Total Estimasi: ${b.totalCost}\n\nKlik OK untuk mengirim pesanan.`
+      : `Are your booking details correct?\n\n• Tour: ${b.tourName}\n• Date & Time: ${b.dateTime}\n• Name: ${b.name}\n• Guests: ${b.totalGuests} pax\n• Estimated Total: ${b.totalCost}\n\nClick OK to confirm and submit.`;
+    if (!window.confirm(confirmMsg)) return;
+
     const btn = document.getElementById('btnSubmitModalDirect');
     const origHtml = btn ? btn.innerHTML : '';
     if (btn) {

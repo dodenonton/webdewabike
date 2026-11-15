@@ -5899,9 +5899,12 @@ body.header-hidden-state .tour-sidebar-card {
   .tour-detail-grid {
     grid-template-columns: 1fr;
   }
-  .tour-sidebar-card {
+  .tour-sidebar-card,
+  body.header-hidden-state .tour-sidebar-card {
     position: static !important;
+    top: auto !important;
     transform: none !important;
+    height: auto !important;
     max-height: none !important;
     overflow: visible !important;
     overflow-y: visible !important;
