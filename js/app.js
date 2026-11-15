@@ -2176,6 +2176,9 @@ ${b.noBike ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTime}
     if (!validateBookingForm()) return;
 
     const b = getBookingDetails();
+    const confirmed = await showBookingConfirmDialog(b);
+    if (!confirmed) return;
+
     const btn = document.getElementById('btnSubmitModalBooking');
     const origHtml = btn ? btn.innerHTML : '';
     if (btn) {
@@ -2244,6 +2247,7 @@ Hello Dewa Bike Tour Team, please check slot availability for the schedule above
       btn.innerHTML = origHtml;
     }
     closeModal();
+    await showBookingSuccessDialog('whatsapp');
   };
 
   // Submit via Email
@@ -2251,6 +2255,9 @@ Hello Dewa Bike Tour Team, please check slot availability for the schedule above
     if (!validateBookingForm()) return;
 
     const b = getBookingDetails();
+    const confirmed = await showBookingConfirmDialog(b);
+    if (!confirmed) return;
+
     const btn = document.getElementById('btnSubmitModalEmail');
     const origHtml = btn ? btn.innerHTML : '';
     if (btn) {
@@ -2330,6 +2337,7 @@ ${b.name}`;
       btn.innerHTML = origHtml;
     }
     closeModal();
+    await showBookingSuccessDialog('email');
   };
 
   const escapeDialogHtml = (str) => String(str ?? '')
@@ -2418,7 +2426,7 @@ ${b.name}`;
     requestAnimationFrame(() => backdrop.classList.add('open'));
   });
 
-  const showBookingSuccessDialog = () => new Promise((resolve) => {
+  const showBookingSuccessDialog = (channel = 'direct') => new Promise((resolve) => {
     const backdrop = document.createElement('div');
     backdrop.className = 'dewa-dialog-backdrop';
     backdrop.setAttribute('role', 'dialog');
@@ -2428,9 +2436,11 @@ ${b.name}`;
     const availabilityText = IS_ID
       ? 'Ketersediaan akan segera dikonfirmasi oleh admin kami.'
       : 'Availability will be confirmed by our admin shortly.';
+    const waLabel = channel === 'whatsapp' ? '<strong>WhatsApp</strong>' : 'WhatsApp';
+    const emailLabel = channel === 'email' ? '<strong>Email</strong>' : 'Email';
     const followUpText = IS_ID
-      ? 'Tim kami akan segera mengonfirmasi ulang pesanan Anda melalui WhatsApp atau Email.'
-      : 'Someone will reconfirm your booking via WhatsApp or Email.';
+      ? `Tim kami akan segera mengonfirmasi ulang pesanan Anda melalui ${waLabel} atau ${emailLabel}.`
+      : `Someone will reconfirm your booking via ${waLabel} or ${emailLabel}.`;
 
     backdrop.innerHTML = `
       <div class="dewa-dialog-card">
