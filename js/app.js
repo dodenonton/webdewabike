@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'River Rafting': {
       title: 'Ayung River Rafting Adventure',
       titleId: 'Petualangan Arung Jeram Sungai Ayung',
-      activityPrice: 400000,
+      isRafting: true,
       noBike: true
     },
     'River Tubing': {
@@ -116,6 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let consecutiveUp = 0;
     let consecutiveDown = 0;
 
+    const updateStickyOffset = () => {
+      const h = header.offsetHeight || 72;
+      document.documentElement.style.setProperty('--header-sticky-top', `${h + 4}px`);
+    };
+    updateStickyOffset();
+    window.addEventListener('resize', updateStickyOffset, { passive: true });
+
     const onScroll = () => {
       const scrollY = window.pageYOffset || 0;
       const threshold = topBar ? topBar.offsetHeight : 40;
@@ -138,6 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
           header.classList.remove('header-hidden');
           document.body.classList.remove('header-hidden-state');
           isHidden = false;
+          const sidebarCard = document.querySelector('.tour-sidebar-card');
+          if (sidebarCard && sidebarCard.scrollTop > 0) {
+            sidebarCard.scrollTo({ top: 0, behavior: 'smooth' });
+          }
         }
         consecutiveUp = 0;
         consecutiveDown = 0;
@@ -162,6 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
           header.classList.remove('header-hidden');
           document.body.classList.remove('header-hidden-state');
           isHidden = false;
+          const sidebarCard = document.querySelector('.tour-sidebar-card');
+          if (sidebarCard && sidebarCard.scrollTop > 0) {
+            sidebarCard.scrollTo({ top: 0, behavior: 'smooth' });
+          }
         }
       }
     };
@@ -1283,6 +1298,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const comboPrice = pkg.comboPrice;
     const comboSinglePrice = pkg.comboSinglePrice;
     const activityPrice = pkg.activityPrice;
+    const activityChildPrice = pkg.activityChildPrice;
+    const isRafting = !!pkg.isRafting;
     const noBike = !!pkg.noBike;
 
     let selectedTier = 'private';
@@ -1373,8 +1390,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (descLabel8_11) descLabel8_11.textContent = IS_ID ? 'Usia 5 – 10 tahun' : 'Age 5 – 10 years old';
       if (nameLabel1_2) nameLabel1_2.textContent = IS_ID ? 'Balita (Usia 1 – 4)' : 'Infants (Age 1 – 4)';
       if (descLabel1_2) descLabel1_2.textContent = IS_ID ? 'Gratis (Usia 1 – 4 tahun)' : 'Free of charge (Age 1 – 4)';
-    } else if (activityPrice) {
-      if (packageTierGroup) packageTierGroup.style.display = 'none';
+    } else if (isRafting) {
+      if (packageTierGroup) packageTierGroup.style.display = 'block';
       if (groupHeight) groupHeight.style.display = 'none';
       if (groupHotel) groupHotel.style.display = 'block';
       if (labelModalTime) labelModalTime.textContent = IS_ID ? 'Jam Pilihan' : 'Preferred Time';
@@ -1384,7 +1401,31 @@ document.addEventListener('DOMContentLoaded', () => {
       if (row1_2) row1_2.style.display = 'none';
       if (rowAdult) rowAdult.style.display = 'flex';
       if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Peserta' : 'Participants';
-      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Dewasa & Anak-anak' : 'Adults & Children';
+      if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Dewasa & Anak (Usia 5 – 65)' : 'Adults & Children (Age 5 – 65)';
+    } else if (activityPrice) {
+      if (packageTierGroup) packageTierGroup.style.display = 'none';
+      if (groupHeight) groupHeight.style.display = 'none';
+      if (groupHotel) groupHotel.style.display = 'block';
+      if (labelModalTime) labelModalTime.textContent = IS_ID ? 'Jam Pilihan' : 'Preferred Time';
+      if (activityChildPrice) {
+        if (row8_11) row8_11.style.display = 'flex';
+        if (row6_7) row6_7.style.display = 'none';
+        if (row3_5) row3_5.style.display = 'none';
+        if (row1_2) row1_2.style.display = 'none';
+        if (rowAdult) rowAdult.style.display = 'flex';
+        if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Dewasa (Usia 12+)' : 'Adults (Age 12+)';
+        if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Usia 12 tahun ke atas' : 'Age 12+ years old';
+        if (nameLabel8_11) nameLabel8_11.textContent = IS_ID ? 'Anak (Usia 5 – 11)' : 'Children (Age 5 – 11)';
+        if (descLabel8_11) descLabel8_11.textContent = IS_ID ? 'Usia 5 – 11 tahun' : 'Age 5 – 11 years old';
+      } else {
+        if (row8_11) row8_11.style.display = 'none';
+        if (row6_7) row6_7.style.display = 'none';
+        if (row3_5) row3_5.style.display = 'none';
+        if (row1_2) row1_2.style.display = 'none';
+        if (rowAdult) rowAdult.style.display = 'flex';
+        if (nameLabelAdult) nameLabelAdult.textContent = IS_ID ? 'Peserta' : 'Participants';
+        if (descLabelAdult) descLabelAdult.textContent = IS_ID ? 'Dewasa & Anak-anak' : 'Adults & Children';
+      }
     } else {
       if (labelModalTime) {
         labelModalTime.textContent = isSaving
@@ -1512,9 +1553,19 @@ document.addEventListener('DOMContentLoaded', () => {
       p6_7 = 0;
       p3_5 = 0;
       p1_2 = 0;
+    } else if (isRafting) {
+      if (selectedTier === 'private') {
+        pAdult = (totalGuests === 1) ? 900000 : 450000;
+      } else {
+        pAdult = 500000;
+      }
+      p8_11 = pAdult;
+      p6_7 = pAdult;
+      p3_5 = pAdult;
+      p1_2 = 0;
     } else if (activityPrice) {
       pAdult = activityPrice;
-      p8_11 = activityPrice;
+      p8_11 = activityChildPrice || activityPrice;
       p6_7 = activityPrice;
       p3_5 = activityPrice;
       p1_2 = 0;
@@ -3756,74 +3807,74 @@ ${data.name}`;
   const initBikePhotoModal = () => {
     const BIKE_PHOTOS_DATA = IS_ID ? {
       childseat: {
-        file: 'bike-childseat.jpg',
+        file: 'bike-childseat.webp',
         title: 'Kursi Bayi Depan (Usia 1 – 4 Tahun)',
         subtitle: 'Kursi anak bagian depan pada E-Bike',
         desc: 'Kursi anak di bagian depan yang nyaman dan aman, dilengkapi pijakan kaki dan sabuk pengaman sehingga balita Anda (1 hingga 4 tahun) dapat ikut bersepeda dengan aman bersama orang tua.'
       },
       backseat: {
-        file: 'bike-backseat.jpg',
+        file: 'bike-backseat.webp',
         title: 'Boncengan Anak (Usia 5 – 7 Tahun)',
         subtitle: 'Kursi belakang pada sepeda dewasa (Hanya ukuran M)',
         desc: 'Dudukan kursi belakang yang kokoh dengan pegangan pengaman dan pijakan kaki, dirancang khusus agar anak usia 5–7 tahun dapat dibonceng dengan aman di belakang orang dewasa.'
       },
       small120: {
-        file: 'bike-small-120cm.jpg',
+        file: 'bike-small-120cm.webp',
         title: 'Sepeda Anak (Min. Tinggi 120 cm)',
         subtitle: 'Sepeda gunung junior untuk tinggi 120 cm ke atas',
         desc: 'Sepeda gunung junior yang ringan dengan suspensi depan dan tuas rem sesuai genggaman anak. Untuk tinggi di bawah 120 cm dapat menggunakan kursi boncengan.'
       },
       small135: {
-        file: 'bike-small-135cm.jpg',
+        file: 'bike-small-135cm.webp',
         title: 'Sepeda Remaja (Min. Tinggi 135 cm)',
         subtitle: 'Sepeda gunung remaja untuk tinggi 135 cm ke atas',
         desc: 'Sepeda gunung remaja dengan suspensi depan dan perpindahan gigi Shimano, sangat pas untuk anak yang lebih besar atau remaja awal dengan tinggi minimal 135 cm.'
       },
       adults: {
-        file: 'bike-adults.jpg',
+        file: 'bike-adults.webp',
         title: 'Sepeda Dewasa (Ukuran S – XL)',
         subtitle: 'Sepeda gunung hardtail dengan gigi Shimano & rem cakram hidrolik',
         desc: 'Sepeda gunung dewasa berkualitas tinggi tersedia lengkap dalam ukuran rangka S hingga XL. Selalu dirawat dan diperiksa keamanannya oleh mekanik internal kami.'
       },
       ebike: {
-        file: 'bike-ebike.jpg',
+        file: 'bike-ebike.webp',
         title: 'E-Bike / Sepeda Listrik (Ukuran S – M)',
         subtitle: 'Sepeda dengan bantuan kayuhan listrik (Min. tinggi 150 cm)',
         desc: 'Sepeda listrik yang nyaman dan ringan dikendarai dengan bantuan tenaga baterai halus, suspensi depan, dan rem cakram handal. Sangat cocok untuk menyusuri persawahan dan jalan desa tanpa lelah. Minimal tinggi pengendara 150 cm.'
       }
     } : {
       childseat: {
-        file: 'bike-childseat.jpg',
+        file: 'bike-childseat.webp',
         title: 'Childseat (Age 1 – 4 Years)',
         subtitle: 'Front mounted childseat on E-Bike',
         desc: 'Comfortable and safe front childseat equipped with footrests and safety harness, allowing your toddler (1 to 4 years old) to securely enjoy the ride with parents.'
       },
       backseat: {
-        file: 'bike-backseat.jpg',
+        file: 'bike-backseat.webp',
         title: 'Backseat (Age 5 – 7 Years)',
         subtitle: 'Rear child seat on adult bike (Size M only)',
         desc: 'Sturdy rear seat carrier with safety handle and footpegs, specifically designed for kids aged 5–7 years to ride safely behind an adult.'
       },
       small120: {
-        file: 'bike-small-120cm.jpg',
+        file: 'bike-small-120cm.webp',
         title: 'Small Bike (Min Height 120 cm)',
         subtitle: 'Junior mountain bike for riders 120 cm and taller',
         desc: 'Lightweight junior mountain bike with front suspension and child-proportioned brakes. Lower than 120 cm can comfortably use a backseat.'
       },
       small135: {
-        file: 'bike-small-135cm.jpg',
+        file: 'bike-small-135cm.webp',
         title: 'Small Bike (Min Height 135 cm)',
         subtitle: 'Youth mountain bike for riders 135 cm and taller',
         desc: 'Youth performance mountain bike with front suspension fork and Shimano gearing, perfectly fitted for older children and pre-teens at least 135 cm tall.'
       },
       adults: {
-        file: 'bike-adults.jpg',
+        file: 'bike-adults.webp',
         title: 'Adults Bike (Sizes S – XL)',
         subtitle: 'Hardtail mountain bike with Shimano gears & hydraulic disc brakes',
         desc: 'High-quality adult mountain bikes available in full frame sizes from S to XL. Regularly serviced and safety checked by our in-house mechanics.'
       },
       ebike: {
-        file: 'bike-ebike.jpg',
+        file: 'bike-ebike.webp',
         title: 'E-Bike (Sizes S – M)',
         subtitle: 'Electric assist bicycle (Min height 150 cm)',
         desc: 'Comfortable and easy-to-ride electric bicycle featuring smooth pedal assistance, front suspension, and reliable disc brakes. Perfect for riding effortlessly through rice fields and village roads. Minimum rider height 150 cm.'

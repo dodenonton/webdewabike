@@ -498,7 +498,7 @@ button, input, select, textarea {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('../images/hero-bg.jpg');
+  background-image: url('../images/hero-bg.webp');
   background-position: center 42%;
   background-size: cover;
   background-repeat: no-repeat;
@@ -4067,7 +4067,7 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
   }
 
   .hero-section::before {
-    background-image: url('../images/hero-bg-mobile.jpg') !important;
+    background-image: url('../images/hero-bg-mobile.webp') !important;
     background-position: center 22% !important;
     background-size: cover !important;
     transform: translate3d(0, var(--hero-translate-y, 0px), 0) scale(var(--hero-scale, 1));
@@ -4655,7 +4655,7 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
    ========================================================================== */
 .page-hero {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(16, 91, 56, 0.80) 100%),
-              url('../images/hero-bg.jpg') center 42% / cover no-repeat;
+              url('../images/hero-bg.webp') center 42% / cover no-repeat;
   padding: 4.5rem 0 3.75rem;
   color: #ffffff;
   position: relative;
@@ -4663,52 +4663,52 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
 
 .page-hero.about-hero {
   background: linear-gradient(90deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.65) 48%, rgba(16, 91, 56, 0.55) 100%),
-              url('../images/page-hero-about.jpg?v=2') 78% 28% / cover no-repeat;
+              url('../images/page-hero-about.webp?v=2') 78% 28% / cover no-repeat;
 }
 
 .page-hero.facilities-hero {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(16, 91, 56, 0.75) 100%),
-              url('../images/facility-hero.jpg') center 40% / cover no-repeat;
+              url('../images/facility-hero.webp') center 40% / cover no-repeat;
 }
 
 .page-hero.all-packages-hero {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(16, 91, 56, 0.75) 100%),
-              url('../images/package-kintamani-saving.jpg?v=1') center 45% / cover no-repeat;
+              url('../images/package-kintamani-saving.webp?v=1') center 45% / cover no-repeat;
 }
 
 .page-hero.kintamani-hero {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
-              url('../images/package-kintamani.jpg?v=3') center 53% / cover no-repeat;
+              url('../images/package-kintamani.webp?v=3') center 53% / cover no-repeat;
 }
 
 .page-hero.ubud-rice-hero {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
-              url('../images/package-ubud-rice.jpg?v=5') center 47% / cover no-repeat;
+              url('../images/package-ubud-rice.webp?v=5') center 47% / cover no-repeat;
 }
 
 .page-hero.ebike-hero {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
-              url('../images/package-ebike.jpg?v=3') center 33% / cover no-repeat;
+              url('../images/package-ebike.webp?v=3') center 33% / cover no-repeat;
 }
 
 .page-hero#foto-hero-ubud-rice-saving {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
-              url('../images/gallery-home-1.jpg') center 47% / cover no-repeat;
+              url('../images/gallery-home-1.webp') center 47% / cover no-repeat;
 }
 
 .page-hero#foto-hero-ebike-saving {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(16, 91, 56, 0.75) 100%),
-              url('../images/bike-ebike.jpg') center 33% / cover no-repeat;
+              url('../images/bike-ebike.webp') center 33% / cover no-repeat;
 }
 
 .page-hero.trekking-hero {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.80) 0%, rgba(16, 91, 56, 0.72) 100%),
-              url('../images/trekking/trekking-local-farmers.jpg') center 54% / cover no-repeat;
+              url('../images/trekking/trekking-local-farmers.webp') center 54% / cover no-repeat;
 }
 
 .page-hero.gallery-hero {
   background: linear-gradient(90deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.52) 48%, rgba(16, 91, 56, 0.45) 100%),
-              url('../images/kintamani/kintamani-slide-5.jpg') center 46% / cover no-repeat;
+              url('../images/kintamani/kintamani-slide-5.webp') center 46% / cover no-repeat;
   padding: 6.75rem 0 5.75rem;
   min-height: 380px;
   display: flex;
@@ -5292,16 +5292,23 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
   padding: 1.35rem 1.25rem;
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: 1rem !important;
+  top: var(--header-sticky-top, 4.75rem) !important;
   align-self: flex-start !important;
   z-index: 20;
-  max-height: calc(100vh - 2rem) !important;
-  max-height: calc(100dvh - 2rem) !important;
+  max-height: calc(100vh - var(--header-sticky-top, 4.75rem) - 0.75rem) !important;
+  max-height: calc(100dvh - var(--header-sticky-top, 4.75rem) - 0.75rem) !important;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
   font-size: 0.92rem;
+  transition: top 0.28s ease, max-height 0.28s ease;
+}
+
+body.header-hidden-state .tour-sidebar-card {
+  top: 1rem !important;
+  max-height: calc(100vh - 2rem) !important;
+  max-height: calc(100dvh - 2rem) !important;
 }
 
 .tour-sidebar-card::-webkit-scrollbar {
@@ -5924,52 +5931,52 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
 
   .page-hero.about-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.72) 48%, rgba(16, 91, 56, 0.62) 100%),
-                url('../images/page-hero-about.jpg?v=2') 90% 28% / cover no-repeat !important;
+                url('../images/page-hero-about.webp?v=2') 90% 28% / cover no-repeat !important;
   }
 
   .page-hero.facilities-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.90) 0%, rgba(15, 23, 42, 0.75) 50%, rgba(16, 91, 56, 0.70) 100%),
-                url('../images/facility-hero.jpg') center 40% / cover no-repeat !important;
+                url('../images/facility-hero.webp') center 40% / cover no-repeat !important;
   }
 
   .page-hero.all-packages-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.70) 50%, rgba(16, 91, 56, 0.65) 100%),
-                url('../images/package-kintamani-saving.jpg?v=1') center 45% / cover no-repeat !important;
+                url('../images/package-kintamani-saving.webp?v=1') center 45% / cover no-repeat !important;
   }
 
   .page-hero.kintamani-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
-                url('../images/package-kintamani.jpg?v=3') center 80% / cover no-repeat !important;
+                url('../images/package-kintamani.webp?v=3') center 80% / cover no-repeat !important;
   }
 
   .page-hero.ubud-rice-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
-                url('../images/package-ubud-rice.jpg?v=5') center 70% / cover no-repeat !important;
+                url('../images/package-ubud-rice.webp?v=5') center 70% / cover no-repeat !important;
   }
 
   .page-hero.ebike-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
-                url('../images/package-ebike.jpg?v=3') center 40% / cover no-repeat !important;
+                url('../images/package-ebike.webp?v=3') center 40% / cover no-repeat !important;
   }
 
   .page-hero#foto-hero-ubud-rice-saving {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
-                url('../images/gallery-home-1.jpg') center 70% / cover no-repeat !important;
+                url('../images/gallery-home-1.webp') center 70% / cover no-repeat !important;
   }
 
   .page-hero#foto-hero-ebike-saving {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.72) 50%, rgba(16, 91, 56, 0.70) 100%),
-                url('../images/bike-ebike.jpg') center 40% / cover no-repeat !important;
+                url('../images/bike-ebike.webp') center 40% / cover no-repeat !important;
   }
 
   .page-hero.trekking-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.70) 50%, rgba(16, 91, 56, 0.68) 100%),
-                url('../images/trekking/trekking-local-farmers.jpg') center 75% / cover no-repeat !important;
+                url('../images/trekking/trekking-local-farmers.webp') center 75% / cover no-repeat !important;
   }
 
   .page-hero.gallery-hero {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.80) 0%, rgba(15, 23, 42, 0.45) 50%, rgba(16, 91, 56, 0.50) 100%),
-                url('../images/kintamani/kintamani-slide-5.jpg') center 48% / cover no-repeat !important;
+                url('../images/kintamani/kintamani-slide-5.webp') center 48% / cover no-repeat !important;
     padding: 5rem 0 4.25rem;
     min-height: 320px;
   }
