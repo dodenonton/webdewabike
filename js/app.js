@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let ticking = false;
 
       const getMetrics = () => {
-        const topOffset = 16; // 1rem
+        const topOffset = 90;
         const gridRect = grid.getBoundingClientRect();
         const vh = window.innerHeight || 800;
         const mainHeight = mainCard.offsetHeight || grid.offsetHeight;
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 1. Saat konten kiri / halaman discroll: kartu kanan ikut ter-scroll otomatis
       const updateScrollFromWindow = () => {
-        if (window.innerWidth <= 1024) return;
+        if (window.innerWidth < 1024) return;
 
         const { topOffset, gridRect, syncDistance, maxInternalScroll } = getMetrics();
         if (maxInternalScroll <= 0) return;
@@ -434,6 +434,12 @@ document.addEventListener('DOMContentLoaded', () => {
   faqItems.forEach(item => {
     const question = item.querySelector('.faq-question');
     const answer = item.querySelector('.faq-answer');
+    if (!question || !answer) return;
+
+    // Ensure closed by default
+    item.classList.remove('active');
+    answer.style.maxHeight = null;
+    question.setAttribute('aria-expanded', 'false');
 
     question.addEventListener('click', () => {
       const isActive = item.classList.contains('active');
@@ -441,16 +447,25 @@ document.addEventListener('DOMContentLoaded', () => {
       // Close all other items for a clean accordion look
       faqItems.forEach(otherItem => {
         otherItem.classList.remove('active');
+        const otherQ = otherItem.querySelector('.faq-question');
+        if (otherQ) otherQ.setAttribute('aria-expanded', 'false');
         const otherAnswer = otherItem.querySelector('.faq-answer');
         if (otherAnswer) otherAnswer.style.maxHeight = null;
       });
 
       if (!isActive) {
         item.classList.add('active');
-        answer.style.maxHeight = answer.scrollHeight + 'px';
+        question.setAttribute('aria-expanded', 'true');
+        answer.style.maxHeight = (answer.scrollHeight + 24) + 'px';
       }
     });
   });
+
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.faq-item.active .faq-answer').forEach(ans => {
+      ans.style.maxHeight = (ans.scrollHeight + 24) + 'px';
+    });
+  }, { passive: true });
 
   /* -------------------------------------------------------------
    * 5. BOOKING MODAL & LIVE ESTIMATOR
@@ -1314,10 +1329,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bikeSizeGuide && bikeSizeTitle && bikeSizeHint) {
       if (isEBike) {
         bikeSizeGuide.classList.add('ebike-mode');
-        bikeSizeTitle.innerHTML = IS_ID ? '⚡ Ukuran E-Bike: Hanya S &amp; M' : '⚡ E-Bike Sizes: S and M only';
+        bikeSizeTitle.innerHTML = IS_ID ? '⚡ Ukuran E-Bike: Hanya S &amp; M (Min. 135 cm)' : '⚡ E-Bike Sizes: S and M only (Min. 135 cm)';
         bikeSizeHint.textContent = IS_ID
-          ? 'Sepeda listrik (E-Bike) hanya tersedia ukuran S dan M. Mohon tuliskan tinggi badan tiap peserta agar kami dapat menyiapkan ukuran sepeda yang pas.'
-          : 'Electric bikes (E-Bikes) are available in sizes S and M only. Please specify each rider\'s height so we can prepare the perfect bike frame.';
+          ? 'Sepeda listrik (E-Bike) tersedia ukuran S dan M (minimal tinggi badan 135 cm). Mohon tuliskan tinggi badan tiap peserta agar kami dapat menyiapkan ukuran sepeda yang pas.'
+          : 'Electric bikes (E-Bikes) are available in sizes S and M only (minimum rider height 135 cm). Please specify each rider\'s height so we can prepare the perfect bike frame.';
       } else {
         bikeSizeGuide.classList.remove('ebike-mode');
         bikeSizeTitle.innerHTML = IS_ID ? '🚲 Ukuran Sepeda Reguler: S hingga XL' : '🚲 Normal Bike Sizes: S to XL';
@@ -3996,8 +4011,8 @@ ${data.name}`;
       ebike: {
         file: 'bike-ebike.webp',
         title: 'E-Bike / Sepeda Listrik (Ukuran S – M)',
-        subtitle: 'Sepeda dengan bantuan kayuhan listrik (Min. tinggi 150 cm)',
-        desc: 'Sepeda listrik yang nyaman dan ringan dikendarai dengan bantuan tenaga baterai halus, suspensi depan, dan rem cakram handal. Sangat cocok untuk menyusuri persawahan dan jalan desa tanpa lelah. Minimal tinggi pengendara 150 cm.'
+        subtitle: 'Sepeda dengan bantuan kayuhan listrik (Min. tinggi 135 cm)',
+        desc: 'Sepeda listrik yang nyaman dan ringan dikendarai dengan bantuan tenaga baterai halus, suspensi depan, dan rem cakram handal. Sangat cocok untuk menyusuri persawahan dan jalan desa tanpa lelah. Minimal tinggi pengendara 135 cm.'
       }
     } : {
       childseat: {
@@ -4033,8 +4048,8 @@ ${data.name}`;
       ebike: {
         file: 'bike-ebike.webp',
         title: 'E-Bike (Sizes S – M)',
-        subtitle: 'Electric assist bicycle (Min height 150 cm)',
-        desc: 'Comfortable and easy-to-ride electric bicycle featuring smooth pedal assistance, front suspension, and reliable disc brakes. Perfect for riding effortlessly through rice fields and village roads. Minimum rider height 150 cm.'
+        subtitle: 'Electric assist bicycle (Min height 135 cm)',
+        desc: 'Comfortable and easy-to-ride electric bicycle featuring smooth pedal assistance, front suspension, and reliable disc brakes. Perfect for riding effortlessly through rice fields and village roads. Minimum rider height 135 cm.'
       }
     };
 
@@ -4395,6 +4410,142 @@ ${data.name}`;
     }
   };
 
+  /* -------------------------------------------------------------
+   * 11. COLLAPSIBLE TOUR SECTIONS (CLEAN UX + 100% SEO PRESERVED)
+   * Mengelompokkan bagian teks panjang (Route Program, Itinerary/Pickup,
+   * serta Tarif Jemputan Luar Ubud) ke dalam kartu buka-tutup (collapsible)
+   * agar halaman 50% lebih ringkas di Mobile & PC tanpa menghapus DOM SEO.
+   * ------------------------------------------------------------- */
+  const createCollapsibleCard = ({ icon, title, subtitle, compact = false, defaultOpen = false }) => {
+    const card = document.createElement('div');
+    card.className = 'dewa-collapse-card' + (compact ? ' is-compact' : '') + (defaultOpen ? ' open' : '');
+
+    const showTxt = IS_ID ? 'Lihat Detail' : 'Show Details';
+    const hideTxt = IS_ID ? 'Tutup' : 'Hide';
+
+    card.innerHTML = `
+      <button type="button" class="dewa-collapse-toggle" aria-expanded="${defaultOpen ? 'true' : 'false'}">
+        <span class="dewa-collapse-icon" aria-hidden="true">${icon}</span>
+        <span class="dewa-collapse-meta">
+          <strong class="dewa-collapse-title">${title}</strong>
+          ${subtitle ? `<span class="dewa-collapse-sub">${subtitle}</span>` : ''}
+        </span>
+        <span class="dewa-collapse-badge">
+          <span class="dewa-collapse-badge-text">${defaultOpen ? hideTxt : showTxt}</span>
+          <svg class="dewa-collapse-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </button>
+      <div class="dewa-collapse-body">
+        <div class="dewa-collapse-inner"></div>
+      </div>
+    `;
+
+    const btn = card.querySelector('.dewa-collapse-toggle');
+    const badgeTxt = card.querySelector('.dewa-collapse-badge-text');
+    btn.addEventListener('click', () => {
+      const isOpen = card.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (badgeTxt) badgeTxt.textContent = isOpen ? hideTxt : showTxt;
+    });
+
+    return {
+      card,
+      inner: card.querySelector('.dewa-collapse-inner')
+    };
+  };
+
+  const initCollapsibleTourSections = () => {
+    // A. Tour Detail Left Column (.tour-description)
+    const tourDesc = document.querySelector('.tour-description');
+    if (tourDesc && !tourDesc.dataset.collapsibleInit) {
+      tourDesc.dataset.collapsibleInit = 'true';
+
+      const programList = tourDesc.querySelector('.tour-program-list');
+      const noteBlock = tourDesc.querySelector('.tour-note-block');
+      const includedBox = tourDesc.querySelector('.included-box');
+      const faqSection = tourDesc.querySelector('.tour-faq-section');
+
+      if (programList) {
+        // Keep .included-box visible right before the collapsible cards so inclusions are always seen immediately
+        if (includedBox && programList.parentNode === tourDesc) {
+          tourDesc.insertBefore(includedBox, programList);
+        }
+
+        // 1. Route Program & Notes Collapsible Card
+        const progNodes = [programList];
+        if (noteBlock && noteBlock.parentNode === tourDesc) {
+          progNodes.push(noteBlock);
+        }
+
+        const progCollapse = createCollapsibleCard({
+          icon: '🗺️',
+          title: IS_ID ? 'Rute Perjalanan & Kunjungan Budaya' : 'Full Route Program & Cultural Stops',
+          subtitle: IS_ID
+            ? 'Klik untuk melihat tahapan rute, tempat singgah & catatan penting'
+            : 'Tap to view step-by-step route, cultural visits & important notes'
+        });
+
+        tourDesc.insertBefore(progCollapse.card, progNodes[0]);
+        progNodes.forEach(n => progCollapse.inner.appendChild(n));
+
+        // 2. Schedule, Itinerary, Pick-Up Time & What to Bring Collapsible Card
+        const scheduleNodes = [];
+        let cursor = progCollapse.card.nextElementSibling;
+        while (cursor && cursor !== faqSection) {
+          const next = cursor.nextElementSibling;
+          if (cursor !== includedBox && !cursor.classList.contains('dewa-collapse-card')) {
+            scheduleNodes.push(cursor);
+          }
+          cursor = next;
+        }
+
+        if (scheduleNodes.length > 0) {
+          const schedCollapse = createCollapsibleCard({
+            icon: '🕒',
+            title: IS_ID ? 'Jadwal Perjalanan, Jam Jemput & Perlengkapan' : 'Daily Itinerary, Pick-Up Times & What to Bring',
+            subtitle: IS_ID
+              ? 'Klik untuk melihat rincian jadwal pagi/sore, jam jemput & yang perlu dibawa'
+              : 'Tap to view morning/afternoon schedule, hotel pickup times & checklist'
+          });
+          tourDesc.insertBefore(schedCollapse.card, scheduleNodes[0]);
+          scheduleNodes.forEach(n => schedCollapse.inner.appendChild(n));
+        }
+      }
+    }
+
+    // B. Tour Sidebar Card (.tour-sidebar-card) — Collapsible Hotel Transfer Rates by Area
+    document.querySelectorAll('.tour-sidebar-card').forEach(sidebar => {
+      if (sidebar.dataset.collapsibleInit) return;
+      sidebar.dataset.collapsibleInit = 'true';
+
+      const children = Array.from(sidebar.children);
+      const transferBox = children.find(el => {
+        if (el.tagName !== 'DIV') return false;
+        const st = (el.getAttribute('style') || '').toLowerCase();
+        const txt = el.textContent || '';
+        return st.includes('#f1f5f9') && (txt.includes('Sanur') || txt.includes('Nusa Dua'));
+      });
+
+      if (transferBox) {
+        const isSavingPage = window.location.pathname.includes('/saving-packages/');
+        const trCollapse = createCollapsibleCard({
+          icon: '🚐',
+          title: IS_ID ? 'Tarif Antar-Jemput Hotel per Area' : 'Hotel Pickup & Area Transfer Rates',
+          subtitle: isSavingPage
+            ? (IS_ID ? 'Klik untuk melihat tarif opsional jemputan mobil' : 'Tap to view optional car transfer rates by area')
+            : (IS_ID ? 'Ubud Gratis • Klik untuk tarif area luar Ubud' : 'Ubud Area Free • Tap for outside Ubud rates'),
+          compact: true
+        });
+        sidebar.insertBefore(trCollapse.card, transferBox);
+        transferBox.style.marginBottom = '0';
+        trCollapse.inner.appendChild(transferBox);
+      }
+    });
+  };
+
+  initCollapsibleTourSections();
   initTourSlider();
   initFacilityModal();
   initTeamModal();

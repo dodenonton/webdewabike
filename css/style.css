@@ -77,7 +77,7 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 1024px) {
   html, body {
     overflow: visible !important;
     overflow-x: visible !important;
@@ -1398,7 +1398,8 @@ a.package-img:hover img {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 0.9rem 1.1rem;
-  margin-bottom: 1.5rem;
+  margin-top: auto;
+  margin-bottom: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
@@ -1407,18 +1408,23 @@ a.package-img:hover img {
 .tier-line {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 0.96rem;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.93rem;
 }
 
 .tier-line .t-name {
   color: var(--text-muted);
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tier-line .t-cost {
   font-weight: 700;
   color: var(--dark);
+  text-align: right;
+  line-height: 1.38;
 }
 
 .tier-line .t-cost small {
@@ -3819,7 +3825,7 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
 /* ==========================================================================
    16. RESPONSIVE DESIGN (TABLETS & MOBILE)
    ========================================================================== */
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .hero-title {
     font-size: 2.75rem;
   }
@@ -4797,9 +4803,9 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
 
 .tour-detail-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 3rem;
-  align-items: flex-start !important;
+  grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+  gap: 2.5rem;
+  align-items: start !important;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -5292,8 +5298,8 @@ input[type="date"].date-is-closed::-webkit-calendar-picker-indicator {
   padding: 1.35rem 1.25rem;
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: var(--header-sticky-top, 4.75rem) !important;
-  align-self: flex-start !important;
+  top: 90px !important;
+  align-self: start !important;
   z-index: 20;
   max-height: calc(100vh - var(--header-sticky-top, 4.75rem) - 0.75rem) !important;
   max-height: calc(100dvh - var(--header-sticky-top, 4.75rem) - 0.75rem) !important;
@@ -5895,7 +5901,7 @@ body.header-hidden-state .tour-sidebar-card {
   border-top: 1px solid var(--border);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .tour-detail-grid {
     grid-template-columns: 1fr;
   }
@@ -6143,7 +6149,7 @@ body.header-hidden-state .tour-sidebar-card {
     overflow-wrap: break-word !important;
   }
   /* Sizing and Note Boxes inside tour description */
-  .tour-description > div:not(.tour-program-list) {
+  .tour-description > div:not(.tour-program-list):not(.tour-faq-section):not(.dewa-collapse-card) {
     padding: 0.95rem 0.95rem !important;
     margin: 1rem 0 !important;
     border-radius: 10px !important;
@@ -7119,6 +7125,12 @@ body.header-hidden-state .tour-sidebar-card {
   margin-top: auto;
 }
 
+.package-body > .pricing-tier-box + .btn:last-child,
+.package-body > .pricing-tier-box + a.btn:last-child,
+.package-body > .pricing-tier-box + button.btn:last-child {
+  margin-top: 0;
+}
+
 /* About Us Story & Founder Cards */
 .story-quote-card {
   background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
@@ -7808,4 +7820,312 @@ body.header-hidden-state .tour-sidebar-card {
   }
 }
 
+/* ==========================================================================
+   DESKTOP STICKY SIDEBAR (>= 1024px) & MOBILE STICKY BOTTOM BAR (< 768px)
+   ========================================================================== */
+.tour-faq-section .faq-accordion {
+  margin-top: 0.85rem;
+}
+
+@media (min-width: 1024px) {
+  .tour-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 65fr) minmax(0, 35fr) !important;
+    gap: 2.5rem;
+    align-items: start !important;
+    overflow: visible !important;
+  }
+
+  .tour-sidebar-card {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 90px !important;
+    align-self: start !important;
+    max-height: calc(100vh - 106px) !important;
+    max-height: calc(100dvh - 106px) !important;
+    overflow-y: auto;
+  }
+}
+
+.mobile-sticky-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -6px 24px rgba(15, 23, 42, 0.1);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  body.modal-open .mobile-sticky-bar {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+  }
+
+  .mobile-sticky-price {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .mobile-sticky-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-sticky-amount {
+    font-family: var(--font-heading);
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  .mobile-sticky-amount small {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  .mobile-sticky-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .mobile-sticky-book-btn {
+    height: 44px;
+    padding: 0 1rem !important;
+    border-radius: 12px !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(16, 91, 56, 0.24);
+  }
+
+  .mobile-sticky-wa-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #25D366 0%, #16a34a 100%);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.28);
+    transition: transform 0.15s ease;
+  }
+
+  .mobile-sticky-wa-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Prevent old floating WhatsApp button from overlapping Sticky Bottom Bar on mobile */
+  .floating-wa {
+    display: none !important;
+  }
+
+  /* Add sufficient bottom padding on footer so bottom text is never covered by Sticky Bottom Bar */
+  .site-footer {
+    padding-bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* ==========================================================================
+   COLLAPSIBLE TOUR SECTIONS (.dewa-collapse-card)
+   ========================================================================== */
+.dewa-collapse-card {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  margin: 1rem 0;
+  overflow: hidden;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.dewa-collapse-card:hover {
+  border-color: #cbd5e1;
+}
+
+.dewa-collapse-card.open {
+  border-color: #86efac;
+  box-shadow: 0 8px 22px -6px rgba(16, 91, 56, 0.1);
+}
+
+.dewa-collapse-card.is-compact {
+  margin: 0 0 1.15rem 0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.dewa-collapse-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.dewa-collapse-card.open .dewa-collapse-toggle {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  border-bottom: 1px solid #dcfce7;
+}
+
+.dewa-collapse-card.is-compact .dewa-collapse-toggle {
+  padding: 0.78rem 0.9rem;
+}
+
+.dewa-collapse-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #eaf5ee;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.dewa-collapse-card.is-compact .dewa-collapse-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+}
+
+.dewa-collapse-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.dewa-collapse-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.dewa-collapse-card.is-compact .dewa-collapse-title {
+  font-size: 0.88rem;
+}
+
+.dewa-collapse-sub {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.dewa-collapse-card.is-compact .dewa-collapse-sub {
+  font-size: 0.75rem;
+}
+
+.dewa-collapse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.32rem 0.68rem;
+  border-radius: 9999px;
+  background: #eaf5ee;
+  color: var(--primary);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dewa-collapse-card.open .dewa-collapse-badge {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.dewa-collapse-chevron {
+  transition: transform 0.28s ease;
+}
+
+.dewa-collapse-card.open .dewa-collapse-chevron {
+  transform: rotate(180deg);
+}
+
+.dewa-collapse-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dewa-collapse-card.open .dewa-collapse-body {
+  grid-template-rows: 1fr;
+}
+
+.dewa-collapse-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.dewa-collapse-card.open .dewa-collapse-inner {
+  padding: 1rem 1.15rem 1.15rem;
+}
+
+.dewa-collapse-card.is-compact.open .dewa-collapse-inner {
+  padding: 0.65rem 0.75rem 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .dewa-collapse-toggle {
+    padding: 0.85rem 0.9rem;
+    gap: 0.65rem;
+  }
+  .dewa-collapse-badge-text {
+    display: none;
+  }
+  .dewa-collapse-badge {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    justify-content: center;
+  }
+  .dewa-collapse-card.open .dewa-collapse-inner {
+    padding: 0.85rem 0.85rem 1rem;
+  }
+}
 
