@@ -4483,8 +4483,9 @@ ${data.name}`;
           icon: '🗺️',
           title: IS_ID ? 'Rute Perjalanan & Kunjungan Budaya' : 'Full Route Program & Cultural Stops',
           subtitle: IS_ID
-            ? 'Klik untuk melihat tahapan rute, tempat singgah & catatan penting'
-            : 'Tap to view step-by-step route, cultural visits & important notes'
+            ? 'Tahapan rute, tempat singgah & catatan penting'
+            : 'Step-by-step route, cultural visits & important notes',
+          defaultOpen: true
         });
 
         tourDesc.insertBefore(progCollapse.card, progNodes[0]);
