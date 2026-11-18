@@ -1300,6 +1300,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'Rp ' + Number(num).toLocaleString('id-ID');
   };
 
+  // KTP / KITAS Special Rate (16.67% Discount)
+  const KTP_DISCOUNT_RATE = 0.1667;
+  const applyKtpDiscount = (amount) => {
+    if (!amount || amount <= 0) return 0;
+    return Math.round((amount * (1 - KTP_DISCOUNT_RATE)) / 5000) * 5000;
+  };
+  let isKtpKitas = false;
+  const hasSidebarPriceList = !!document.querySelector('.tour-sidebar-card .sidebar-price-header');
+
   // Live Recalculate Prices
   const recalculateModal = () => {
     const selectedTourKey = (modalTourSelect && modalTourSelect.value) ? modalTourSelect.value : '';
@@ -1647,6 +1656,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Apply 16.67% KTP / KITAS discount ONLY for Cycling Tours (not Combination / Other Activities)
+    const isCyclingTour = !!selectedTourKey && !comboPrice && !activityPrice && !isRafting && selectedTourKey !== 'Ubud Rice Field Trekking';
+    const guestStatusGroup = document.getElementById('guestStatusGroup');
+    if (guestStatusGroup) {
+      guestStatusGroup.style.display = (!selectedTourKey || isCyclingTour) ? 'block' : 'none';
+    }
+    const effectiveKtp = isKtpKitas && isCyclingTour;
+    const isSingleRegularPrivate = isCyclingTour && !isSaving && selectedTier === 'private' && totalGuests === 1 && nAdult === 1;
+    const normalUnitPrices = { pAdult, p8_11, p6_7, p3_5, p1_2 };
+    if (effectiveKtp) {
+      if (!isSingleRegularPrivate) {
+        pAdult = applyKtpDiscount(pAdult);
+      }
+      p8_11 = applyKtpDiscount(p8_11);
+      p6_7 = applyKtpDiscount(p6_7);
+      p3_5 = applyKtpDiscount(p3_5);
+      p1_2 = applyKtpDiscount(p1_2);
+    }
+
     const perUnit = IS_ID ? '/orang' : '/pax';
     const freeTxt = IS_ID ? 'Gratis' : 'Free';
     const unitNoun = IS_ID ? 'orang' : 'pax';
@@ -1669,6 +1697,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cost1_2 = n1_2 * p1_2;
 
     const totalIDR = costAdult + cost8_11 + cost6_7 + cost3_5 + cost1_2;
+    const normalTotalIDR = (nAdult * normalUnitPrices.pAdult) + (n8_11 * normalUnitPrices.p8_11) + (n6_7 * normalUnitPrices.p6_7) + (n3_5 * normalUnitPrices.p3_5) + (n1_2 * normalUnitPrices.p1_2);
+    const ktpSavingsIDR = Math.max(0, normalTotalIDR - totalIDR);
     const totalUSD = Math.round(totalIDR / USD_RATE);
 
     // Update itemized breakdown in the calculation box
@@ -1702,6 +1732,11 @@ document.addEventListener('DOMContentLoaded', () => {
           ? (IS_ID ? 'Balita (Usia 1 – 4)' : 'Infants (Age 1 – 4)')
           : (IS_ID ? 'Balita / Kursi Bayi (Usia 1 – 2)' : 'Infant / Baby Seat (Age 1 – 2)');
         html += `<div class="calc-row"><span>${title1_2}:</span><strong>${n1_2} ${unitNoun} (${p1_2 === 0 ? freeTxt : formatIDR(cost1_2)})</strong></div>`;
+      }
+      if (effectiveKtp && ktpSavingsIDR > 0) {
+        const ktpBadgeLabel = IS_ID ? 'Diskon KTP / KITAS (-16,67%):' : 'KTP / KITAS Rate (-16.67%):';
+        const saveText = IS_ID ? `Hemat ${formatIDR(ktpSavingsIDR)}` : `Save ${formatIDR(ktpSavingsIDR)}`;
+        html += `<div class="calc-row ktp-savings-row"><span>${ktpBadgeLabel}</span><strong>${saveText}</strong></div>`;
       }
       const totalPartTxt = IS_ID ? 'Total peserta:' : 'Total participants:';
       const guestSuffix = IS_ID ? 'tamu' : (totalGuests > 1 ? 'guests' : 'guest');
@@ -1750,7 +1785,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const radioTarget = document.querySelector(`input[name="modalTier"][value="${targetTier}"]`);
     if (radioTarget) radioTarget.checked = true;
 
-    document.querySelectorAll('#bookingModal .radio-card').forEach(card => {
+    document.querySelectorAll('#packageTierGroup .radio-card').forEach(card => {
       const input = card.querySelector('input');
       if (input && input.value === targetTier) {
         card.classList.add('selected');
@@ -1876,7 +1911,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tier radio changes & visual styling
   document.addEventListener('change', (e) => {
     if (e.target && e.target.name === 'modalTier') {
-      document.querySelectorAll('#bookingModal .radio-card').forEach(card => card.classList.remove('selected'));
+      document.querySelectorAll('#packageTierGroup .radio-card').forEach(card => card.classList.remove('selected'));
       const card = e.target.closest('.radio-card');
       if (card) card.classList.add('selected');
       recalculateModal();
@@ -1915,6 +1950,9 @@ document.addEventListener('DOMContentLoaded', () => {
       tierLabel += IS_ID ? ' [Paket Hemat - Tanpa Makan & Antar-Jemput]' : ' [Saving Package - Ride Only]';
     } else {
       tierLabel += IS_ID ? ' [Paket Reguler - Termasuk Makan Siang & Antar-Jemput]' : ' [Regular Package - Inc. Lunch & Hotel Transfer]';
+    }
+    if (isKtpKitas && !isCombo && !isTrekking && !isActivity) {
+      tierLabel += IS_ID ? ' | 🇮🇩 Pemegang KTP / KITAS (-16,67%)' : ' | 🇮🇩 KTP / KITAS Holder (-16.67%)';
     }
 
     const row8_11 = document.getElementById('row8_11');
@@ -4546,7 +4584,170 @@ ${data.name}`;
     });
   };
 
+  /* -------------------------------------------------------------
+   * 12. KTP / KITAS SPECIAL RATE (-16.67% AUTOMATIC PRICING)
+   * - On Package Pages (with .tour-sidebar-card): Switch right inside PRICE LIST,
+   *   keeping the booking modal form unchanged while syncing the discounted rate.
+   * - On Non-Package Pages (Home, All Packages, Gallery, etc.): Guest ID Status
+   *   selector inside #bookingModal.
+   * ------------------------------------------------------------- */
+  const initKtpKitasPricing = () => {
+    const discountHtmlPrices = (html) => {
+      let out = html.replace(/Rp(\.?)\s*([\d.]+)/gi, (full, dot, numStr) => {
+        const clean = parseInt(numStr.replace(/\./g, ''), 10);
+        if (!clean || clean < 10000 || clean === 650000) return full;
+        const discounted = applyKtpDiscount(clean);
+        return `Rp${dot} ${discounted.toLocaleString('id-ID')}`;
+      });
+      out = out.replace(/Rp\s*(\d+)(k|rb)\b/gi, (full, numStr, unit) => {
+        const clean = parseInt(numStr, 10) * 1000;
+        const discounted = Math.round(applyKtpDiscount(clean) / 1000);
+        return `Rp ${discounted}${unit}`;
+      });
+      return out;
+    };
+
+    const noticeHtml = IS_ID
+      ? '<strong>Harga Khusus KTP / KITAS Aktif (-16,67%)!</strong><br>Wajib menunjukkan KTP atau KITAS asli/foto via WhatsApp saat konfirmasi.'
+      : '<strong>KTP / KITAS Special Rate Active (-16.67%)!</strong><br>Valid Indonesian KTP or KITAS must be shown via WhatsApp or upon pickup.';
+
+    const isBikeTourPage = /\/bike-tours\//.test(window.location.pathname);
+
+    if (hasSidebarPriceList) {
+      if (!isBikeTourPage) return;
+      document.querySelectorAll('.tour-sidebar-card').forEach(sidebar => {
+        if (sidebar.dataset.ktpInit) return;
+        sidebar.dataset.ktpInit = 'true';
+
+        const priceHeader = sidebar.querySelector('.sidebar-price-header');
+        if (!priceHeader) return;
+
+        // Snapshot original standard HTML on price targets (excluding transfer rates & promo box)
+        const priceTargets = [priceHeader];
+        Array.from(sidebar.children).forEach(child => {
+          if (
+            child !== priceHeader &&
+            !child.classList.contains('domestic-promo-box') &&
+            !child.classList.contains('dewa-collapse-card') &&
+            !child.classList.contains('btn') &&
+            (child.tagName === 'DIV' || child.tagName === 'UL') &&
+            /Rp\.?\s*\d/i.test(child.textContent || '')
+          ) {
+            priceTargets.push(child);
+          }
+        });
+
+        const stickyAmountEl = document.querySelector('.mobile-sticky-amount');
+        if (stickyAmountEl) priceTargets.push(stickyAmountEl);
+
+        priceTargets.forEach(el => {
+          el.dataset.standardHtml = el.innerHTML;
+        });
+
+        const bookBtn = sidebar.querySelector('.open-booking-btn');
+        if (bookBtn) bookBtn.dataset.standardText = bookBtn.textContent.trim();
+
+        const promoBox = sidebar.querySelector('.domestic-promo-box');
+
+        const switcher = document.createElement('div');
+        switcher.className = 'ktp-price-switcher';
+        switcher.setAttribute('role', 'group');
+        switcher.setAttribute('aria-label', IS_ID ? 'Pilihan Tarif Tamu' : 'Guest Rate Selector');
+        switcher.innerHTML = `
+          <button type="button" class="ktp-switch-btn active" data-ktp-mode="standard">
+            ${IS_ID ? 'Wisatawan Umum' : 'Standard / Tourist'}
+          </button>
+          <button type="button" class="ktp-switch-btn" data-ktp-mode="ktp">
+            🇮🇩 ${IS_ID ? 'KTP / KITAS (-16,67%)' : 'KTP / KITAS (-16.67%)'}
+          </button>
+        `;
+
+        const activeNotice = document.createElement('div');
+        activeNotice.className = 'ktp-active-notice';
+        activeNotice.style.display = 'none';
+        activeNotice.innerHTML = noticeHtml;
+
+        priceHeader.insertAdjacentElement('afterend', switcher);
+        switcher.insertAdjacentElement('afterend', activeNotice);
+
+        const applyMode = (mode) => {
+          isKtpKitas = (mode === 'ktp');
+          switcher.querySelectorAll('.ktp-switch-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-ktp-mode') === mode);
+          });
+
+          priceTargets.forEach(el => {
+            const orig = el.dataset.standardHtml || '';
+            el.innerHTML = isKtpKitas ? discountHtmlPrices(orig) : orig;
+          });
+
+          if (promoBox) promoBox.style.display = isKtpKitas ? 'none' : '';
+          activeNotice.style.display = isKtpKitas ? 'block' : 'none';
+
+          if (bookBtn && bookBtn.dataset.standardText) {
+            bookBtn.textContent = isKtpKitas
+              ? `${bookBtn.dataset.standardText} (${IS_ID ? 'Tarif KTP / KITAS' : 'KTP / KITAS Rate'})`
+              : bookBtn.dataset.standardText;
+          }
+
+          recalculateModal();
+        };
+
+        switcher.addEventListener('click', (e) => {
+          const btn = e.target.closest('.ktp-switch-btn');
+          if (!btn) return;
+          applyMode(btn.getAttribute('data-ktp-mode'));
+        });
+      });
+    } else {
+      // Non-Package Pages (Home, All Cycling Packages, Gallery, About, Contact, See All Tours)
+      const tierGroup = document.getElementById('packageTierGroup');
+      if (tierGroup && !document.getElementById('guestStatusGroup')) {
+        const statusGroup = document.createElement('div');
+        statusGroup.className = 'form-group';
+        statusGroup.id = 'guestStatusGroup';
+        statusGroup.innerHTML = `
+          <label>${IS_ID ? 'Status Identitas Tamu (Diskon Khusus)' : 'Guest ID Status (Optional Discount)'}</label>
+          <div class="tier-radio-group">
+            <label class="radio-card selected" data-ktp-card="standard">
+              <input type="radio" name="modalGuestStatus" value="standard" checked>
+              <div class="radio-info">
+                <strong>${IS_ID ? 'Wisatawan Umum' : 'Standard / Tourist'}</strong>
+                <span>${IS_ID ? 'Tarif normal internasional' : 'Normal international rate'}</span>
+              </div>
+            </label>
+            <label class="radio-card" data-ktp-card="ktp">
+              <input type="radio" name="modalGuestStatus" value="ktp">
+              <div class="radio-info">
+                <strong>🇮🇩 ${IS_ID ? 'KTP / KITAS' : 'KTP / KITAS Holder'}</strong>
+                <span>${IS_ID ? 'Diskon khusus 16,67%' : 'Special 16.67% domestic rate'}</span>
+              </div>
+            </label>
+          </div>
+          <div class="ktp-active-notice" id="modalKtpNotice" style="display: none; margin-top: 0.65rem; margin-bottom: 0;">
+            ${noticeHtml}
+          </div>
+        `;
+        tierGroup.insertAdjacentElement('afterend', statusGroup);
+
+        const modalNotice = document.getElementById('modalKtpNotice');
+        statusGroup.addEventListener('change', (e) => {
+          if (e.target && e.target.name === 'modalGuestStatus') {
+            isKtpKitas = (e.target.value === 'ktp');
+            statusGroup.querySelectorAll('.radio-card').forEach(c => {
+              const inp = c.querySelector('input');
+              c.classList.toggle('selected', !!(inp && inp.checked));
+            });
+            if (modalNotice) modalNotice.style.display = isKtpKitas ? 'block' : 'none';
+            recalculateModal();
+          }
+        });
+      }
+    }
+  };
+
   initCollapsibleTourSections();
+  initKtpKitasPricing();
   initTourSlider();
   initFacilityModal();
   initTeamModal();

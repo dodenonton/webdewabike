@@ -8134,3 +8134,67 @@ body.header-hidden-state .tour-sidebar-card {
   }
 }
 
+/* ==========================================================================
+   KTP / KITAS RATE SWITCHER & ACTIVE NOTICE
+   ========================================================================== */
+.ktp-price-switcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+  padding: 0.3rem;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 0.9rem;
+}
+
+.ktp-switch-btn {
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.52rem 0.45rem;
+  border-radius: 9px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.25;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ktp-switch-btn:hover {
+  color: #0f172a;
+}
+
+.ktp-switch-btn.active {
+  background: linear-gradient(135deg, #105b38 0%, #0d7a4a 100%);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(16, 91, 56, 0.22);
+}
+
+.ktp-active-notice {
+  background: #fffbeb;
+  border: 1.5px solid #fcd34d;
+  border-radius: 12px;
+  padding: 0.72rem 0.9rem;
+  margin-bottom: 1.05rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #92400e;
+}
+
+.ktp-active-notice strong {
+  color: #78350f;
+}
+
+.calc-row.ktp-savings-row {
+  color: #105b38;
+  font-weight: 700;
+  background: #f0fdf4;
+  border: 1px dashed #86efac;
+  border-radius: 8px;
+  padding: 0.35rem 0.55rem;
+  margin: 0.25rem 0;
+}
+
