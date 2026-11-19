@@ -744,6 +744,8 @@ def update_sitemap(pages: list[Path]) -> None:
         "/other-tours/other-activities/river-tubing": ("monthly", "0.7"),
         "/about/about-us": ("monthly", "0.8"),
         "/about/our-facilities": ("monthly", "0.8"),
+        "/blog/": ("weekly", "0.85"),
+        "/blog/ebike-vs-regular-bike-ubud": ("monthly", "0.8"),
         "/contact": ("monthly", "0.8"),
     }
 
