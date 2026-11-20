@@ -1864,7 +1864,7 @@
                 <th>Guide</th>
                 <th>Driver</th>
                 <th>Makan siang</th>
-                <th style="text-align: center; min-width: 175px;">Aksi</th>
+                <th style="text-align: center; min-width: 135px;">Aksi</th>
                 <th>Makan siang (Biaya)</th>
                 <th>Guide (Biaya)</th>
                 <th>Bensin</th>
@@ -1872,11 +1872,12 @@
                 <th>Ket</th>
                 <th>Pendapatan</th>
                 <th>Total</th>
+                <th style="text-align: center;">Hapus</th>
               </tr>
             </thead>
             <tbody id="opTableBody">
               <tr>
-                <td colspan="22">
+                <td colspan="23">
                   <div class="state-box">
                     <i class="fas fa-circle-notch spinner"></i>
                     <p>Memuat jadwal operasional dari Google Spreadsheet...</p>
@@ -1897,6 +1898,7 @@
                 <td></td>
                 <td class="op-money" id="opSumPendapatan">Rp 0</td>
                 <td class="op-money" id="opSumTotal" style="color: var(--primary);">Rp 0</td>
+                <td></td>
               </tr>
             </tfoot>
           </table>
@@ -1906,9 +1908,9 @@
           <div class="op-pagination-controls">
             <label for="opPageSizeSelect" style="color: var(--text-muted); font-weight: 600;">Tampilkan:</label>
             <select id="opPageSizeSelect" class="select-filter" style="padding: 0.32rem 0.55rem; font-size: 0.8rem;">
-              <option value="50" selected>50 baris</option>
+              <option value="50">50 baris</option>
               <option value="100">100 baris</option>
-              <option value="250">250 baris</option>
+              <option value="250" selected>250 baris</option>
               <option value="999999">Semua</option>
             </select>
             <button type="button" class="btn btn-outline" id="btnOpPrevPage" style="padding: 0.32rem 0.7rem; font-size: 0.8rem;">&larr; Sebelumnya</button>
@@ -3615,7 +3617,7 @@ Message / Special Requests: ${specialRequests}`;
     }
 
     let opCurrentPage = 1;
-    let opPageSize = 50;
+    let opPageSize = 250;
     const opPaginationBar = document.getElementById('opPaginationBar');
     const opPageInfo = document.getElementById('opPageInfo');
     const opPageSizeSelect = document.getElementById('opPageSizeSelect');
@@ -3950,9 +3952,6 @@ Message / Special Requests: ${specialRequests}`;
                 <button type="button" class="btn-action btn-action-edit" onclick="openOpEditModal(${item.row})" title="Edit Jadwal & Keuangan">
                   <i class="fas fa-edit"></i> Edit
                 </button>
-                <button type="button" class="btn-action btn-action-del" onclick="deleteOpBooking(${item.row}, '${(item.name || 'Jadwal').replace(/'/g, "\\'")}')" title="Hapus Baris">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
               </div>
             </td>
             <td class="op-money">${formatRupiah(makanBiaya)}</td>
@@ -3962,6 +3961,11 @@ Message / Special Requests: ${specialRequests}`;
             <td>${escapeHtml(item.ket || '-')}</td>
             <td class="op-money">${formatRupiah(pendapatan)}</td>
             <td class="op-money" style="color: ${computedTotal < 0 ? 'var(--danger)' : 'var(--primary)'};">${pendapatan || makanBiaya || guideB || bensin || lain || item.total !== '' ? formatRupiahAlways(computedTotal) : '-'}</td>
+            <td style="text-align: center;">
+              <button type="button" class="btn-action btn-action-del" onclick="deleteOpBooking(${item.row}, '${(item.name || 'Jadwal').replace(/'/g, "\\'")}')" title="Hapus Baris">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
           </tr>
         `;
       }).join('');
