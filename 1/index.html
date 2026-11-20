@@ -1409,15 +1409,19 @@
 
     <!-- Tab Navigation -->
     <div class="admin-tabs">
-      <button type="button" class="tab-btn active" id="tabBtnBookings">
+      <button type="button" class="tab-btn active" id="tabBtnOperational">
+        <i class="fas fa-calendar-day"></i>
+        <span>Jadwal</span>
+        <span class="tab-badge" id="tabOpBadge">0</span>
+      </button>
+      <button type="button" class="tab-btn" id="tabBtnInputBooking">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Input Booking</span>
+      </button>
+      <button type="button" class="tab-btn" id="tabBtnBookings">
         <i class="fas fa-list-check"></i>
         <span>Daftar Reservasi Tamu</span>
         <span class="tab-badge" id="tabBookingsBadge">0</span>
-      </button>
-      <button type="button" class="tab-btn" id="tabBtnOperational">
-        <i class="fas fa-calendar-day"></i>
-        <span>Jadwal & Input Operasional</span>
-        <span class="tab-badge" id="tabOpBadge">0</span>
       </button>
       <button type="button" class="tab-btn" id="tabBtnClosedDates">
         <i class="fas fa-calendar-xmark"></i>
@@ -1427,7 +1431,7 @@
     </div>
 
     <!-- PANE 1: DAFTAR RESERVASI TAMU -->
-    <div id="paneBookings">
+    <div id="paneBookings" style="display: none;">
       <!-- Stats Cards -->
       <section class="stats-grid">
         <div class="stat-card">
@@ -1526,8 +1530,8 @@
       </section>
     </div>
 
-    <!-- PANE 3: JADWAL & INPUT OPERASIONAL (GOOGLE FORM + DEWA BIKE BOOKING SHEET) -->
-    <div id="paneOperational" style="display: none;">
+    <!-- PANE 3: JADWAL (KHUSUS DAFTAR BOOKINGAN & KEUANGAN) -->
+    <div id="paneOperational">
       <!-- Quick Summary Cards (Hari Ini, Besok, Total, Laba Bersih) -->
       <section class="stats-grid">
         <div class="stat-card clickable" id="opCardToday" title="Klik untuk lihat hanya Bookingan Hari Ini">
@@ -1565,107 +1569,6 @@
             <div class="stat-num" id="opStatNetTotal" style="font-size: 1.25rem;">Rp 0</div>
             <div class="stat-label" id="opStatNetLabel">Total Akhir (Filter Aktif)</div>
           </div>
-        </div>
-      </section>
-
-      <!-- Collapsible Form Input Booking (Persis Google Form: Send Us a Message) -->
-      <section class="op-form-card">
-        <div class="op-form-header">
-          <h3><i class="fas fa-clipboard-list" style="color: var(--primary);"></i> Form Input Booking Operasional (Manual / Agen / WA / GYG)</h3>
-          <button type="button" class="btn btn-outline" id="btnToggleOpForm" style="padding: 0.42rem 0.85rem; font-size: 0.82rem;">
-            <i class="fas fa-chevron-up" id="opFormToggleIcon"></i>
-            <span id="opFormToggleText">Sembunyikan Form</span>
-          </button>
-        </div>
-        <div class="op-form-body" id="opFormBody">
-          <form id="opAddForm">
-            <div class="op-form-grid">
-              <div class="form-group">
-                <label for="opInputTourDate">Date of the tour *</label>
-                <input type="date" id="opInputTourDate" required>
-              </div>
-              <div class="form-group">
-                <label for="opInputJam">Jam</label>
-                <input type="time" id="opInputJam" value="08:30">
-              </div>
-              <div class="form-group">
-                <label for="opInputName">Name *</label>
-                <input type="text" id="opInputName" placeholder="Nama tamu / group" required>
-              </div>
-              <div class="form-group">
-                <label for="opInputCountry">Country</label>
-                <input type="text" id="opInputCountry" placeholder="Contoh: Prancis, Belanda, Australia">
-              </div>
-              <div class="form-group">
-                <label for="opInputPhone">Phone / Whatsapp / Telegram (+ ..)</label>
-                <input type="text" id="opInputPhone" placeholder="+62 813-xxxx-xxxx">
-              </div>
-              <div class="form-group">
-                <label for="opInputBookingAddress">Booking Address</label>
-                <input type="text" id="opInputBookingAddress" placeholder="Whatsapp, Getyourguide, Travel Agent...">
-                <div class="op-quick-chips">
-                  <button type="button" class="op-chip" data-addr="Whatsapp">Whatsapp</button>
-                  <button type="button" class="op-chip" data-addr="Getyourguide">Getyourguide</button>
-                  <button type="button" class="op-chip" data-addr="Viator">Viator</button>
-                  <button type="button" class="op-chip" data-addr="TripAdvisor">TripAdvisor</button>
-                  <button type="button" class="op-chip" data-addr="Website">Website</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="op-form-grid" style="margin-top: 1rem;">
-              <div class="form-group">
-                <label>Tour Packages</label>
-                <div class="op-radio-list">
-                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Kintamani Downhill (Regular Package)" checked> <span>Kintamani Downhill (Regular Package)</span></label>
-                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Ubud Countryside with Rice Fields (Regular Package)"> <span>Ubud Countryside with Rice Fields (Regular Package)</span></label>
-                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="E-Bike Ubud Countryside with Rice Fields (Regular Package)"> <span>E-Bike Ubud Countryside with Rice Fields (Regular Package)</span></label>
-                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Around Mount Batur (Regular Package)"> <span>Around Mount Batur (Regular Package)</span></label>
-                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Ubud Countryside with Rice Fields (Saving Package)"> <span>Ubud Countryside with Rice Fields (Saving Package)</span></label>
-                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="E-Bike Ubud Countryside with Rice Fields (Saving Package)"> <span>E-Bike Ubud Countryside with Rice Fields (Saving Package)</span></label>
-                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="__custom__"> <span>Yang lain:</span> <input type="text" id="opCustomPackage" placeholder="Tulis nama paket lainnya..." style="flex: 1; padding: 0.25rem 0.5rem; font-size: 0.82rem;"></label>
-                </div>
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <div class="form-group">
-                  <label>Jenis Tur</label>
-                  <div class="op-jenis-inline">
-                    <label class="op-radio-row"><input type="radio" name="opJenisTur" value="Private" checked> <span>Private</span></label>
-                    <label class="op-radio-row"><input type="radio" name="opJenisTur" value="Sharing"> <span>Sharing</span></label>
-                    <label class="op-radio-row"><input type="radio" name="opJenisTur" value="Saving"> <span>Saving</span></label>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="opInputDetail">Detail</label>
-                  <textarea id="opInputDetail" rows="5" placeholder="Contoh:&#10;2 x Adults&#10;2 x Children&#10;Hotel: Kajane MUA (8:30 AM)&#10;Maps: https://maps.app.goo.gl/...&#10;Price: Rp 1.500.000"></textarea>
-                </div>
-
-                <div class="form-group">
-                  <label>Warna Baris (Sesuai Keinginan)</label>
-                  <div class="op-color-swatches" id="opAddColorSwatches">
-                    <button type="button" class="op-swatch selected" data-color="#ffffff" style="background: #ffffff;" title="Putih (Default)"></button>
-                    <button type="button" class="op-swatch" data-color="#dcfce7" style="background: #dcfce7;" title="Hijau Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#fef9c3" style="background: #fef9c3;" title="Kuning Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#ffedd5" style="background: #ffedd5;" title="Oranye Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#dbeafe" style="background: #dbeafe;" title="Biru Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#fce7f3" style="background: #fce7f3;" title="Merah Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#f3e8ff" style="background: #f3e8ff;" title="Ungu Muda"></button>
-                    <input type="color" id="opInputColor" class="op-color-input" value="#ffffff" title="Pilih Warna Custom">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top: 1.15rem; display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap;">
-              <button type="reset" class="btn btn-outline" id="btnResetOpForm">Reset Form</button>
-              <button type="submit" class="btn btn-primary" id="btnSubmitOpForm">
-                <i class="fas fa-plus-circle"></i>
-                <span>Simpan ke Jadwal Operasional</span>
-              </button>
-            </div>
-          </form>
         </div>
       </section>
 
@@ -1786,6 +1689,105 @@
             <button type="button" class="btn btn-outline" id="btnOpPrevPage" style="padding: 0.32rem 0.7rem; font-size: 0.8rem;">&larr; Sebelumnya</button>
             <button type="button" class="btn btn-outline" id="btnOpNextPage" style="padding: 0.32rem 0.7rem; font-size: 0.8rem;">Berikutnya &rarr;</button>
           </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PANE 4: INPUT BOOKING (FORM PERSIS GOOGLE FORM) -->
+    <div id="paneInputBooking" style="display: none;">
+      <section class="op-form-card">
+        <div class="op-form-header">
+          <h3><i class="fas fa-clipboard-list" style="color: var(--primary);"></i> Form Input Booking (Manual / Agen / WA / GYG)</h3>
+        </div>
+        <div class="op-form-body" id="opFormBody">
+          <form id="opAddForm">
+            <div class="op-form-grid">
+              <div class="form-group">
+                <label for="opInputTourDate">Date of the tour *</label>
+                <input type="date" id="opInputTourDate" required>
+              </div>
+              <div class="form-group">
+                <label for="opInputJam">Jam</label>
+                <input type="time" id="opInputJam" value="08:30">
+              </div>
+              <div class="form-group">
+                <label for="opInputName">Name *</label>
+                <input type="text" id="opInputName" placeholder="Nama tamu / group" required>
+              </div>
+              <div class="form-group">
+                <label for="opInputCountry">Country</label>
+                <input type="text" id="opInputCountry" placeholder="Contoh: Prancis, Belanda, Australia">
+              </div>
+              <div class="form-group">
+                <label for="opInputPhone">Phone / Whatsapp / Telegram (+ ..)</label>
+                <input type="text" id="opInputPhone" placeholder="+62 813-xxxx-xxxx">
+              </div>
+              <div class="form-group">
+                <label for="opInputBookingAddress">Booking Address</label>
+                <input type="text" id="opInputBookingAddress" placeholder="Whatsapp, Getyourguide, Travel Agent...">
+                <div class="op-quick-chips">
+                  <button type="button" class="op-chip" data-addr="Whatsapp">Whatsapp</button>
+                  <button type="button" class="op-chip" data-addr="Getyourguide">Getyourguide</button>
+                  <button type="button" class="op-chip" data-addr="Viator">Viator</button>
+                  <button type="button" class="op-chip" data-addr="TripAdvisor">TripAdvisor</button>
+                  <button type="button" class="op-chip" data-addr="Website">Website</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="op-form-grid" style="margin-top: 1rem;">
+              <div class="form-group">
+                <label>Tour Packages</label>
+                <div class="op-radio-list">
+                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Kintamani Downhill (Regular Package)" checked> <span>Kintamani Downhill (Regular Package)</span></label>
+                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Ubud Countryside with Rice Fields (Regular Package)"> <span>Ubud Countryside with Rice Fields (Regular Package)</span></label>
+                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="E-Bike Ubud Countryside with Rice Fields (Regular Package)"> <span>E-Bike Ubud Countryside with Rice Fields (Regular Package)</span></label>
+                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Around Mount Batur (Regular Package)"> <span>Around Mount Batur (Regular Package)</span></label>
+                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="Ubud Countryside with Rice Fields (Saving Package)"> <span>Ubud Countryside with Rice Fields (Saving Package)</span></label>
+                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="E-Bike Ubud Countryside with Rice Fields (Saving Package)"> <span>E-Bike Ubud Countryside with Rice Fields (Saving Package)</span></label>
+                  <label class="op-radio-row"><input type="radio" name="opTourPackage" value="__custom__"> <span>Yang lain:</span> <input type="text" id="opCustomPackage" placeholder="Tulis nama paket lainnya..." style="flex: 1; padding: 0.25rem 0.5rem; font-size: 0.82rem;"></label>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div class="form-group">
+                  <label>Jenis Tur</label>
+                  <div class="op-jenis-inline">
+                    <label class="op-radio-row"><input type="radio" name="opJenisTur" value="Private" checked> <span>Private</span></label>
+                    <label class="op-radio-row"><input type="radio" name="opJenisTur" value="Sharing"> <span>Sharing</span></label>
+                    <label class="op-radio-row"><input type="radio" name="opJenisTur" value="Saving"> <span>Saving</span></label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="opInputDetail">Detail</label>
+                  <textarea id="opInputDetail" rows="5" placeholder="Contoh:&#10;2 x Adults&#10;2 x Children&#10;Hotel: Kajane MUA (8:30 AM)&#10;Maps: https://maps.app.goo.gl/...&#10;Price: Rp 1.500.000"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label>Warna Baris (Sesuai Keinginan)</label>
+                  <div class="op-color-swatches" id="opAddColorSwatches">
+                    <button type="button" class="op-swatch selected" data-color="#ffffff" style="background: #ffffff;" title="Putih (Default)"></button>
+                    <button type="button" class="op-swatch" data-color="#dcfce7" style="background: #dcfce7;" title="Hijau Muda"></button>
+                    <button type="button" class="op-swatch" data-color="#fef9c3" style="background: #fef9c3;" title="Kuning Muda"></button>
+                    <button type="button" class="op-swatch" data-color="#ffedd5" style="background: #ffedd5;" title="Oranye Muda"></button>
+                    <button type="button" class="op-swatch" data-color="#dbeafe" style="background: #dbeafe;" title="Biru Muda"></button>
+                    <button type="button" class="op-swatch" data-color="#fce7f3" style="background: #fce7f3;" title="Merah Muda"></button>
+                    <button type="button" class="op-swatch" data-color="#f3e8ff" style="background: #f3e8ff;" title="Ungu Muda"></button>
+                    <input type="color" id="opInputColor" class="op-color-input" value="#ffffff" title="Pilih Warna Custom">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.15rem; display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap;">
+              <button type="reset" class="btn btn-outline" id="btnResetOpForm">Reset Form</button>
+              <button type="submit" class="btn btn-primary" id="btnSubmitOpForm">
+                <i class="fas fa-plus-circle"></i>
+                <span>Simpan ke Jadwal</span>
+              </button>
+            </div>
+          </form>
         </div>
       </section>
     </div>
@@ -2810,9 +2812,11 @@ Message / Special Requests: ${specialRequests}`;
     // Tab Switching Elements
     const tabBtnBookings = document.getElementById('tabBtnBookings');
     const tabBtnOperational = document.getElementById('tabBtnOperational');
+    const tabBtnInputBooking = document.getElementById('tabBtnInputBooking');
     const tabBtnClosedDates = document.getElementById('tabBtnClosedDates');
     const paneBookings = document.getElementById('paneBookings');
     const paneOperational = document.getElementById('paneOperational');
+    const paneInputBooking = document.getElementById('paneInputBooking');
     const paneClosedDates = document.getElementById('paneClosedDates');
     const tabClosedDatesBadge = document.getElementById('tabClosedDatesBadge');
 
@@ -2833,23 +2837,27 @@ Message / Special Requests: ${specialRequests}`;
 
     // Tab Switching Function
     function switchTab(target) {
-      [tabBtnBookings, tabBtnOperational, tabBtnClosedDates].forEach(b => b && b.classList.remove('active'));
-      [paneBookings, paneOperational, paneClosedDates].forEach(p => { if (p) p.style.display = 'none'; });
+      [tabBtnBookings, tabBtnOperational, tabBtnInputBooking, tabBtnClosedDates].forEach(b => b && b.classList.remove('active'));
+      [paneBookings, paneOperational, paneInputBooking, paneClosedDates].forEach(p => { if (p) p.style.display = 'none'; });
 
       if (target === 'closedDates') {
         if (tabBtnClosedDates) tabBtnClosedDates.classList.add('active');
         if (paneClosedDates) paneClosedDates.style.display = 'block';
-      } else if (target === 'operational') {
-        if (tabBtnOperational) tabBtnOperational.classList.add('active');
-        if (paneOperational) paneOperational.style.display = 'block';
-      } else {
+      } else if (target === 'inputBooking') {
+        if (tabBtnInputBooking) tabBtnInputBooking.classList.add('active');
+        if (paneInputBooking) paneInputBooking.style.display = 'block';
+      } else if (target === 'bookings') {
         if (tabBtnBookings) tabBtnBookings.classList.add('active');
         if (paneBookings) paneBookings.style.display = 'block';
+      } else {
+        if (tabBtnOperational) tabBtnOperational.classList.add('active');
+        if (paneOperational) paneOperational.style.display = 'block';
       }
     }
 
     if (tabBtnBookings) tabBtnBookings.addEventListener('click', () => switchTab('bookings'));
     if (tabBtnOperational) tabBtnOperational.addEventListener('click', () => switchTab('operational'));
+    if (tabBtnInputBooking) tabBtnInputBooking.addEventListener('click', () => switchTab('inputBooking'));
     if (tabBtnClosedDates) tabBtnClosedDates.addEventListener('click', () => switchTab('closedDates'));
 
     // Radio Button Type Toggle (Single vs Range)
@@ -3979,7 +3987,7 @@ Message / Special Requests: ${specialRequests}`;
     window.sendWebBookingToOperational = function(rowNumber) {
       const b = allBookings.find(x => x.row === rowNumber);
       if (!b) return;
-      switchTab('operational');
+      switchTab('inputBooking');
       if (opFormBody) {
         opFormBody.style.display = 'block';
         if (opFormToggleIcon) opFormToggleIcon.className = 'fas fa-chevron-up';
