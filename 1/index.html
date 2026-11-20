@@ -1271,8 +1271,8 @@
       margin-top: 0.25rem;
     }
     .op-table th, .op-table td {
-      font-size: 0.8rem;
-      padding: 0.65rem 0.65rem;
+      font-size: 0.92rem;
+      padding: 0.78rem 0.75rem;
       vertical-align: top;
     }
     table.bookings-table.op-table tbody tr:hover {
@@ -1294,11 +1294,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
-      padding: 0.85rem 1.25rem;
+      padding: 0.9rem 1.25rem;
       border-top: 1px solid var(--border);
       background: #f8fafc;
       flex-wrap: wrap;
-      font-size: 0.82rem;
+      font-size: 0.9rem;
     }
     .op-pagination-controls {
       display: flex;
@@ -1326,7 +1326,7 @@
       font-weight: 800;
       color: var(--dark);
       border-top: 2px solid #cbd5e1;
-      font-size: 0.82rem;
+      font-size: 0.92rem;
     }
     .op-money {
       font-variant-numeric: tabular-nums;
@@ -1337,8 +1337,8 @@
       min-width: 260px;
       max-width: 380px;
       white-space: pre-wrap;
-      font-size: 0.78rem;
-      line-height: 1.4;
+      font-size: 0.88rem;
+      line-height: 1.45;
     }
     .op-detail-color-bar {
       display: flex;
@@ -1349,7 +1349,7 @@
       border-top: 1px dashed rgba(15, 23, 42, 0.14);
     }
     .op-detail-color-bar span {
-      font-size: 0.68rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       font-weight: 600;
       margin-right: 2px;
@@ -1374,8 +1374,8 @@
     }
     .op-swipe-hint {
       display: none;
-      padding: 0.45rem 1rem;
-      font-size: 0.72rem;
+      padding: 0.55rem 1rem;
+      font-size: 0.84rem;
       font-weight: 600;
       color: #92400e;
       background: #fffbeb;
@@ -1442,8 +1442,8 @@
       justify-content: center;
       white-space: nowrap;
       border-radius: 10px;
-      padding: 0.7rem 1.1rem;
-      font-size: 0.9rem;
+      padding: 0.75rem 1.15rem;
+      font-size: 0.95rem;
     }
     .tab-btn.active {
       background: var(--primary);
@@ -1479,13 +1479,7 @@
       flex-wrap: wrap;
       background: #ffffff;
     }
-    .op-table thead th {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-    .op-table thead th.op-sticky-col { z-index: 6; }
-    .op-table td.op-sticky-col strong { font-size: 0.86rem; }
+    .op-table td.op-sticky-col strong { font-size: 0.96rem; }
 
     /* ===================== TABLET ===================== */
     @media (max-width: 900px) {
@@ -1505,8 +1499,9 @@
         align-items: stretch;
         gap: 0.65rem;
       }
-      .brand-text h1 { font-size: 1rem; }
-      .brand-logo-badge { width: 38px; height: 38px; font-size: 1.05rem; }
+      .brand-text h1 { font-size: 1.08rem; }
+      .brand-text p { font-size: 0.82rem; }
+      .brand-logo-badge { width: 40px; height: 40px; font-size: 1.1rem; }
       .nav-actions {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1514,9 +1509,9 @@
       }
       .nav-actions .btn {
         justify-content: center;
-        padding: 0.55rem 0.4rem;
-        font-size: 0.74rem;
-        gap: 0.3rem;
+        padding: 0.6rem 0.45rem;
+        font-size: 0.84rem;
+        gap: 0.35rem;
         min-width: 0;
       }
       .nav-actions .btn span {
@@ -1525,20 +1520,20 @@
         white-space: nowrap;
       }
       #btnOpenSheet span { font-size: 0; }
-      #btnOpenSheet span::after { content: 'Sheets'; font-size: 0.74rem; }
+      #btnOpenSheet span::after { content: 'Sheets'; font-size: 0.84rem; }
 
       .security-banner { display: none; }
 
       .admin-tabs { margin-bottom: 1rem; }
-      .tab-btn { padding: 0.6rem 0.85rem; font-size: 0.82rem; gap: 0.4rem; }
+      .tab-btn { padding: 0.68rem 0.95rem; font-size: 0.92rem; gap: 0.45rem; }
 
-      .stat-card { padding: 0.8rem; gap: 0.6rem; }
-      .stat-icon { width: 38px; height: 38px; font-size: 1rem; }
-      .stat-info .stat-num { font-size: 1.25rem; }
-      #opStatNetTotal { font-size: 1rem !important; }
-      .stat-info .stat-label { font-size: 0.72rem; }
+      .stat-card { padding: 0.9rem; gap: 0.65rem; }
+      .stat-icon { width: 42px; height: 42px; font-size: 1.1rem; }
+      .stat-info .stat-num { font-size: 1.4rem; }
+      #opStatNetTotal { font-size: 1.12rem !important; }
+      .stat-info .stat-label { font-size: 0.82rem; }
 
-      .toolbar-card { padding: 0.85rem; gap: 0.65rem; }
+      .toolbar-card { padding: 0.95rem; gap: 0.75rem; }
       .toolbar-card > div { width: 100%; }
       .op-filter-pills {
         flex-wrap: nowrap;
@@ -1548,28 +1543,34 @@
         scrollbar-width: none;
       }
       .op-filter-pills::-webkit-scrollbar { display: none; }
-      .op-pill-btn { flex: 0 0 auto; padding: 0.42rem 0.75rem; font-size: 0.78rem; }
-      #opFilterMonth { flex: 1 1 140px; min-width: 0; }
-      #btnToggleOlderYears, #btnClearOpMonth { flex: 1 1 auto; justify-content: center; }
-      #opSortOrder, .select-filter { width: 100%; max-width: 100%; }
+      .op-pill-btn { flex: 0 0 auto; padding: 0.52rem 0.88rem; font-size: 0.9rem; }
+      #opFilterMonth { flex: 1 1 140px; min-width: 0; font-size: 0.92rem; }
+      #btnToggleOlderYears, #btnClearOpMonth { flex: 1 1 auto; justify-content: center; font-size: 0.88rem !important; padding: 0.52rem 0.8rem !important; }
+      #opSortOrder, .select-filter { width: 100%; max-width: 100%; font-size: 0.95rem; padding: 0.58rem 0.75rem; }
       .search-box { flex: 1 1 100%; }
       .search-box input { font-size: 16px; }
 
-      .table-header-title { padding: 0.85rem 1rem; }
-      .table-header-title h2 { font-size: 0.95rem; }
-      .total-counter-badge { font-size: 0.72rem; }
+      .table-header-title { padding: 0.95rem 1rem; }
+      .table-header-title h2 { font-size: 1.05rem; }
+      .total-counter-badge { font-size: 0.82rem; }
 
-      .table-responsive { max-height: 72vh; overflow: auto; }
-      .op-table th, .op-table td { font-size: 0.74rem; padding: 0.5rem; }
-      .op-table th.op-sticky-col, .op-table td.op-sticky-col {
-        min-width: 92px !important;
-        max-width: 92px;
+      .table-responsive {
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
       }
-      .op-detail-cell { min-width: 200px; max-width: 240px; font-size: 0.72rem; }
+      .op-table th { font-size: 0.84rem; padding: 0.7rem 0.65rem; }
+      .op-table td { font-size: 0.92rem; padding: 0.7rem 0.65rem; }
+      .op-table th.op-sticky-col, .op-table td.op-sticky-col {
+        min-width: 112px !important;
+        max-width: 112px;
+      }
+      .op-detail-cell { min-width: 220px; max-width: 270px; font-size: 0.88rem; line-height: 1.45; }
 
-      .op-pagination { padding: 0.75rem; flex-direction: column; align-items: stretch; }
+      .op-pagination { padding: 0.85rem; flex-direction: column; align-items: stretch; font-size: 0.9rem; }
       .op-pagination-controls { justify-content: space-between; }
-      .op-pagination-controls .btn { flex: 1 1 auto; justify-content: center; }
+      .op-pagination-controls .btn { flex: 1 1 auto; justify-content: center; font-size: 0.88rem; padding: 0.55rem 0.75rem; }
 
       .op-form-body { padding: 1rem; }
       .op-form-grid { grid-template-columns: 1fr; }
@@ -1577,7 +1578,7 @@
 
       .modal-content-card { width: 96vw !important; max-width: 96vw !important; }
       .toast-container { left: 12px; right: 12px; bottom: 12px; }
-      .detail-box { min-width: 0 !important; }
+      .detail-box { min-width: 0 !important; font-size: 0.88rem; }
     }
   </style>
 </head>
@@ -1807,8 +1808,8 @@
             <input type="text" id="opSearchInput" placeholder="Cari nama tamu, booking address, negara, paket, guide, detail, ket...">
           </div>
           <select class="select-filter" id="opSortOrder">
-            <option value="date_desc" selected>Urutan: Tanggal Terbesar &rarr; Terkecil</option>
-            <option value="date_asc">Urutan: Tanggal Terkecil &rarr; Terbesar</option>
+            <option value="date_asc" selected>Urutan: Tanggal Terkecil &rarr; Terbesar</option>
+            <option value="date_desc">Urutan: Tanggal Terbesar &rarr; Terkecil</option>
           </select>
         </div>
         <div class="op-filter-pills">
@@ -3786,7 +3787,7 @@ Message / Special Requests: ${specialRequests}`;
       const tomorrowIso = getLocalIsoDate(1);
       const query = (opSearchInput ? opSearchInput.value : '').toLowerCase().trim();
       const monthVal = opFilterMonth ? opFilterMonth.value : '';
-      const sortVal = opSortOrder ? opSortOrder.value : 'date_desc';
+      const sortVal = opSortOrder ? opSortOrder.value : 'date_asc';
 
       let filtered = allOpBookings.filter(item => {
         const iso = parseOpDateToIso(item.tourDate);
