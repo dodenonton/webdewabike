@@ -3321,7 +3321,10 @@ Message / Special Requests: ${specialRequests}`;
         const callbackName = 'cb_op_read_' + Date.now();
         const res = await fetchJSONP(`${APPS_SCRIPT_URL}?action=getOpBookings`, callbackName);
         if (res && res.status === 'success' && Array.isArray(res.data)) {
-          allOpBookings = res.data;
+          allOpBookings = res.data.filter(x =>
+            [x.tourDate, x.name, x.detail, x.bookingAddress, x.phone, x.tourPackage]
+              .some(v => String(v || '').trim() !== '')
+          );
           updateOpCounts();
           renderOpTable();
         } else {
