@@ -241,6 +241,59 @@ function deleteOpBooking_(rowParam) {
   return { status: "success", message: "Baris operasional #" + row + " berhasil dihapus.", row: row };
 }
 
+/**
+ * FUNGSI IMPORT SEKALI JALAN (Jalankan 1x dari Editor Apps Script)
+ * Mengambil seluruh data & warna baris dari Google Sheet lama "Dewa Bike Booking"
+ * ke tab "Operasional_Booking" di Spreadsheet yang terhubung dengan website.
+ */
+function importDariSpreadsheetLama() {
+  var SOURCE_SHEET_ID = "1lQ3UWI7dO7a2A5YmNT52x_ViHTu81rm0ywrFMhYl6M0";
+  var sourceSs = SpreadsheetApp.openById(SOURCE_SHEET_ID);
+  var sourceSheet = sourceSs.getSheets()[0];
+  var lastRow = sourceSheet.getLastRow();
+  if (lastRow < 2) {
+    Logger.log("Tidak ada data untuk diimport.");
+    return;
+  }
+
+  var numCols = Math.min(sourceSheet.getLastColumn(), 20);
+  var values = sourceSheet.getRange(2, 1, lastRow - 1, numCols).getValues();
+  var bgs = sourceSheet.getRange(2, 1, lastRow - 1, numCols).getBackgrounds();
+  var opSheet = getOperationalSheet_();
+
+  var imported = 0;
+  for (var i = 0; i < values.length; i++) {
+    var row = values[i];
+    var hasAny = false;
+    for (var c = 0; c < row.length; c++) {
+      if (String(row[c] || "").trim() !== "") {
+        hasAny = true;
+        break;
+      }
+    }
+    if (!hasAny) continue;
+
+    // Pad ke 20 kolom lalu tambah kolom 21 (Row Color)
+    var outRow = [];
+    for (var k = 0; k < 20; k++) {
+      outRow.push(k < row.length ? row[k] : "");
+    }
+    var rowBg = (bgs[i] && bgs[i][0]) ? String(bgs[i][0]).toLowerCase() : "#ffffff";
+    if (rowBg === "#ffffff" && bgs[i] && bgs[i][5]) {
+      rowBg = String(bgs[i][5]).toLowerCase();
+    }
+    outRow.push(rowBg === "#ffffff" ? "" : rowBg);
+
+    opSheet.appendRow(outRow);
+    var newRowNum = opSheet.getLastRow();
+    if (rowBg && rowBg !== "#ffffff") {
+      applyOpRowColor_(opSheet, newRowNum, rowBg);
+    }
+    imported++;
+  }
+  Logger.log("Berhasil import " + imported + " baris ke tab " + OP_SHEET_NAME);
+}
+
 // Handler GET: Dipakai oleh Halaman Admin untuk Membaca, Mengedit, dan Menghapus Booking
 function doGet(e) {
   try {
