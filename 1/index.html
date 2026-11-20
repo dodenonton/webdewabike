@@ -1600,6 +1600,10 @@
             <label for="opFilterMonth" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Bulan:</label>
             <input type="month" id="opFilterMonth" class="select-filter" style="padding: 0.42rem 0.65rem;">
             <button type="button" class="btn btn-outline" id="btnClearOpMonth" style="padding: 0.42rem 0.7rem; font-size: 0.78rem;">Semua Bulan</button>
+            <button type="button" class="btn btn-outline" id="btnToggleOlderYears" style="padding: 0.42rem 0.75rem; font-size: 0.78rem;" title="Tampilkan data tahun-tahun sebelumnya">
+              <i class="fas fa-history"></i>
+              <span id="btnToggleOlderYearsText">Tampilkan Lebih Banyak (&lt; 2026)</span>
+            </button>
           </div>
         </div>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
@@ -1608,8 +1612,8 @@
             <input type="text" id="opSearchInput" placeholder="Cari nama tamu, booking address, negara, paket, guide, detail, ket...">
           </div>
           <select class="select-filter" id="opSortOrder">
+            <option value="date_desc" selected>Urutan: Tanggal Terbesar &rarr; Terkecil</option>
             <option value="date_asc">Urutan: Tanggal Terkecil &rarr; Terbesar</option>
-            <option value="date_desc">Urutan: Tanggal Terbesar &rarr; Terkecil</option>
           </select>
         </div>
       </section>
@@ -3505,15 +3509,37 @@ Message / Special Requests: ${specialRequests}`;
       }
     }
 
+    let opShowOlderYears = false;
+    const btnToggleOlderYears = document.getElementById('btnToggleOlderYears');
+    const btnToggleOlderYearsText = document.getElementById('btnToggleOlderYearsText');
+    const currentYearPrefix = String(new Date().getFullYear()) + '-01-01';
+
+    if (btnToggleOlderYears) {
+      btnToggleOlderYears.addEventListener('click', () => {
+        opShowOlderYears = !opShowOlderYears;
+        opCurrentPage = 1;
+        btnToggleOlderYears.classList.toggle('active', opShowOlderYears);
+        if (btnToggleOlderYearsText) {
+          btnToggleOlderYearsText.textContent = opShowOlderYears
+            ? `Sembunyikan Tahun < ${new Date().getFullYear()}`
+            : `Tampilkan Lebih Banyak (< ${new Date().getFullYear()})`;
+        }
+        updateOpCounts();
+        renderOpTable();
+      });
+    }
+
     function updateOpCounts() {
       const todayIso = getLocalIsoDate(0);
       const tomorrowIso = getLocalIsoDate(1);
+      let activeTotal = 0;
       let todayCnt = 0;
       let tomorrowCnt = 0;
       let upcomingCnt = 0;
 
       allOpBookings.forEach(item => {
         const iso = parseOpDateToIso(item.tourDate);
+        if (opShowOlderYears || !iso || iso >= currentYearPrefix) activeTotal++;
         if (iso === todayIso) todayCnt++;
         if (iso === tomorrowIso) tomorrowCnt++;
         if (iso && iso >= todayIso) upcomingCnt++;
@@ -3524,14 +3550,14 @@ Message / Special Requests: ${specialRequests}`;
       const elTotal = document.getElementById('opStatTotal');
       if (elToday) elToday.textContent = todayCnt;
       if (elTomorrow) elTomorrow.textContent = tomorrowCnt;
-      if (elTotal) elTotal.textContent = allOpBookings.length;
-      if (tabOpBadge) tabOpBadge.textContent = allOpBookings.length;
+      if (elTotal) elTotal.textContent = activeTotal;
+      if (tabOpBadge) tabOpBadge.textContent = activeTotal;
 
       const pAll = document.getElementById('opPillCountAll');
       const pToday = document.getElementById('opPillCountToday');
       const pTom = document.getElementById('opPillCountTomorrow');
       const pUp = document.getElementById('opPillCountUpcoming');
-      if (pAll) pAll.textContent = allOpBookings.length;
+      if (pAll) pAll.textContent = activeTotal;
       if (pToday) pToday.textContent = todayCnt;
       if (pTom) pTom.textContent = tomorrowCnt;
       if (pUp) pUp.textContent = upcomingCnt;
@@ -3543,10 +3569,11 @@ Message / Special Requests: ${specialRequests}`;
       const tomorrowIso = getLocalIsoDate(1);
       const query = (opSearchInput ? opSearchInput.value : '').toLowerCase().trim();
       const monthVal = opFilterMonth ? opFilterMonth.value : '';
-      const sortVal = opSortOrder ? opSortOrder.value : 'date_asc';
+      const sortVal = opSortOrder ? opSortOrder.value : 'date_desc';
 
       let filtered = allOpBookings.filter(item => {
         const iso = parseOpDateToIso(item.tourDate);
+        if (!opShowOlderYears && !monthVal && iso && iso < currentYearPrefix) return false;
         if (currentOpFilter === 'today' && iso !== todayIso) return false;
         if (currentOpFilter === 'tomorrow' && iso !== tomorrowIso) return false;
         if (currentOpFilter === 'upcoming' && (!iso || iso < todayIso)) return false;
