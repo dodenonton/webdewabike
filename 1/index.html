@@ -1275,14 +1275,25 @@
       padding: 0.65rem 0.65rem;
       vertical-align: top;
     }
-    .op-table tbody tr {
-      transition: filter 0.15s ease, box-shadow 0.15s ease;
-    }
     .op-table tbody tr:hover {
-      background-color: inherit !important;
-      filter: brightness(0.985) saturate(1.06);
-      box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(15, 23, 42, 0.08);
-      backdrop-filter: blur(4px);
+      background-color: var(--row-bg, #ffffff) !important;
+    }
+    .op-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+    }
+    .op-pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
     }
     .op-sticky-col {
       position: sticky;
@@ -1750,6 +1761,20 @@
               </tr>
             </tfoot>
           </table>
+        </div>
+        <div class="op-pagination" id="opPaginationBar" style="display: none;">
+          <div id="opPageInfo" style="color: var(--text-muted); font-weight: 600;"></div>
+          <div class="op-pagination-controls">
+            <label for="opPageSizeSelect" style="color: var(--text-muted); font-weight: 600;">Tampilkan:</label>
+            <select id="opPageSizeSelect" class="select-filter" style="padding: 0.32rem 0.55rem; font-size: 0.8rem;">
+              <option value="50" selected>50 baris</option>
+              <option value="100">100 baris</option>
+              <option value="250">250 baris</option>
+              <option value="999999">Semua</option>
+            </select>
+            <button type="button" class="btn btn-outline" id="btnOpPrevPage" style="padding: 0.32rem 0.7rem; font-size: 0.8rem;">&larr; Sebelumnya</button>
+            <button type="button" class="btn btn-outline" id="btnOpNextPage" style="padding: 0.32rem 0.7rem; font-size: 0.8rem;">Berikutnya &rarr;</button>
+          </div>
         </div>
       </section>
     </div>
@@ -3345,9 +3370,37 @@ Message / Special Requests: ${specialRequests}`;
       });
     }
 
+    let opCurrentPage = 1;
+    let opPageSize = 50;
+    const opPaginationBar = document.getElementById('opPaginationBar');
+    const opPageInfo = document.getElementById('opPageInfo');
+    const opPageSizeSelect = document.getElementById('opPageSizeSelect');
+    const btnOpPrevPage = document.getElementById('btnOpPrevPage');
+    const btnOpNextPage = document.getElementById('btnOpNextPage');
+
+    if (opPageSizeSelect) {
+      opPageSizeSelect.addEventListener('change', () => {
+        opPageSize = parseInt(opPageSizeSelect.value, 10) || 50;
+        opCurrentPage = 1;
+        renderOpTable();
+      });
+    }
+    if (btnOpPrevPage) {
+      btnOpPrevPage.addEventListener('click', () => {
+        if (opCurrentPage > 1) { opCurrentPage--; renderOpTable(); }
+      });
+    }
+    if (btnOpNextPage) {
+      btnOpNextPage.addEventListener('click', () => {
+        opCurrentPage++;
+        renderOpTable();
+      });
+    }
+
     // Quick Filter Pills & Clickable Stat Cards
     function setOpFilter(filterVal) {
       currentOpFilter = filterVal;
+      opCurrentPage = 1;
       document.querySelectorAll('.op-pill-btn[data-op-filter]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.opFilter === filterVal);
       });
@@ -3365,12 +3418,13 @@ Message / Special Requests: ${specialRequests}`;
     if (opCardTomorrow) opCardTomorrow.addEventListener('click', () => setOpFilter('tomorrow'));
     if (opCardAll) opCardAll.addEventListener('click', () => setOpFilter('all'));
 
-    if (opSearchInput) opSearchInput.addEventListener('input', renderOpTable);
-    if (opSortOrder) opSortOrder.addEventListener('change', renderOpTable);
-    if (opFilterMonth) opFilterMonth.addEventListener('change', renderOpTable);
+    if (opSearchInput) opSearchInput.addEventListener('input', () => { opCurrentPage = 1; renderOpTable(); });
+    if (opSortOrder) opSortOrder.addEventListener('change', () => { opCurrentPage = 1; renderOpTable(); });
+    if (opFilterMonth) opFilterMonth.addEventListener('change', () => { opCurrentPage = 1; renderOpTable(); });
     if (btnClearOpMonth) {
       btnClearOpMonth.addEventListener('click', () => {
         if (opFilterMonth) opFilterMonth.value = '';
+        opCurrentPage = 1;
         renderOpTable();
       });
     }
@@ -3495,21 +3549,14 @@ Message / Special Requests: ${specialRequests}`;
           </tr>
         `;
         if (opTableFoot) opTableFoot.style.display = 'none';
+        if (opPaginationBar) opPaginationBar.style.display = 'none';
         const netEl = document.getElementById('opStatNetTotal');
         if (netEl) netEl.textContent = 'Rp 0';
         return;
       }
 
-      const miniColors = ['#ffffff', '#dcfce7', '#fef9c3', '#ffedd5', '#dbeafe', '#fce7f3'];
-
-      opTableBody.innerHTML = filtered.map(item => {
-        const iso = parseOpDateToIso(item.tourDate);
-        const isToday = iso === todayIso;
-        const isTomorrow = iso === tomorrowIso;
-        const dateBadge = isToday
-          ? '<div class="op-badge-today">HARI INI</div>'
-          : (isTomorrow ? '<div class="op-badge-tomorrow">BESOK</div>' : '');
-
+      // Compute totals across ALL filtered rows (fast numeric loop, no DOM)
+      filtered.forEach(item => {
         const makanPaxMatch = String(item.makanSiang || '').match(/\d+/);
         const makanPax = makanPaxMatch ? parseInt(makanPaxMatch[0], 10) : 0;
         const makanBiaya = parseRupiahNum(item.makanSiangBiaya);
@@ -3526,6 +3573,37 @@ Message / Special Requests: ${specialRequests}`;
         sumLain += lain;
         sumPendapatan += pendapatan;
         sumTotal += computedTotal;
+      });
+
+      const totalPages = Math.max(1, Math.ceil(filtered.length / opPageSize));
+      if (opCurrentPage > totalPages) opCurrentPage = totalPages;
+      const startIdx = (opCurrentPage - 1) * opPageSize;
+      const pageItems = filtered.slice(startIdx, startIdx + opPageSize);
+
+      if (opPaginationBar) {
+        opPaginationBar.style.display = 'flex';
+        const endIdx = Math.min(startIdx + pageItems.length, filtered.length);
+        if (opPageInfo) opPageInfo.textContent = `Menampilkan ${startIdx + 1}–${endIdx} dari ${filtered.length} jadwal (Halaman ${opCurrentPage} / ${totalPages})`;
+        if (btnOpPrevPage) btnOpPrevPage.disabled = opCurrentPage <= 1;
+        if (btnOpNextPage) btnOpNextPage.disabled = opCurrentPage >= totalPages;
+      }
+
+      const miniColors = ['#ffffff', '#dcfce7', '#fef9c3', '#ffedd5', '#dbeafe', '#fce7f3'];
+
+      opTableBody.innerHTML = pageItems.map(item => {
+        const iso = parseOpDateToIso(item.tourDate);
+        const isToday = iso === todayIso;
+        const isTomorrow = iso === tomorrowIso;
+        const dateBadge = isToday
+          ? '<div class="op-badge-today">HARI INI</div>'
+          : (isTomorrow ? '<div class="op-badge-tomorrow">BESOK</div>' : '');
+
+        const makanBiaya = parseRupiahNum(item.makanSiangBiaya);
+        const guideB = parseRupiahNum(item.guideBiaya);
+        const bensin = parseRupiahNum(item.bensin);
+        const lain = parseRupiahNum(item.lainLain);
+        const pendapatan = parseRupiahNum(item.pendapatan);
+        const computedTotal = item.total !== '' ? parseRupiahNum(item.total) : (pendapatan - (makanBiaya + guideB + bensin + lain));
 
         const rowBg = (item.rowColor && /^#[0-9A-Fa-f]{6}$/.test(item.rowColor) && item.rowColor.toLowerCase() !== '#ffffff')
           ? item.rowColor
@@ -3543,7 +3621,7 @@ Message / Special Requests: ${specialRequests}`;
         ).join('');
 
         return `
-          <tr style="background-color: ${escapeHtml(rowBg)};">
+          <tr style="--row-bg: ${escapeHtml(rowBg)}; background-color: var(--row-bg);">
             <td class="op-sticky-col">
               <strong>${escapeHtml(item.tourDate || '-')}</strong>
               ${dateBadge}
