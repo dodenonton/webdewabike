@@ -1743,7 +1743,7 @@
       }
       .op-filter-pills::-webkit-scrollbar { display: none; }
       .op-pill-btn { flex: 0 0 auto; padding: 0.52rem 0.88rem; font-size: 0.9rem; }
-      #opFilterDate, #opFilterMonth, #opFilterYear { flex: 1 1 130px; min-width: 0; font-size: 0.92rem; }
+      #opFilterDate, #opFilterMonth { flex: 1 1 140px; min-width: 0; font-size: 16px; }
       #btnToggleOlderYears, #btnClearOpMonth { flex: 1 1 auto; justify-content: center; font-size: 0.88rem !important; padding: 0.52rem 0.8rem !important; }
       #opSortOrder, .select-filter { width: 100%; max-width: 100%; font-size: 0.95rem; padding: 0.58rem 0.75rem; }
       .search-box { flex: 1 1 100%; }
@@ -1997,26 +1997,7 @@
             <label for="opFilterDate" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tanggal:</label>
             <input type="date" id="opFilterDate" class="select-filter" style="padding: 0.42rem 0.65rem;" title="Cari booking pada tanggal tertentu">
             <label for="opFilterMonth" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Bulan:</label>
-            <select id="opFilterMonth" class="select-filter" style="padding: 0.42rem 0.65rem;" title="Pilih bulan">
-              <option value="">Semua Bulan</option>
-              <option value="01">Januari</option>
-              <option value="02">Februari</option>
-              <option value="03">Maret</option>
-              <option value="04">April</option>
-              <option value="05">Mei</option>
-              <option value="06">Juni</option>
-              <option value="07">Juli</option>
-              <option value="08">Agustus</option>
-              <option value="09">September</option>
-              <option value="10">Oktober</option>
-              <option value="11">November</option>
-              <option value="12">Desember</option>
-            </select>
-            <select id="opFilterYear" class="select-filter" style="padding: 0.42rem 0.65rem;" title="Pilih tahun">
-              <option value="">Semua Tahun</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-            </select>
+            <input type="month" id="opFilterMonth" class="select-filter" style="padding: 0.42rem 0.65rem;" title="Cari booking pada bulan dan tahun tertentu">
             <button type="button" class="btn btn-outline" id="btnClearOpMonth" style="padding: 0.42rem 0.7rem; font-size: 0.78rem;">Semua Tanggal / Bulan</button>
             <button type="button" class="btn btn-outline" id="btnToggleOlderYears" style="padding: 0.42rem 0.75rem; font-size: 0.78rem;" title="Tampilkan data tahun-tahun sebelumnya">
               <i class="fas fa-history"></i>
@@ -3755,7 +3736,6 @@ Message / Special Requests: ${specialRequests}`;
     const opSortOrder = document.getElementById('opSortOrder');
     const opFilterDate = document.getElementById('opFilterDate');
     const opFilterMonth = document.getElementById('opFilterMonth');
-    const opFilterYear = document.getElementById('opFilterYear');
     const btnClearOpMonth = document.getElementById('btnClearOpMonth');
 
     const opAddForm = document.getElementById('opAddForm');
@@ -3926,45 +3906,16 @@ Message / Special Requests: ${specialRequests}`;
 
     if (opSearchInput) opSearchInput.addEventListener('input', () => { opCurrentPage = 1; renderOpTable(); });
     if (opSortOrder) opSortOrder.addEventListener('change', () => { opCurrentPage = 1; renderOpTable(); });
-    function refreshOpYearOptions() {
-      if (!opFilterYear) return;
-      const prev = opFilterYear.value;
-      const years = new Set([String(new Date().getFullYear()), String(new Date().getFullYear() + 1)]);
-      allOpBookings.forEach(item => {
-        const iso = parseOpDateToIso(item.tourDate);
-        if (iso && iso.length >= 4) years.add(iso.slice(0, 4));
-      });
-      const sorted = Array.from(years).sort((a, b) => a.localeCompare(b));
-      opFilterYear.innerHTML = '<option value="">Semua Tahun</option>' +
-        sorted.map(y => `<option value="${y}">${y}</option>`).join('');
-      if (prev && sorted.includes(prev)) opFilterYear.value = prev;
-    }
-
     if (opFilterDate) {
       opFilterDate.addEventListener('change', () => {
-        if (opFilterDate.value) {
-          if (opFilterMonth) opFilterMonth.value = '';
-          if (opFilterYear) opFilterYear.value = '';
-        }
+        if (opFilterDate.value && opFilterMonth) opFilterMonth.value = '';
         opCurrentPage = 1;
         renderOpTable();
       });
     }
     if (opFilterMonth) {
       opFilterMonth.addEventListener('change', () => {
-        if (opFilterMonth.value) {
-          if (opFilterDate) opFilterDate.value = '';
-          if (opFilterYear && !opFilterYear.value) {
-            opFilterYear.value = String(new Date().getFullYear());
-          }
-        }
-        opCurrentPage = 1;
-        renderOpTable();
-      });
-    }
-    if (opFilterYear) {
-      opFilterYear.addEventListener('change', () => {
-        if (opFilterYear.value && opFilterDate) opFilterDate.value = '';
+        if (opFilterMonth.value && opFilterDate) opFilterDate.value = '';
         opCurrentPage = 1;
         renderOpTable();
       });
@@ -3973,7 +3924,6 @@ Message / Special Requests: ${specialRequests}`;
       btnClearOpMonth.addEventListener('click', () => {
         if (opFilterDate) opFilterDate.value = '';
         if (opFilterMonth) opFilterMonth.value = '';
-        if (opFilterYear) opFilterYear.value = '';
         opCurrentPage = 1;
         renderOpTable();
       });
@@ -4057,7 +4007,6 @@ Message / Special Requests: ${specialRequests}`;
     }
 
     function updateOpCounts() {
-      refreshOpYearOptions();
       const todayIso = getLocalIsoDate(0);
       const tomorrowIso = getLocalIsoDate(1);
       let activeTotal = 0;
@@ -4264,7 +4213,6 @@ Message / Special Requests: ${specialRequests}`;
       const query = (opSearchInput ? opSearchInput.value : '').toLowerCase().trim();
       const dateVal = opFilterDate ? opFilterDate.value : '';
       const monthVal = opFilterMonth ? opFilterMonth.value : '';
-      const yearVal = opFilterYear ? opFilterYear.value : '';
       const sortVal = opSortOrder ? opSortOrder.value : 'date_asc';
       const sameDayMode = opSameDaySort ? opSameDaySort.value : 'default';
 
@@ -4275,13 +4223,12 @@ Message / Special Requests: ${specialRequests}`;
 
       let filtered = allOpBookings.filter(item => {
         const iso = parseOpDateToIso(item.tourDate);
-        if (!opShowOlderYears && !dateVal && !monthVal && !yearVal && iso && iso < currentYearPrefix) return false;
+        if (!opShowOlderYears && !dateVal && !monthVal && iso && iso < currentYearPrefix) return false;
         if (currentOpFilter === 'today' && iso !== todayIso) return false;
         if (currentOpFilter === 'tomorrow' && iso !== tomorrowIso) return false;
         if (currentOpFilter === 'upcoming' && (!iso || iso < todayIso)) return false;
         if (dateVal && iso !== dateVal) return false;
-        if (yearVal && (!iso || !iso.startsWith(yearVal + '-'))) return false;
-        if (monthVal && (!iso || iso.slice(5, 7) !== monthVal)) return false;
+        if (monthVal && (!iso || !iso.startsWith(monthVal))) return false;
         if (query) {
           const hay = [
             item.tourDate, item.bookingAddress, item.phone, item.country,
