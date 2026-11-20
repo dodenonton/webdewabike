@@ -1338,7 +1338,7 @@
       width: 100%;
       min-width: 280px;
       max-width: 380px;
-      white-space: pre-wrap;
+      white-space: normal;
       overflow-wrap: anywhere;
       word-break: break-word;
       box-sizing: border-box;
@@ -1349,6 +1349,13 @@
       color: #0f172a;
       line-height: 1.55;
       letter-spacing: 0.005em;
+    }
+    .op-detail-line {
+      padding-left: 1.75rem;
+      text-indent: -1.75rem;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
     .op-detail-color-bar {
       display: flex;
@@ -3796,6 +3803,16 @@ Message / Special Requests: ${specialRequests}`;
       if (pUp) pUp.textContent = upcomingCnt;
     }
 
+    function formatOpDetailHtml(detailText) {
+      const raw = String(detailText || '').trim();
+      if (!raw) return '-';
+      return raw.split(/\r?\n/).map(line => {
+        const trimmed = line.replace(/\s+$/g, '');
+        if (!trimmed) return '<div class="op-detail-line">&nbsp;</div>';
+        return `<div class="op-detail-line">${escapeHtml(trimmed)}</div>`;
+      }).join('');
+    }
+
     function renderOpTable() {
       if (!opTableBody) return;
       const todayIso = getLocalIsoDate(0);
@@ -3944,7 +3961,7 @@ Message / Special Requests: ${specialRequests}`;
             <td style="white-space: nowrap;">${escapeHtml(item.jam || '-')}</td>
             <td><span class="badge badge-direct">${escapeHtml(item.jenisTur || '-')}</span></td>
             <td ${detailBg ? `data-detail-bg="true" style="--detail-bg: ${escapeHtml(detailBg)}; background-color: var(--detail-bg);"` : ''}>
-              <div class="op-detail-cell">${escapeHtml(item.detail || '-')}</div>
+              <div class="op-detail-cell">${formatOpDetailHtml(item.detail)}</div>
               <div class="op-detail-color-bar">
                 <span>Warna Detail:</span>
                 ${detailSwatchButtons}
@@ -4105,36 +4122,40 @@ Message / Special Requests: ${specialRequests}`;
       }
     };
 
-    // Copy Operational Booking Detail
+    // Copy Operational Booking Detail (Hanya isi kolom DETAIL saja, full ke samping)
     window.copyOpBookingDetail = async function(rowNumber, btnEl) {
       const item = allOpBookings.find(x => x.row === rowNumber);
       if (!item) return;
-      const lines = [
-        `Date of the tour: ${item.tourDate || '-'}`,
-        `Jam: ${item.jam || '-'}`,
-        `Name: ${item.name || '-'}`,
-        `Country: ${item.country || '-'}`,
-        `Booking Address: ${item.bookingAddress || '-'}`,
-        `Phone / WA: ${item.phone || '-'}`,
-        `Tour Package: ${item.tourPackage || '-'} (${item.jenisTur || '-'})`,
-        item.guide ? `Guide: ${item.guide}` : null,
-        item.driver ? `Driver: ${item.driver}` : null,
-        item.makanSiang ? `Makan siang: ${item.makanSiang}` : null,
-        item.detail ? `\nDetail:\n${item.detail}` : null
-      ].filter(Boolean).join('\n');
+      const detailText = String(item.detail || '').trim();
+      if (!detailText) {
+        showToast('Kolom Detail kosong.', 'warning');
+        return;
+      }
 
       try {
-        await navigator.clipboard.writeText(lines);
-        if (btnEl) {
-          const orig = btnEl.innerHTML;
-          btnEl.classList.add('copied');
-          btnEl.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
-          setTimeout(() => { btnEl.classList.remove('copied'); btnEl.innerHTML = orig; }, 1800);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(detailText);
+        } else {
+          throw new Error('Clipboard API unavailable');
         }
-        showToast('Detail jadwal berhasil disalin!');
       } catch (err) {
-        showToast('Gagal menyalin ke clipboard.', 'error');
+        const ta = document.createElement('textarea');
+        ta.value = detailText;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
       }
+
+      if (btnEl) {
+        const orig = btnEl.innerHTML;
+        btnEl.classList.add('copied');
+        btnEl.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+        setTimeout(() => { btnEl.classList.remove('copied'); btnEl.innerHTML = orig; }, 1800);
+      }
+      showToast('Isi kolom Detail berhasil disalin!');
     };
 
     // Auto-calculate Total in Edit Modal (Guide & Driver hanya nama, Makan siang hanya jumlah tamu)
