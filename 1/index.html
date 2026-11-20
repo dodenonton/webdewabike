@@ -1790,29 +1790,8 @@
 
       <!-- Toolbar Filter & Sort -->
       <section class="toolbar-card" style="flex-direction: column; align-items: stretch; gap: 0.85rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-          <div class="op-filter-pills">
-            <button type="button" class="op-pill-btn active" data-op-filter="all">
-              <span>Semua</span>
-              <span class="op-pill-count" id="opPillCountAll">0</span>
-            </button>
-            <button type="button" class="op-pill-btn" data-op-filter="today">
-              <i class="fas fa-sun"></i>
-              <span>Hari Ini</span>
-              <span class="op-pill-count" id="opPillCountToday">0</span>
-            </button>
-            <button type="button" class="op-pill-btn" data-op-filter="tomorrow">
-              <i class="fas fa-calendar-day"></i>
-              <span>Besok</span>
-              <span class="op-pill-count" id="opPillCountTomorrow">0</span>
-            </button>
-            <button type="button" class="op-pill-btn" data-op-filter="upcoming">
-              <i class="fas fa-forward"></i>
-              <span>Mendatang</span>
-              <span class="op-pill-count" id="opPillCountUpcoming">0</span>
-            </button>
-          </div>
-          <div style="display: flex; gap: 0.55rem; align-items: center; flex-wrap: wrap;">
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <div style="display: flex; gap: 0.55rem; align-items: center; flex-wrap: wrap; width: 100%;">
             <label for="opFilterMonth" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Bulan:</label>
             <input type="month" id="opFilterMonth" class="select-filter" style="padding: 0.42rem 0.65rem;">
             <button type="button" class="btn btn-outline" id="btnClearOpMonth" style="padding: 0.42rem 0.7rem; font-size: 0.78rem;">Semua Bulan</button>
@@ -1831,6 +1810,27 @@
             <option value="date_desc" selected>Urutan: Tanggal Terbesar &rarr; Terkecil</option>
             <option value="date_asc">Urutan: Tanggal Terkecil &rarr; Terbesar</option>
           </select>
+        </div>
+        <div class="op-filter-pills">
+          <button type="button" class="op-pill-btn active" data-op-filter="all">
+            <span>Semua</span>
+            <span class="op-pill-count" id="opPillCountAll">0</span>
+          </button>
+          <button type="button" class="op-pill-btn" data-op-filter="today">
+            <i class="fas fa-sun"></i>
+            <span>Hari Ini</span>
+            <span class="op-pill-count" id="opPillCountToday">0</span>
+          </button>
+          <button type="button" class="op-pill-btn" data-op-filter="tomorrow">
+            <i class="fas fa-calendar-day"></i>
+            <span>Besok</span>
+            <span class="op-pill-count" id="opPillCountTomorrow">0</span>
+          </button>
+          <button type="button" class="op-pill-btn" data-op-filter="upcoming">
+            <i class="fas fa-forward"></i>
+            <span>Mendatang</span>
+            <span class="op-pill-count" id="opPillCountUpcoming">0</span>
+          </button>
         </div>
       </section>
 
