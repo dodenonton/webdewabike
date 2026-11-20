@@ -365,11 +365,11 @@
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
-      padding: 0.65rem 0.8rem;
+      padding: 0.65rem 0.85rem;
       white-space: pre-wrap;
       font-family: inherit;
-      min-width: 270px;
-      max-width: 360px;
+      min-width: 490px;
+      max-width: 600px;
       word-break: break-word;
     }
 
@@ -507,6 +507,18 @@
     .btn-action-wa:hover {
       background-color: #16a34a;
       color: #ffffff;
+    }
+
+    .btn-action-copy {
+      color: #0f766e;
+      border-color: #99f6e4;
+      background-color: #f0fdfa;
+    }
+    .btn-action-copy:hover,
+    .btn-action-copy.copied {
+      background-color: #0d9488;
+      color: #ffffff;
+      border-color: #0d9488;
     }
 
     /* Empty & Loading States */
@@ -1663,19 +1675,19 @@
       if (b.detail && b.detail.trim()) {
         let text = b.detail.trim();
         // Cut off contact info & booking method (already in other columns)
-        const emailIdx = text.search(/\n?•\s*Email Address:/i);
+        const emailIdx = text.search(/\n?(?:•\s*)?Email Address:/i);
         if (emailIdx !== -1) {
           text = text.substring(0, emailIdx).trim();
         } else {
-          const phoneIdx = text.search(/\n?•\s*Phone\s*\/\s*WhatsApp/i);
+          const phoneIdx = text.search(/\n?(?:•\s*)?Phone\s*\/\s*WhatsApp/i);
           if (phoneIdx !== -1) {
             text = text.substring(0, phoneIdx).trim();
           }
         }
         // Remove separate Package Tier line if present
-        text = text.replace(/\n?•\s*Package Tier:[^\n\r]*/gi, '').trim();
+        text = text.replace(/\n?(?:•\s*)?Package Tier:[^\n\r]*/gi, '').trim();
         // Standardize "Rider Height(s) & Bike Size:" to "Height:"
-        text = text.replace(/•\s*Rider Height\(s\)\s*(?:&\s*Bike Size)?:\s*/gi, '• Height: ');
+        text = text.replace(/(?:^|\n)[ \t]*(?:•[ \t]*)?Rider Height\(s\)\s*(?:&\s*Bike Size)?:\s*/gi, '\nHeight: ');
 
         // Format legacy Children lines that lacked age descriptions
         let childIndex = 0;
@@ -1696,6 +1708,14 @@
         text = text.replace(/^[ \t]*•[ \t]*Infants?(?:[ \t]*\/[ \t]*Toddlers)?:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Infant / Baby Seat (Age 1 – 2): *$1 pax*');
         text = text.replace(/^[ \t]*•[ \t]*Adults(?:\s*\([^)]*\))?:[ \t]*\*?(\d+)\*?[ \t]*pax/gmi, '   • Adults: *$1 pax*');
 
+        // Remove leading bullets on main lines, keeping sub-bullets under Total Guests
+        text = text.replace(/^([ \t]*)•[ \t]*(.+)$/gm, (_, indent, rest) => {
+          if (/^(?:Adults|Children|Young Children|Infants?|Infant \/ Baby Seat)\b/i.test(rest)) {
+            return `   • ${rest}`;
+          }
+          return rest;
+        }).trim();
+
         if (text) return text;
       }
 
@@ -1713,15 +1733,15 @@
       const totalCost = b.totalCost || '-';
       const specialRequests = b.specialRequests || '-';
 
-      return `• Lead Guest Name: ${guestName}
-• Tour Package: ${tourName}
-• Total Guests: ${totalGuests}
+      return `Lead Guest Name: ${guestName}
+Tour Package: ${tourName}
+Total Guests: ${totalGuests}
    • Adults: *1 pax*
-• Height: ${riderHeight}
-• Tour Date: ${tourDate}
-• Hotel Pickup: ${hotel}
-• Estimated Total Cost: ${totalCost}
-• Message / Special Requests: ${specialRequests}`;
+Height: ${riderHeight}
+Tour Date: ${tourDate}
+Hotel Pickup: ${hotel}
+Estimated Total Cost: ${totalCost}
+Message / Special Requests: ${specialRequests}`;
     }
 
     // Format Detail HTML for table with bold pax counts
@@ -1856,6 +1876,9 @@
             </td>
             <td style="text-align: right;">
               <div class="row-actions" style="justify-content: flex-end;">
+                <button type="button" class="btn-action btn-action-copy" onclick="copyBookingDetail(${b.row}, this)" title="Salin Detail Booking">
+                  <i class="far fa-copy"></i> Salin
+                </button>
                 ${cleanPhone ? `
                   <a href="${waLink}" target="_blank" class="btn-action btn-action-wa" title="Chat WhatsApp Tamu">
                     <i class="fab fa-whatsapp"></i>
@@ -1873,6 +1896,34 @@
         `;
       }).join('');
     }
+
+    // Copy Clean Booking Detail (without main-line bullets, keeping sub-bullets under Total Guests)
+    window.copyBookingDetail = async function(rowNumber, btnEl) {
+      const b = allBookings.find(x => x.row === rowNumber);
+      if (!b) return;
+      const cleanText = formatDetailColumn(b).replace(/\*/g, '');
+      try {
+        await navigator.clipboard.writeText(cleanText);
+      } catch (err) {
+        const ta = document.createElement('textarea');
+        ta.value = cleanText;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      if (btnEl) {
+        const origHtml = btnEl.innerHTML;
+        btnEl.classList.add('copied');
+        btnEl.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+        setTimeout(() => {
+          btnEl.classList.remove('copied');
+          btnEl.innerHTML = origHtml;
+        }, 1600);
+      }
+    };
 
     // Open Edit Modal
     window.openEditModal = function(rowNumber) {

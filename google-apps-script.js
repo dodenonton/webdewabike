@@ -330,7 +330,14 @@ function doPost(e) {
       }
     }
 
-    var detailHtml = String(detail)
+    var normalizedDetail = String(detail || "").replace(/^([ \t]*)•[ \t]*(.+)$/gm, function(_, indent, rest) {
+      if (/^(?:Adults|Children|Young Children|Infants?|Infant \/ Baby Seat)\b/i.test(rest)) {
+        return "   • " + rest;
+      }
+      return rest;
+    });
+
+    var detailHtml = normalizedDetail
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')

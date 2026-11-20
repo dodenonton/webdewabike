@@ -2159,18 +2159,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const costVal = `${b.totalCost} ${b.totalUsd}`.trim();
     const reqVal = (b.specialRequests && b.specialRequests !== '-') ? b.specialRequests : '-';
 
-    let str = `• Lead Guest Name: ${b.name}
-• Tour Package: ${b.tourName}
-• Total Guests: ${b.totalGuests} Guests
+    let str = `Lead Guest Name: ${b.name}
+Tour Package: ${b.tourName}
+Total Guests: ${b.totalGuests} Guests
 ${ageBreakdown}
-${b.noBike ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTime}
-• Hotel Pickup: ${hotelVal}
-• Estimated Total Cost: ${costVal}
-• Message / Special Requests: ${reqVal}
-• Email Address: ${b.email}
-• Phone / WhatsApp / Telegram: ${b.phone}
-• Nationality: ${b.nationality}
-• Booking Method: ${method}`;
+${b.noBike ? '' : `Height: ${b.riderHeight}\n`}Tour Date: ${b.dateTime}
+Hotel Pickup: ${hotelVal}
+Estimated Total Cost: ${costVal}
+Message / Special Requests: ${reqVal}
+Email Address: ${b.email}
+Phone / WhatsApp / Telegram: ${b.phone}
+Nationality: ${b.nationality}
+Booking Method: ${method}`;
 
     return str;
   };
@@ -2246,49 +2246,48 @@ ${b.noBike ? '' : `• Height: ${b.riderHeight}\n`}• Tour Date: ${b.dateTime}
       // Continue even if network glitch
     }
 
-    const partsList = b.parts.map(p => `   • ${p}`).join('\n');
-    const pkgEmoji = b.isTrekking ? '🌾' : (b.noBike ? '🌴' : '🚲');
+    const partsList = b.parts.map(p => `   • ${p.replace(/\*/g, '')}`).join('\n');
     let message = IS_ID
       ? `*RESERVASI BARU - DEWA BIKE TOUR*
 ---------------------------------------
-👤 *Nama Pemesan*: ${b.name}
-${pkgEmoji} *Paket Tur*: ${b.tourName}
-👥 *Total Peserta*: ${b.totalGuests} Tamu
+Nama Pemesan: ${b.name}
+Paket Tur: ${b.tourName}
+Total Peserta: ${b.totalGuests} Tamu
 ${partsList}
-${b.noBike ? '' : `📏 *Tinggi Badan*: ${b.riderHeight}\n`}📅 *Tanggal Tur*: ${b.dateTime}`
+${b.noBike ? '' : `Tinggi Badan: ${b.riderHeight}\n`}Tanggal Tur: ${b.dateTime}`
       : `*NEW RESERVATION - DEWA BIKE TOUR*
 ---------------------------------------
-👤 *Lead Guest Name*: ${b.name}
-${pkgEmoji} *Tour Package*: ${b.tourName}
-👥 *Total Guests*: ${b.totalGuests} Guests
+Lead Guest Name: ${b.name}
+Tour Package: ${b.tourName}
+Total Guests: ${b.totalGuests} Guests
 ${partsList}
-${b.noBike ? '' : `📏 *Rider Height(s)*: ${b.riderHeight}\n`}📅 *Tour Date*: ${b.dateTime}`;
+${b.noBike ? '' : `Rider Height(s): ${b.riderHeight}\n`}Tour Date: ${b.dateTime}`;
 
     if (!b.isSaving && b.hotel && b.hotel !== '-') {
-      message += `\n🏨 *${IS_ID ? 'Hotel Penjemputan' : 'Hotel Pickup'}*: ${b.hotel}`;
+      message += `\n${IS_ID ? 'Hotel Penjemputan' : 'Hotel Pickup'}: ${b.hotel}`;
     }
 
     if (b.specialRequests && b.specialRequests !== '-') {
-      message += `\n📝 *${IS_ID ? 'Permintaan Khusus' : 'Special Requests'}*: ${b.specialRequests}`;
+      message += `\n${IS_ID ? 'Permintaan Khusus' : 'Special Requests'}: ${b.specialRequests}`;
     }
 
     message += IS_ID
-      ? `\n💰 *Estimasi Total*: ${b.totalCost} ${b.totalUsd}
+      ? `\nEstimasi Total: ${b.totalCost} ${b.totalUsd}
 ---------------------------------------
-📧 *Email*: ${b.email}
-📞 *HP / Telegram*: ${b.phone}
-🌍 *Asal / Domisili*: ${b.nationality}
-📦 *Tipe Paket*: ${b.tierLabel}
+Email: ${b.email}
+HP / Telegram: ${b.phone}
+Asal / Domisili: ${b.nationality}
+Tipe Paket: ${b.tierLabel}
 ---------------------------------------
-Halo Tim Dewa Bike Tour, mohon bantuannya untuk cek ketersediaan jadwal di atas. Terima kasih! 🙏`
-      : `\n💰 *Estimated Total*: ${b.totalCost} ${b.totalUsd}
+Halo Tim Dewa Bike Tour, mohon bantuannya untuk cek ketersediaan jadwal di atas. Terima kasih!`
+      : `\nEstimated Total: ${b.totalCost} ${b.totalUsd}
 ---------------------------------------
-📧 *Email*: ${b.email}
-📞 *Phone / Telegram*: ${b.phone}
-🌍 *Nationality*: ${b.nationality}
-📦 *Package Tier*: ${b.tierLabel}
+Email: ${b.email}
+Phone / Telegram: ${b.phone}
+Nationality: ${b.nationality}
+Package Tier: ${b.tierLabel}
 ---------------------------------------
-Hello Dewa Bike Tour Team, please check slot availability for the schedule above. Thank you! 🙏`;
+Hello Dewa Bike Tour Team, please check slot availability for the schedule above. Thank you!`;
 
     const encodedMsg = encodeURIComponent(message);
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMsg}`;
@@ -2989,15 +2988,15 @@ ${b.name}`;
       const timestampStr = `${dateNowFormatted} ${timeNowFormatted} WITA`;
 
       const detailText = 
-`• Lead Guest Name: ${data.name}
-• Inquiry Type: General Message / Inquiry
-• Total Guests: ${data.guests} Guests
-• Preferred Tour Date: ${data.dateTime}
-• Message / Inquiries: ${data.notes}
-• Email Address: ${data.email}
-• Phone / WhatsApp / Telegram: ${data.phone}
-• Nationality: ${data.nationality}
-• Submission Method: ${method}`;
+`Lead Guest Name: ${data.name}
+Inquiry Type: General Message / Inquiry
+Total Guests: ${data.guests} Guests
+Preferred Tour Date: ${data.dateTime}
+Message / Inquiries: ${data.notes}
+Email Address: ${data.email}
+Phone / WhatsApp / Telegram: ${data.phone}
+Nationality: ${data.nationality}
+Submission Method: ${method}`;
 
       const payload = {
         timestamp: timestampStr,
