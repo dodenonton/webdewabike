@@ -1860,6 +1860,7 @@
                 <th>Guide</th>
                 <th>Driver</th>
                 <th>Makan siang</th>
+                <th style="text-align: center; min-width: 175px;">Aksi</th>
                 <th>Makan siang (Biaya)</th>
                 <th>Guide (Biaya)</th>
                 <th>Bensin</th>
@@ -1867,7 +1868,6 @@
                 <th>Ket</th>
                 <th>Pendapatan</th>
                 <th>Total</th>
-                <th style="text-align: right; min-width: 175px;">Aksi</th>
               </tr>
             </thead>
             <tbody id="opTableBody">
@@ -1885,6 +1885,7 @@
                 <td class="op-sticky-col" style="font-weight: 800;">TOTAL AKHIR</td>
                 <td colspan="12" style="text-align: right;">(FILTER AKTIF):</td>
                 <td class="op-money" id="opSumMakanPax">0 org</td>
+                <td></td>
                 <td class="op-money" id="opSumMakanBiaya">Rp 0</td>
                 <td class="op-money" id="opSumGuideBiaya">Rp 0</td>
                 <td class="op-money" id="opSumBensin">Rp 0</td>
@@ -1892,7 +1893,6 @@
                 <td></td>
                 <td class="op-money" id="opSumPendapatan">Rp 0</td>
                 <td class="op-money" id="opSumTotal" style="color: var(--primary);">Rp 0</td>
-                <td></td>
               </tr>
             </tfoot>
           </table>
@@ -3938,15 +3938,8 @@ Message / Special Requests: ${specialRequests}`;
             <td>${escapeHtml(item.guide || '-')}</td>
             <td>${escapeHtml(item.driver || '-')}</td>
             <td style="white-space: nowrap; font-weight: 600;">${escapeHtml(item.makanSiang || '-')}</td>
-            <td class="op-money">${formatRupiah(makanBiaya)}</td>
-            <td class="op-money">${formatRupiah(guideB)}</td>
-            <td class="op-money">${formatRupiah(bensin)}</td>
-            <td class="op-money">${formatRupiah(lain)}</td>
-            <td>${escapeHtml(item.ket || '-')}</td>
-            <td class="op-money">${formatRupiah(pendapatan)}</td>
-            <td class="op-money" style="color: ${computedTotal < 0 ? 'var(--danger)' : 'var(--primary)'};">${pendapatan || makanBiaya || guideB || bensin || lain || item.total !== '' ? formatRupiahAlways(computedTotal) : '-'}</td>
-            <td style="text-align: right;">
-              <div class="action-group" style="justify-content: flex-end;">
+            <td>
+              <div class="action-group" style="justify-content: center;">
                 <button type="button" class="btn-action btn-action-copy" onclick="copyOpBookingDetail(${item.row}, this)" title="Salin Detail Jadwal">
                   <i class="far fa-copy"></i> Salin
                 </button>
@@ -3958,6 +3951,13 @@ Message / Special Requests: ${specialRequests}`;
                 </button>
               </div>
             </td>
+            <td class="op-money">${formatRupiah(makanBiaya)}</td>
+            <td class="op-money">${formatRupiah(guideB)}</td>
+            <td class="op-money">${formatRupiah(bensin)}</td>
+            <td class="op-money">${formatRupiah(lain)}</td>
+            <td>${escapeHtml(item.ket || '-')}</td>
+            <td class="op-money">${formatRupiah(pendapatan)}</td>
+            <td class="op-money" style="color: ${computedTotal < 0 ? 'var(--danger)' : 'var(--primary)'};">${pendapatan || makanBiaya || guideB || bensin || lain || item.total !== '' ? formatRupiahAlways(computedTotal) : '-'}</td>
           </tr>
         `;
       }).join('');
