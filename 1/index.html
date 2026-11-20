@@ -1335,9 +1335,14 @@
       font-weight: 600;
     }
     .op-detail-cell {
-      min-width: 290px;
-      max-width: 420px;
+      width: 100%;
+      min-width: 280px;
+      max-width: 380px;
       white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      box-sizing: border-box;
+      padding-right: 0.75rem;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 0.96rem;
       font-weight: 500;
@@ -1574,7 +1579,7 @@
         min-width: 112px !important;
         max-width: 112px;
       }
-      .op-detail-cell { min-width: 260px; max-width: 310px; font-size: 0.96rem; line-height: 1.55; font-weight: 500; color: #0f172a; }
+      .op-detail-cell { min-width: 250px; max-width: 295px; padding-right: 0.75rem; font-size: 0.96rem; line-height: 1.55; font-weight: 500; color: #0f172a; }
 
       .op-pagination { padding: 0.85rem; flex-direction: column; align-items: stretch; font-size: 0.9rem; }
       .op-pagination-controls { justify-content: space-between; }
@@ -1855,7 +1860,7 @@
           <table class="bookings-table op-table">
             <thead>
               <tr>
-                <th class="op-sticky-col" style="min-width: 118px;">Date of the tour</th>
+                <th class="op-sticky-col" style="min-width: 118px;">Date</th>
                 <th style="width: 72px; text-align: center;">Warna</th>
                 <th style="min-width: 105px;">Timestamp</th>
                 <th>Booking Address</th>
@@ -1865,8 +1870,8 @@
                 <th style="min-width: 170px;">Tour Packages</th>
                 <th>Jam</th>
                 <th>Jenis Tur</th>
-                <th style="min-width: 260px;">Detail</th>
-                <th>Guide</th>
+                <th style="min-width: 300px; max-width: 400px; padding-right: 1rem;">Detail</th>
+                <th style="padding-left: 1rem;">Guide</th>
                 <th>Driver</th>
                 <th>Makan siang</th>
                 <th style="text-align: center; min-width: 135px;">Aksi</th>
