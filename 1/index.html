@@ -3449,30 +3449,54 @@ Message / Special Requests: ${specialRequests}`;
     }
 
     async function loadOpBookings() {
+      if (allOpBookings.length === 0) {
+        try {
+          const cached = localStorage.getItem('dewa_op_bookings_cache');
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              allOpBookings = parsed;
+              updateOpCounts();
+              renderOpTable();
+            }
+          }
+        } catch (e) {}
+      }
+
       try {
         const callbackName = 'cb_op_read_' + Date.now();
-        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?action=getOpBookings`, callbackName);
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?action=getOpBookings`, callbackName, 60000);
         if (res && res.status === 'success' && Array.isArray(res.data)) {
           allOpBookings = res.data.filter(x =>
             [x.tourDate, x.name, x.detail, x.bookingAddress, x.phone, x.tourPackage]
               .some(v => String(v || '').trim() !== '')
           );
+          try {
+            localStorage.setItem('dewa_op_bookings_cache', JSON.stringify(allOpBookings));
+          } catch (e) {}
           updateOpCounts();
           renderOpTable();
         } else {
           throw new Error((res && res.message) || 'Format tidak dikenal');
         }
       } catch (err) {
+        if (allOpBookings.length > 0) {
+          showToast('Gagal menyegarkan jadwal dari server: ' + err.message, 'warning');
+          return;
+        }
         if (opTableBody) {
           opTableBody.innerHTML = `
             <tr>
-              <td colspan="21">
+              <td colspan="22">
                 <div class="state-box">
-                  <i class="fas fa-info-circle" style="color: var(--accent);"></i>
-                  <p><strong>Tab Operasional Belum Terhubung ke Apps Script Terbaru.</strong></p>
+                  <i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i>
+                  <p><strong>Gagal Memuat Jadwal Operasional</strong></p>
                   <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem;">
-                    Copy isi file <code>google-apps-script.js</code> terbaru ke Google Apps Script Anda lalu klik <strong>Deploy &rarr; New Deployment</strong>.
+                    ${escapeHtml(err.message || 'Koneksi timeout atau Apps Script belum diperbarui.')}
                   </p>
+                  <button type="button" class="btn btn-primary" style="margin-top: 0.85rem;" onclick="loadOpBookings()">
+                    <i class="fas fa-sync-alt"></i> Coba Muat Ulang
+                  </button>
                 </div>
               </td>
             </tr>
