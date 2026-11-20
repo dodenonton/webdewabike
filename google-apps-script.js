@@ -252,7 +252,7 @@ function bulkImportOpBookings_(rowsInput, clearExisting) {
   if (clearExisting === true) {
     var last = opSheet.getLastRow();
     if (last >= 2) {
-      opSheet.deleteRows(2, last - 1);
+      opSheet.getRange(2, 1, last - 1, OP_HEADERS.length).clearContent().setBackground(null);
     }
   }
   if (!Array.isArray(rowsInput) || rowsInput.length === 0) {
@@ -260,6 +260,7 @@ function bulkImportOpBookings_(rowsInput, clearExisting) {
   }
 
   var batch = [];
+  var bgBatch = [];
   for (var i = 0; i < rowsInput.length; i++) {
     var r = rowsInput[i] || [];
     var out = [];
@@ -267,10 +268,20 @@ function bulkImportOpBookings_(rowsInput, clearExisting) {
       out.push(c < r.length && r[c] !== null && r[c] !== undefined ? r[c] : "");
     }
     batch.push(out);
+
+    var hex = String(out[20] || "").trim();
+    var rowBg = (/^#[0-9A-Fa-f]{6}$/.test(hex) && hex.toLowerCase() !== "#ffffff") ? hex : null;
+    var bgRow = [];
+    for (var b = 0; b < OP_HEADERS.length; b++) {
+      bgRow.push(rowBg);
+    }
+    bgBatch.push(bgRow);
   }
 
-  var startRow = opSheet.getLastRow() + 1;
-  opSheet.getRange(startRow, 1, batch.length, OP_HEADERS.length).setValues(batch);
+  var startRow = clearExisting === true ? 2 : (opSheet.getLastRow() + 1);
+  var targetRange = opSheet.getRange(startRow, 1, batch.length, OP_HEADERS.length);
+  targetRange.setValues(batch);
+  targetRange.setBackgrounds(bgBatch);
 
   return {
     status: "success",
