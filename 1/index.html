@@ -1338,7 +1338,7 @@
       width: 100%;
       min-width: 280px;
       max-width: 380px;
-      white-space: normal;
+      white-space: pre-wrap;
       overflow-wrap: anywhere;
       word-break: break-word;
       box-sizing: border-box;
@@ -1349,13 +1349,6 @@
       color: #0f172a;
       line-height: 1.55;
       letter-spacing: 0.005em;
-    }
-    .op-detail-line {
-      padding-left: 1.75rem;
-      text-indent: -1.75rem;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      word-break: break-word;
     }
     .op-detail-color-bar {
       display: flex;
@@ -3803,16 +3796,6 @@ Message / Special Requests: ${specialRequests}`;
       if (pUp) pUp.textContent = upcomingCnt;
     }
 
-    function formatOpDetailHtml(detailText) {
-      const raw = String(detailText || '').trim();
-      if (!raw) return '-';
-      return raw.split(/\r?\n/).map(line => {
-        const trimmed = line.replace(/\s+$/g, '');
-        if (!trimmed) return '<div class="op-detail-line">&nbsp;</div>';
-        return `<div class="op-detail-line">${escapeHtml(trimmed)}</div>`;
-      }).join('');
-    }
-
     function renderOpTable() {
       if (!opTableBody) return;
       const todayIso = getLocalIsoDate(0);
@@ -3961,7 +3944,7 @@ Message / Special Requests: ${specialRequests}`;
             <td style="white-space: nowrap;">${escapeHtml(item.jam || '-')}</td>
             <td><span class="badge badge-direct">${escapeHtml(item.jenisTur || '-')}</span></td>
             <td ${detailBg ? `data-detail-bg="true" style="--detail-bg: ${escapeHtml(detailBg)}; background-color: var(--detail-bg);"` : ''}>
-              <div class="op-detail-cell">${formatOpDetailHtml(item.detail)}</div>
+              <div class="op-detail-cell">${escapeHtml(item.detail || '-')}</div>
               <div class="op-detail-color-bar">
                 <span>Warna Detail:</span>
                 ${detailSwatchButtons}
