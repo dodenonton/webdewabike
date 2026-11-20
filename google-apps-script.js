@@ -45,6 +45,202 @@ function saveClosedDatesHelper(dataInput) {
   return dataStr;
 }
 
+// Helper Tab Operasional_Booking (Sesuai Google Form & Google Sheet Dewa Bike Booking + Row Color)
+var OP_SHEET_NAME = "Operasional_Booking";
+var OP_HEADERS = [
+  "Date of the tour",
+  "Timestamp",
+  "Booking Address",
+  "Phone / Whatsapp / Telegram (+ ..)",
+  "Country",
+  "Name",
+  "Tour Packages",
+  "Jam",
+  "Jenis Tur",
+  "Detail",
+  "Guide",
+  "Makan siang",
+  "Driver",
+  "Guide (Biaya)",
+  "Bensin",
+  "Lain - lain",
+  "Ket",
+  "Pendapatan",
+  "Total",
+  "Total Akhir Bulan",
+  "Row Color"
+];
+
+function getOperationalSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var opSheet = ss.getSheetByName(OP_SHEET_NAME);
+  if (!opSheet) {
+    opSheet = ss.insertSheet(OP_SHEET_NAME);
+    opSheet.appendRow(OP_HEADERS);
+    opSheet.getRange(1, 1, 1, OP_HEADERS.length)
+      .setFontWeight("bold")
+      .setBackground("#105b38")
+      .setFontColor("#ffffff");
+    opSheet.setFrozenRows(1);
+  }
+  return opSheet;
+}
+
+function normalizeOpDateCell_(val) {
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    return Utilities.formatDate(val, "Asia/Makassar", "dd/MM/yyyy");
+  }
+  return String(val || "");
+}
+
+function normalizeOpTimeCell_(val) {
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    return Utilities.formatDate(val, "Asia/Makassar", "HH:mm");
+  }
+  return String(val || "");
+}
+
+function readOpBookings_() {
+  var opSheet = getOperationalSheet_();
+  var lastRow = opSheet.getLastRow();
+  var rows = [];
+  if (lastRow >= 2) {
+    var values = opSheet.getRange(2, 1, lastRow - 1, OP_HEADERS.length).getValues();
+    for (var i = 0; i < values.length; i++) {
+      var r = values[i];
+      rows.push({
+        row: i + 2,
+        tourDate: normalizeOpDateCell_(r[0]),
+        timestamp: normalizeOpDateCell_(r[1]) === "" ? "" : (r[1] instanceof Date ? Utilities.formatDate(r[1], "Asia/Makassar", "dd/MM/yyyy HH:mm:ss") : String(r[1] || "")),
+        bookingAddress: String(r[2] || ""),
+        phone: String(r[3] || ""),
+        country: String(r[4] || ""),
+        name: String(r[5] || ""),
+        tourPackage: String(r[6] || ""),
+        jam: normalizeOpTimeCell_(r[7]),
+        jenisTur: String(r[8] || ""),
+        detail: String(r[9] || ""),
+        guide: String(r[10] || ""),
+        makanSiang: String(r[11] || ""),
+        driver: String(r[12] || ""),
+        guideBiaya: String(r[13] || ""),
+        bensin: String(r[14] || ""),
+        lainLain: String(r[15] || ""),
+        ket: String(r[16] || ""),
+        pendapatan: String(r[17] || ""),
+        total: String(r[18] || ""),
+        totalAkhirBulan: String(r[19] || ""),
+        rowColor: String(r[20] || "")
+      });
+    }
+  }
+  return {
+    status: "success",
+    total: rows.length,
+    sheetName: OP_SHEET_NAME,
+    spreadsheetUrl: SpreadsheetApp.getActiveSpreadsheet().getUrl(),
+    data: rows
+  };
+}
+
+function applyOpRowColor_(opSheet, rowNum, hexColor) {
+  try {
+    var clean = String(hexColor || "").trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(clean) && clean.toLowerCase() !== "#ffffff") {
+      opSheet.getRange(rowNum, 1, 1, OP_HEADERS.length).setBackground(clean);
+    } else {
+      opSheet.getRange(rowNum, 1, 1, OP_HEADERS.length).setBackground(null);
+    }
+  } catch (err) {
+    Logger.log("Color apply error: " + err);
+  }
+}
+
+function addOpBooking_(p) {
+  var opSheet = getOperationalSheet_();
+  var ts = p.timestamp || Utilities.formatDate(new Date(), "Asia/Makassar", "dd/MM/yyyy HH:mm:ss");
+  var rowVals = [
+    p.tourDate || "",
+    ts,
+    p.bookingAddress || "",
+    p.phone || "",
+    p.country || "",
+    p.name || "",
+    p.tourPackage || "",
+    p.jam || "",
+    p.jenisTur || "",
+    p.detail || "",
+    p.guide || "",
+    p.makanSiang || "",
+    p.driver || "",
+    p.guideBiaya || "",
+    p.bensin || "",
+    p.lainLain || "",
+    p.ket || "",
+    p.pendapatan || "",
+    p.total || "",
+    p.totalAkhirBulan || "",
+    p.rowColor || ""
+  ];
+  opSheet.appendRow(rowVals);
+  var newRow = opSheet.getLastRow();
+  if (p.rowColor) {
+    applyOpRowColor_(opSheet, newRow, p.rowColor);
+  }
+  return { status: "success", message: "Booking operasional berhasil ditambahkan.", row: newRow, timestamp: ts };
+}
+
+function updateOpBooking_(p) {
+  var opSheet = getOperationalSheet_();
+  var row = parseInt(p.row, 10);
+  if (isNaN(row) || row < 2 || row > opSheet.getLastRow()) {
+    return { status: "error", message: "Nomor baris operasional tidak valid: " + p.row };
+  }
+  var fieldMap = [
+    ["tourDate", 1],
+    ["bookingAddress", 3],
+    ["phone", 4],
+    ["country", 5],
+    ["name", 6],
+    ["tourPackage", 7],
+    ["jam", 8],
+    ["jenisTur", 9],
+    ["detail", 10],
+    ["guide", 11],
+    ["makanSiang", 12],
+    ["driver", 13],
+    ["guideBiaya", 14],
+    ["bensin", 15],
+    ["lainLain", 16],
+    ["ket", 17],
+    ["pendapatan", 18],
+    ["total", 19],
+    ["totalAkhirBulan", 20],
+    ["rowColor", 21]
+  ];
+  for (var i = 0; i < fieldMap.length; i++) {
+    var key = fieldMap[i][0];
+    var col = fieldMap[i][1];
+    if (p[key] !== undefined) {
+      opSheet.getRange(row, col).setValue(p[key]);
+    }
+  }
+  if (p.rowColor !== undefined) {
+    applyOpRowColor_(opSheet, row, p.rowColor);
+  }
+  return { status: "success", message: "Baris operasional #" + row + " berhasil diperbarui.", row: row };
+}
+
+function deleteOpBooking_(rowParam) {
+  var opSheet = getOperationalSheet_();
+  var row = parseInt(rowParam, 10);
+  if (isNaN(row) || row < 2 || row > opSheet.getLastRow()) {
+    return { status: "error", message: "Nomor baris operasional tidak valid: " + rowParam };
+  }
+  opSheet.deleteRow(row);
+  return { status: "success", message: "Baris operasional #" + row + " berhasil dihapus.", row: row };
+}
+
 // Handler GET: Dipakai oleh Halaman Admin untuk Membaca, Mengedit, dan Menghapus Booking
 function doGet(e) {
   try {
@@ -103,6 +299,20 @@ function doGet(e) {
         message: "Pengaturan tanggal tutup berhasil disimpan tanpa notifikasi email.",
         data: JSON.parse(dataStr)
       }, callback);
+    }
+
+    // Aksi 4B: OPERASIONAL BOOKING (Jadwal & Keuangan Manual - 100% BEBAS EMAIL)
+    if (action === "getOpBookings") {
+      return createResponse(readOpBookings_(), callback);
+    }
+    if (action === "addOpBooking") {
+      return createResponse(addOpBooking_(e.parameter || {}), callback);
+    }
+    if (action === "updateOpBooking") {
+      return createResponse(updateOpBooking_(e.parameter || {}), callback);
+    }
+    if (action === "deleteOpBooking") {
+      return createResponse(deleteOpBooking_(e && e.parameter && e.parameter.row), callback);
     }
 
     // Aksi 5: BACA SEMUA DATA BOOKING (Default)
@@ -222,6 +432,22 @@ function doPost(e) {
         message: "Pengaturan tanggal buka/tutup berhasil disimpan tanpa notifikasi email.", 
         data: JSON.parse(dataStr) 
       })).setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.action === "getOpBookings") {
+      return ContentService.createTextOutput(JSON.stringify(readOpBookings_()))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.action === "addOpBooking") {
+      return ContentService.createTextOutput(JSON.stringify(addOpBooking_(data)))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.action === "updateOpBooking") {
+      return ContentService.createTextOutput(JSON.stringify(updateOpBooking_(data)))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.action === "deleteOpBooking") {
+      return ContentService.createTextOutput(JSON.stringify(deleteOpBooking_(data.row)))
+        .setMimeType(ContentService.MimeType.JSON);
     }
 
     // =========================================================================
