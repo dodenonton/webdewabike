@@ -1275,6 +1275,30 @@
       padding: 0.65rem 0.65rem;
       vertical-align: top;
     }
+    .op-table tbody tr {
+      transition: filter 0.15s ease, box-shadow 0.15s ease;
+    }
+    .op-table tbody tr:hover {
+      background-color: inherit !important;
+      filter: brightness(0.985) saturate(1.06);
+      box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(4px);
+    }
+    .op-sticky-col {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background-color: inherit;
+      box-shadow: 3px 0 8px -2px rgba(15, 23, 42, 0.12);
+    }
+    .op-table thead th.op-sticky-col {
+      z-index: 5;
+      background-color: #f8fafc;
+    }
+    .op-table tfoot td.op-sticky-col {
+      z-index: 4;
+      background-color: #f1f5f9;
+    }
     .op-table tfoot td {
       background: #f1f5f9;
       font-weight: 800;
@@ -1293,6 +1317,20 @@
       white-space: pre-wrap;
       font-size: 0.78rem;
       line-height: 1.4;
+    }
+    .op-detail-color-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 0.45rem;
+      padding-top: 0.35rem;
+      border-top: 1px dashed rgba(15, 23, 42, 0.14);
+    }
+    .op-detail-color-bar span {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-right: 2px;
     }
     .btn-op-sync {
       background: #f0fdf4;
@@ -1662,8 +1700,8 @@
           <table class="bookings-table op-table">
             <thead>
               <tr>
+                <th class="op-sticky-col" style="min-width: 118px;">Date of the tour</th>
                 <th style="width: 72px; text-align: center;">Warna</th>
-                <th style="min-width: 115px;">Date of the tour</th>
                 <th style="min-width: 105px;">Timestamp</th>
                 <th>Booking Address</th>
                 <th>Phone / WA</th>
@@ -1674,8 +1712,9 @@
                 <th>Jenis Tur</th>
                 <th style="min-width: 260px;">Detail</th>
                 <th>Guide</th>
-                <th>Makan siang</th>
                 <th>Driver</th>
+                <th>Makan siang</th>
+                <th>Makan siang (Biaya)</th>
                 <th>Guide (Biaya)</th>
                 <th>Bensin</th>
                 <th>Lain - lain</th>
@@ -1687,7 +1726,7 @@
             </thead>
             <tbody id="opTableBody">
               <tr>
-                <td colspan="21">
+                <td colspan="22">
                   <div class="state-box">
                     <i class="fas fa-circle-notch spinner"></i>
                     <p>Memuat jadwal operasional dari Google Spreadsheet...</p>
@@ -1697,9 +1736,10 @@
             </tbody>
             <tfoot id="opTableFoot" style="display: none;">
               <tr>
-                <td colspan="12" style="text-align: right;">TOTAL AKHIR (FILTER AKTIF):</td>
-                <td class="op-money" id="opSumMakan">Rp 0</td>
-                <td class="op-money" id="opSumDriver">Rp 0</td>
+                <td class="op-sticky-col" style="font-weight: 800;">TOTAL AKHIR</td>
+                <td colspan="12" style="text-align: right;">(FILTER AKTIF):</td>
+                <td class="op-money" id="opSumMakanPax">0 org</td>
+                <td class="op-money" id="opSumMakanBiaya">Rp 0</td>
                 <td class="op-money" id="opSumGuideBiaya">Rp 0</td>
                 <td class="op-money" id="opSumBensin">Rp 0</td>
                 <td class="op-money" id="opSumLain">Rp 0</td>
@@ -2054,24 +2094,24 @@
           </div>
 
           <hr style="margin: 1rem 0; border: 0; border-top: 1.5px solid var(--border);">
-          <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;"><i class="fas fa-coins" style="color: var(--accent);"></i> Operasional &amp; Keuangan (Angka dalam Rupiah)</h4>
+          <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;"><i class="fas fa-coins" style="color: var(--accent);"></i> Operasional &amp; Keuangan</h4>
 
           <div class="op-form-grid">
             <div class="form-group">
-              <label for="opEditGuide">Guide (Nama)</label>
+              <label for="opEditGuide">Guide (Nama Saja)</label>
               <input type="text" id="opEditGuide" placeholder="Nama Guide">
             </div>
             <div class="form-group">
-              <label for="opEditPendapatan">Pendapatan (Rp)</label>
-              <input type="number" id="opEditPendapatan" class="op-calc-field" placeholder="0" min="0" step="1000">
+              <label for="opEditDriver">Driver (Nama Saja)</label>
+              <input type="text" id="opEditDriver" placeholder="Nama Driver">
             </div>
             <div class="form-group">
-              <label for="opEditMakan">Makan siang (Rp)</label>
-              <input type="number" id="opEditMakan" class="op-calc-field" placeholder="0" min="0" step="1000">
+              <label for="opEditMakan">Makan siang (Jumlah Tamu)</label>
+              <input type="text" id="opEditMakan" placeholder="Contoh: 4 atau 4 pax">
             </div>
             <div class="form-group">
-              <label for="opEditDriver">Driver (Rp)</label>
-              <input type="number" id="opEditDriver" class="op-calc-field" placeholder="0" min="0" step="1000">
+              <label for="opEditMakanBiaya">Makan siang (Biaya Rp)</label>
+              <input type="number" id="opEditMakanBiaya" class="op-calc-field" placeholder="0" min="0" step="1000">
             </div>
             <div class="form-group">
               <label for="opEditGuideBiaya">Guide (Biaya Rp)</label>
@@ -2084,6 +2124,10 @@
             <div class="form-group">
               <label for="opEditLain">Lain - lain (Rp)</label>
               <input type="number" id="opEditLain" class="op-calc-field" placeholder="0" min="0" step="1000">
+            </div>
+            <div class="form-group">
+              <label for="opEditPendapatan">Pendapatan (Rp)</label>
+              <input type="number" id="opEditPendapatan" class="op-calc-field" placeholder="0" min="0" step="1000">
             </div>
             <div class="form-group">
               <label for="opEditTotal">Total Bersih (Otomatis)</label>
@@ -2107,6 +2151,19 @@
                 <button type="button" class="op-swatch" data-color="#fce7f3" style="background: #fce7f3;" title="Merah Muda"></button>
                 <button type="button" class="op-swatch" data-color="#f3e8ff" style="background: #f3e8ff;" title="Ungu Muda"></button>
                 <input type="color" id="opEditColor" class="op-color-input" value="#ffffff" title="Pilih Warna Custom">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="opEditDetailColor">Warna Kolom Detail</label>
+              <div class="op-color-swatches" id="opEditDetailColorSwatches">
+                <button type="button" class="op-swatch" data-color="#ffffff" style="background: #ffffff;" title="Ikut Warna Baris"></button>
+                <button type="button" class="op-swatch" data-color="#dcfce7" style="background: #dcfce7;" title="Hijau Muda"></button>
+                <button type="button" class="op-swatch" data-color="#fef9c3" style="background: #fef9c3;" title="Kuning Muda"></button>
+                <button type="button" class="op-swatch" data-color="#ffedd5" style="background: #ffedd5;" title="Oranye Muda"></button>
+                <button type="button" class="op-swatch" data-color="#dbeafe" style="background: #dbeafe;" title="Biru Muda"></button>
+                <button type="button" class="op-swatch" data-color="#fce7f3" style="background: #fce7f3;" title="Merah Muda"></button>
+                <button type="button" class="op-swatch" data-color="#f3e8ff" style="background: #f3e8ff;" title="Ungu Muda"></button>
+                <input type="color" id="opEditDetailColor" class="op-color-input" value="#ffffff" title="Pilih Warna Detail Custom">
               </div>
             </div>
           </div>
@@ -3257,8 +3314,10 @@ Message / Special Requests: ${specialRequests}`;
       });
     }
 
+    const opEditDetailColor = document.getElementById('opEditDetailColor');
     setupColorSwatches('opAddColorSwatches', opInputColor);
     setupColorSwatches('opEditColorSwatches', opEditColor);
+    setupColorSwatches('opEditDetailColorSwatches', opEditDetailColor);
 
     // Quick Booking Address chips
     document.querySelectorAll('.op-chip[data-addr]').forEach(chip => {
@@ -3422,12 +3481,12 @@ Message / Special Requests: ${specialRequests}`;
         opBookingCounter.textContent = `Menampilkan ${filtered.length} dari ${allOpBookings.length} jadwal`;
       }
 
-      let sumMakan = 0, sumDriver = 0, sumGuideBiaya = 0, sumBensin = 0, sumLain = 0, sumPendapatan = 0, sumTotal = 0;
+      let sumMakanPax = 0, sumMakanBiaya = 0, sumGuideBiaya = 0, sumBensin = 0, sumLain = 0, sumPendapatan = 0, sumTotal = 0;
 
       if (filtered.length === 0) {
         opTableBody.innerHTML = `
           <tr>
-            <td colspan="21">
+            <td colspan="22">
               <div class="state-box">
                 <i class="fas fa-calendar-check"></i>
                 <p>Tidak ada jadwal operasional yang cocok dengan filter saat ini.</p>
@@ -3451,16 +3510,17 @@ Message / Special Requests: ${specialRequests}`;
           ? '<div class="op-badge-today">HARI INI</div>'
           : (isTomorrow ? '<div class="op-badge-tomorrow">BESOK</div>' : '');
 
-        const makan = parseRupiahNum(item.makanSiang);
-        const driver = parseRupiahNum(item.driver);
+        const makanPaxMatch = String(item.makanSiang || '').match(/\d+/);
+        const makanPax = makanPaxMatch ? parseInt(makanPaxMatch[0], 10) : 0;
+        const makanBiaya = parseRupiahNum(item.makanSiangBiaya);
         const guideB = parseRupiahNum(item.guideBiaya);
         const bensin = parseRupiahNum(item.bensin);
         const lain = parseRupiahNum(item.lainLain);
         const pendapatan = parseRupiahNum(item.pendapatan);
-        const computedTotal = item.total !== '' ? parseRupiahNum(item.total) : (pendapatan - (makan + driver + guideB + bensin + lain));
+        const computedTotal = item.total !== '' ? parseRupiahNum(item.total) : (pendapatan - (makanBiaya + guideB + bensin + lain));
 
-        sumMakan += makan;
-        sumDriver += driver;
+        sumMakanPax += makanPax;
+        sumMakanBiaya += makanBiaya;
         sumGuideBiaya += guideB;
         sumBensin += bensin;
         sumLain += lain;
@@ -3470,22 +3530,29 @@ Message / Special Requests: ${specialRequests}`;
         const rowBg = (item.rowColor && /^#[0-9A-Fa-f]{6}$/.test(item.rowColor) && item.rowColor.toLowerCase() !== '#ffffff')
           ? item.rowColor
           : '#ffffff';
+        const detailBg = (item.detailColor && /^#[0-9A-Fa-f]{6}$/.test(item.detailColor) && item.detailColor.toLowerCase() !== '#ffffff')
+          ? item.detailColor
+          : '';
 
         const swatchButtons = miniColors.map(c =>
           `<button type="button" class="op-mini-swatch" style="background:${c};" title="Ganti warna baris" onclick="updateOpRowColor(${item.row}, '${c}')"></button>`
         ).join('');
 
+        const detailSwatchButtons = miniColors.map(c =>
+          `<button type="button" class="op-mini-swatch" style="background:${c};" title="Ganti warna Detail" onclick="updateOpDetailColor(${item.row}, '${c}')"></button>`
+        ).join('');
+
         return `
           <tr style="background-color: ${escapeHtml(rowBg)};">
+            <td class="op-sticky-col">
+              <strong>${escapeHtml(item.tourDate || '-')}</strong>
+              ${dateBadge}
+            </td>
             <td>
               <div class="op-row-color-cell">
                 <div class="op-row-mini-swatches">${swatchButtons}</div>
-                <input type="color" class="op-color-input" value="${escapeHtml(rowBg)}" title="Pilih warna bebas" onchange="updateOpRowColor(${item.row}, this.value)">
+                <input type="color" class="op-color-input" value="${escapeHtml(rowBg)}" title="Pilih warna baris bebas" onchange="updateOpRowColor(${item.row}, this.value)">
               </div>
-            </td>
-            <td>
-              <strong>${escapeHtml(item.tourDate || '-')}</strong>
-              ${dateBadge}
             </td>
             <td style="font-size: 0.74rem; color: var(--text-muted);">${escapeHtml(item.timestamp || '-')}</td>
             <td>${escapeHtml(item.bookingAddress || '-')}</td>
@@ -3495,16 +3562,24 @@ Message / Special Requests: ${specialRequests}`;
             <td>${escapeHtml(item.tourPackage || '-')}</td>
             <td style="white-space: nowrap;">${escapeHtml(item.jam || '-')}</td>
             <td><span class="badge badge-direct">${escapeHtml(item.jenisTur || '-')}</span></td>
-            <td><div class="op-detail-cell">${escapeHtml(item.detail || '-')}</div></td>
+            <td style="${detailBg ? `background-color: ${escapeHtml(detailBg)};` : ''}">
+              <div class="op-detail-cell">${escapeHtml(item.detail || '-')}</div>
+              <div class="op-detail-color-bar">
+                <span>Warna Detail:</span>
+                ${detailSwatchButtons}
+                <input type="color" class="op-color-input" style="width: 22px; height: 18px;" value="${escapeHtml(detailBg || rowBg)}" title="Pilih warna Detail bebas" onchange="updateOpDetailColor(${item.row}, this.value)">
+              </div>
+            </td>
             <td>${escapeHtml(item.guide || '-')}</td>
-            <td class="op-money">${formatRupiah(makan)}</td>
-            <td class="op-money">${formatRupiah(driver)}</td>
+            <td>${escapeHtml(item.driver || '-')}</td>
+            <td style="white-space: nowrap; font-weight: 600;">${escapeHtml(item.makanSiang || '-')}</td>
+            <td class="op-money">${formatRupiah(makanBiaya)}</td>
             <td class="op-money">${formatRupiah(guideB)}</td>
             <td class="op-money">${formatRupiah(bensin)}</td>
             <td class="op-money">${formatRupiah(lain)}</td>
             <td>${escapeHtml(item.ket || '-')}</td>
             <td class="op-money">${formatRupiah(pendapatan)}</td>
-            <td class="op-money" style="color: ${computedTotal < 0 ? 'var(--danger)' : 'var(--primary)'};">${pendapatan || makan || driver || guideB || bensin || lain || item.total !== '' ? formatRupiahAlways(computedTotal) : '-'}</td>
+            <td class="op-money" style="color: ${computedTotal < 0 ? 'var(--danger)' : 'var(--primary)'};">${pendapatan || makanBiaya || guideB || bensin || lain || item.total !== '' ? formatRupiahAlways(computedTotal) : '-'}</td>
             <td style="text-align: right;">
               <div class="action-group" style="justify-content: flex-end;">
                 <button type="button" class="btn-action btn-action-copy" onclick="copyOpBookingDetail(${item.row}, this)" title="Salin Detail Jadwal">
@@ -3524,8 +3599,8 @@ Message / Special Requests: ${specialRequests}`;
 
       if (opTableFoot) {
         opTableFoot.style.display = 'table-footer-group';
-        document.getElementById('opSumMakan').textContent = formatRupiahAlways(sumMakan);
-        document.getElementById('opSumDriver').textContent = formatRupiahAlways(sumDriver);
+        document.getElementById('opSumMakanPax').textContent = sumMakanPax + ' org';
+        document.getElementById('opSumMakanBiaya').textContent = formatRupiahAlways(sumMakanBiaya);
         document.getElementById('opSumGuideBiaya').textContent = formatRupiahAlways(sumGuideBiaya);
         document.getElementById('opSumBensin').textContent = formatRupiahAlways(sumBensin);
         document.getElementById('opSumLain').textContent = formatRupiahAlways(sumLain);
@@ -3623,6 +3698,30 @@ Message / Special Requests: ${specialRequests}`;
       }
     };
 
+    // Update Detail Cell Color directly from table
+    window.updateOpDetailColor = async function(rowNumber, hexColor) {
+      const item = allOpBookings.find(x => x.row === rowNumber);
+      if (item) {
+        item.detailColor = hexColor;
+        renderOpTable();
+      }
+      try {
+        const callbackName = 'cb_op_dcolor_' + Date.now();
+        const params = new URLSearchParams({
+          action: 'updateOpBooking',
+          noEmail: 'true',
+          row: rowNumber,
+          detailColor: hexColor
+        });
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?${params.toString()}`, callbackName);
+        if (res && res.status === 'success') {
+          showToast('Warna kolom Detail berhasil disimpan!');
+        }
+      } catch (err) {
+        showToast('Warna Detail diubah lokal (gagal sinkron ke Sheets).', 'warning');
+      }
+    };
+
     // Copy Operational Booking Detail
     window.copyOpBookingDetail = async function(rowNumber, btnEl) {
       const item = allOpBookings.find(x => x.row === rowNumber);
@@ -3636,6 +3735,8 @@ Message / Special Requests: ${specialRequests}`;
         `Phone / WA: ${item.phone || '-'}`,
         `Tour Package: ${item.tourPackage || '-'} (${item.jenisTur || '-'})`,
         item.guide ? `Guide: ${item.guide}` : null,
+        item.driver ? `Driver: ${item.driver}` : null,
+        item.makanSiang ? `Makan siang: ${item.makanSiang}` : null,
         item.detail ? `\nDetail:\n${item.detail}` : null
       ].filter(Boolean).join('\n');
 
@@ -3653,15 +3754,14 @@ Message / Special Requests: ${specialRequests}`;
       }
     };
 
-    // Auto-calculate Total in Edit Modal
+    // Auto-calculate Total in Edit Modal (Guide & Driver hanya nama, Makan siang hanya jumlah tamu)
     function recalcOpEditTotal() {
       const pend = parseRupiahNum(document.getElementById('opEditPendapatan').value);
-      const makan = parseRupiahNum(document.getElementById('opEditMakan').value);
-      const driver = parseRupiahNum(document.getElementById('opEditDriver').value);
+      const makanBiaya = parseRupiahNum(document.getElementById('opEditMakanBiaya').value);
       const guideB = parseRupiahNum(document.getElementById('opEditGuideBiaya').value);
       const bensin = parseRupiahNum(document.getElementById('opEditBensin').value);
       const lain = parseRupiahNum(document.getElementById('opEditLain').value);
-      document.getElementById('opEditTotal').value = pend - (makan + driver + guideB + bensin + lain);
+      document.getElementById('opEditTotal').value = pend - (makanBiaya + guideB + bensin + lain);
     }
 
     document.querySelectorAll('.op-calc-field').forEach(inp => {
@@ -3684,9 +3784,10 @@ Message / Special Requests: ${specialRequests}`;
       document.getElementById('opEditJenisTur').value = item.jenisTur || 'Private';
       document.getElementById('opEditDetail').value = item.detail || '';
       document.getElementById('opEditGuide').value = item.guide || '';
+      document.getElementById('opEditDriver').value = item.driver || '';
+      document.getElementById('opEditMakan').value = item.makanSiang || '';
+      document.getElementById('opEditMakanBiaya').value = parseRupiahNum(item.makanSiangBiaya) || '';
       document.getElementById('opEditPendapatan').value = parseRupiahNum(item.pendapatan) || '';
-      document.getElementById('opEditMakan').value = parseRupiahNum(item.makanSiang) || '';
-      document.getElementById('opEditDriver').value = parseRupiahNum(item.driver) || '';
       document.getElementById('opEditGuideBiaya').value = parseRupiahNum(item.guideBiaya) || '';
       document.getElementById('opEditBensin').value = parseRupiahNum(item.bensin) || '';
       document.getElementById('opEditLain').value = parseRupiahNum(item.lainLain) || '';
@@ -3700,6 +3801,11 @@ Message / Special Requests: ${specialRequests}`;
       opEditColor.value = c;
       document.querySelectorAll('#opEditColorSwatches .op-swatch').forEach(s => {
         s.classList.toggle('selected', s.dataset.color.toLowerCase() === c.toLowerCase());
+      });
+      const dc = (item.detailColor && /^#[0-9A-Fa-f]{6}$/.test(item.detailColor)) ? item.detailColor : '#ffffff';
+      if (opEditDetailColor) opEditDetailColor.value = dc;
+      document.querySelectorAll('#opEditDetailColorSwatches .op-swatch').forEach(s => {
+        s.classList.toggle('selected', s.dataset.color.toLowerCase() === dc.toLowerCase());
       });
       opEditModal.classList.add('active');
     };
@@ -3728,15 +3834,17 @@ Message / Special Requests: ${specialRequests}`;
           jenisTur: document.getElementById('opEditJenisTur').value,
           detail: document.getElementById('opEditDetail').value.trim(),
           guide: document.getElementById('opEditGuide').value.trim(),
-          pendapatan: document.getElementById('opEditPendapatan').value.trim(),
-          makanSiang: document.getElementById('opEditMakan').value.trim(),
           driver: document.getElementById('opEditDriver').value.trim(),
+          makanSiang: document.getElementById('opEditMakan').value.trim(),
+          makanSiangBiaya: document.getElementById('opEditMakanBiaya').value.trim(),
+          pendapatan: document.getElementById('opEditPendapatan').value.trim(),
           guideBiaya: document.getElementById('opEditGuideBiaya').value.trim(),
           bensin: document.getElementById('opEditBensin').value.trim(),
           lainLain: document.getElementById('opEditLain').value.trim(),
           total: document.getElementById('opEditTotal').value.trim(),
           ket: document.getElementById('opEditKet').value.trim(),
-          rowColor: opEditColor.value
+          rowColor: opEditColor.value,
+          detailColor: opEditDetailColor ? opEditDetailColor.value : '#ffffff'
         };
 
         btnSaveOpEdit.disabled = true;

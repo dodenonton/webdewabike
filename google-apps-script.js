@@ -68,7 +68,9 @@ var OP_HEADERS = [
   "Pendapatan",
   "Total",
   "Total Akhir Bulan",
-  "Row Color"
+  "Row Color",
+  "Detail Color",
+  "Makan siang (Biaya)"
 ];
 
 function getOperationalSheet_() {
@@ -107,12 +109,18 @@ function readOpBookings_() {
   if (lastRow >= 2) {
     var values = opSheet.getRange(2, 1, lastRow - 1, OP_HEADERS.length).getValues();
     var bgs = opSheet.getRange(2, 1, lastRow - 1, 1).getBackgrounds();
+    var detailBgs = opSheet.getRange(2, 10, lastRow - 1, 1).getBackgrounds();
     for (var i = 0; i < values.length; i++) {
       var r = values[i];
       var cellBg = (bgs[i] && bgs[i][0]) ? String(bgs[i][0]).toLowerCase() : "";
       var rowColor = String(r[20] || "").trim();
       if (!rowColor && cellBg && cellBg !== "#ffffff") {
         rowColor = cellBg;
+      }
+      var dBg = (detailBgs[i] && detailBgs[i][0]) ? String(detailBgs[i][0]).toLowerCase() : "";
+      var detailColor = String(r[21] || "").trim();
+      if (!detailColor && dBg && dBg !== "#ffffff" && dBg !== rowColor.toLowerCase()) {
+        detailColor = dBg;
       }
       rows.push({
         row: i + 2,
@@ -136,7 +144,9 @@ function readOpBookings_() {
         pendapatan: String(r[17] || ""),
         total: String(r[18] || ""),
         totalAkhirBulan: String(r[19] || ""),
-        rowColor: rowColor
+        rowColor: rowColor,
+        detailColor: detailColor,
+        makanSiangBiaya: String(r[22] || "")
       });
     }
   }
@@ -159,6 +169,19 @@ function applyOpRowColor_(opSheet, rowNum, hexColor) {
     }
   } catch (err) {
     Logger.log("Color apply error: " + err);
+  }
+}
+
+function applyOpDetailColor_(opSheet, rowNum, hexColor) {
+  try {
+    var clean = String(hexColor || "").trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(clean) && clean.toLowerCase() !== "#ffffff") {
+      opSheet.getRange(rowNum, 10).setBackground(clean);
+    } else {
+      opSheet.getRange(rowNum, 10).setBackground(null);
+    }
+  } catch (err) {
+    Logger.log("Detail color apply error: " + err);
   }
 }
 
@@ -186,12 +209,17 @@ function addOpBooking_(p) {
     p.pendapatan || "",
     p.total || "",
     p.totalAkhirBulan || "",
-    p.rowColor || ""
+    p.rowColor || "",
+    p.detailColor || "",
+    p.makanSiangBiaya || ""
   ];
   opSheet.appendRow(rowVals);
   var newRow = opSheet.getLastRow();
   if (p.rowColor) {
     applyOpRowColor_(opSheet, newRow, p.rowColor);
+  }
+  if (p.detailColor) {
+    applyOpDetailColor_(opSheet, newRow, p.detailColor);
   }
   return { status: "success", message: "Booking operasional berhasil ditambahkan.", row: newRow, timestamp: ts };
 }
@@ -222,7 +250,9 @@ function updateOpBooking_(p) {
     ["pendapatan", 18],
     ["total", 19],
     ["totalAkhirBulan", 20],
-    ["rowColor", 21]
+    ["rowColor", 21],
+    ["detailColor", 22],
+    ["makanSiangBiaya", 23]
   ];
   for (var i = 0; i < fieldMap.length; i++) {
     var key = fieldMap[i][0];
@@ -233,6 +263,9 @@ function updateOpBooking_(p) {
   }
   if (p.rowColor !== undefined) {
     applyOpRowColor_(opSheet, row, p.rowColor);
+  }
+  if (p.detailColor !== undefined) {
+    applyOpDetailColor_(opSheet, row, p.detailColor);
   }
   return { status: "success", message: "Baris operasional #" + row + " berhasil diperbarui.", row: row };
 }
