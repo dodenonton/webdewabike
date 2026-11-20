@@ -106,8 +106,14 @@ function readOpBookings_() {
   var rows = [];
   if (lastRow >= 2) {
     var values = opSheet.getRange(2, 1, lastRow - 1, OP_HEADERS.length).getValues();
+    var bgs = opSheet.getRange(2, 1, lastRow - 1, 1).getBackgrounds();
     for (var i = 0; i < values.length; i++) {
       var r = values[i];
+      var cellBg = (bgs[i] && bgs[i][0]) ? String(bgs[i][0]).toLowerCase() : "";
+      var rowColor = String(r[20] || "").trim();
+      if (!rowColor && cellBg && cellBg !== "#ffffff") {
+        rowColor = cellBg;
+      }
       rows.push({
         row: i + 2,
         tourDate: normalizeOpDateCell_(r[0]),
@@ -130,7 +136,7 @@ function readOpBookings_() {
         pendapatan: String(r[17] || ""),
         total: String(r[18] || ""),
         totalAkhirBulan: String(r[19] || ""),
-        rowColor: String(r[20] || "")
+        rowColor: rowColor
       });
     }
   }
