@@ -247,6 +247,39 @@ function deleteOpBooking_(rowParam) {
   return { status: "success", message: "Baris operasional #" + row + " berhasil dihapus.", row: row };
 }
 
+function bulkImportOpBookings_(rowsInput, clearExisting) {
+  var opSheet = getOperationalSheet_();
+  if (clearExisting === true) {
+    var last = opSheet.getLastRow();
+    if (last >= 2) {
+      opSheet.deleteRows(2, last - 1);
+    }
+  }
+  if (!Array.isArray(rowsInput) || rowsInput.length === 0) {
+    return { status: "success", imported: 0, totalRows: Math.max(0, opSheet.getLastRow() - 1) };
+  }
+
+  var batch = [];
+  for (var i = 0; i < rowsInput.length; i++) {
+    var r = rowsInput[i] || [];
+    var out = [];
+    for (var c = 0; c < OP_HEADERS.length; c++) {
+      out.push(c < r.length && r[c] !== null && r[c] !== undefined ? r[c] : "");
+    }
+    batch.push(out);
+  }
+
+  var startRow = opSheet.getLastRow() + 1;
+  opSheet.getRange(startRow, 1, batch.length, OP_HEADERS.length).setValues(batch);
+
+  return {
+    status: "success",
+    imported: batch.length,
+    startRow: startRow,
+    totalRows: opSheet.getLastRow() - 1
+  };
+}
+
 /**
  * FUNGSI IMPORT SEKALI JALAN (Jalankan 1x dari Editor Apps Script)
  * Mengambil seluruh data & warna baris dari Google Sheet lama "Dewa Bike Booking"
@@ -506,6 +539,10 @@ function doPost(e) {
     }
     if (data.action === "deleteOpBooking") {
       return ContentService.createTextOutput(JSON.stringify(deleteOpBooking_(data.row)))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.action === "bulkImportOpBookings") {
+      return ContentService.createTextOutput(JSON.stringify(bulkImportOpBookings_(data.rows, data.clearExisting === true)))
         .setMimeType(ContentService.MimeType.JSON);
     }
 
