@@ -1363,6 +1363,222 @@
       background: var(--primary);
       color: #ffffff;
     }
+
+    /* =====================================================================
+     * REDESIGN 2026: Lebih menarik, jelas & 100% responsif di HP
+     * ===================================================================== */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-x: clip;
+    }
+    .op-swipe-hint {
+      display: none;
+      padding: 0.45rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #92400e;
+      background: #fffbeb;
+      border-bottom: 1px solid #fde68a;
+    }
+    @media (max-width: 640px) {
+      .op-swipe-hint { display: block; }
+    }
+    body {
+      background: linear-gradient(180deg, #eef6f1 0px, #f8fafc 320px) no-repeat, #f8fafc;
+    }
+    .admin-main, .admin-main > div, section, .bookings-container, .toolbar-card {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    /* Header */
+    .admin-navbar {
+      background: linear-gradient(135deg, #0c4329 0%, #105b38 60%, #15803d 100%);
+      border-bottom: none;
+      box-shadow: 0 6px 20px rgba(12, 67, 41, 0.25);
+    }
+    .brand-logo-badge {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    }
+    .brand-text h1 { color: #ffffff; }
+    .brand-text p { color: rgba(255, 255, 255, 0.8); }
+    .admin-navbar .btn-outline {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+    .admin-navbar .btn-outline:hover { background: rgba(255, 255, 255, 0.22); }
+    .admin-navbar .btn-sheets {
+      background: #ffffff;
+      color: #0b8043;
+    }
+    .admin-navbar .btn-sheets:hover { background: #f0fdf4; }
+
+    /* Security banner lebih ringkas */
+    .security-banner {
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      border-left: 4px solid #3b82f6;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Tabs gaya "pill" yang jelas */
+    .admin-tabs {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.35rem;
+      gap: 0.35rem;
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .admin-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex: 1 0 auto;
+      justify-content: center;
+      white-space: nowrap;
+      border-radius: 10px;
+      padding: 0.7rem 1.1rem;
+      font-size: 0.9rem;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 91, 56, 0.3);
+    }
+    .tab-btn.active::after { display: none; }
+    .tab-btn.active .tab-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    /* Kartu statistik */
+    .stat-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .stat-card:hover { box-shadow: var(--shadow-md); }
+    .stat-icon { border-radius: 12px; }
+
+    /* Toolbar & tabel */
+    .toolbar-card, .bookings-container, .op-form-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .search-box {
+      flex: 1 1 220px;
+      min-width: 0;
+    }
+    .table-header-title {
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      background: #ffffff;
+    }
+    .op-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .op-table thead th.op-sticky-col { z-index: 6; }
+    .op-table td.op-sticky-col strong { font-size: 0.86rem; }
+
+    /* ===================== TABLET ===================== */
+    @media (max-width: 900px) {
+      .nav-container { padding: 0.75rem 1rem; }
+      .admin-main { padding: 0 0.85rem; margin-top: 1rem; }
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+    }
+
+    /* ===================== HP / MOBILE ===================== */
+    @media (max-width: 640px) {
+      .nav-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+      }
+      .brand-text h1 { font-size: 1rem; }
+      .brand-logo-badge { width: 38px; height: 38px; font-size: 1.05rem; }
+      .nav-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.45rem;
+      }
+      .nav-actions .btn {
+        justify-content: center;
+        padding: 0.55rem 0.4rem;
+        font-size: 0.74rem;
+        gap: 0.3rem;
+        min-width: 0;
+      }
+      .nav-actions .btn span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #btnOpenSheet span { font-size: 0; }
+      #btnOpenSheet span::after { content: 'Sheets'; font-size: 0.74rem; }
+
+      .security-banner { display: none; }
+
+      .admin-tabs { margin-bottom: 1rem; }
+      .tab-btn { padding: 0.6rem 0.85rem; font-size: 0.82rem; gap: 0.4rem; }
+
+      .stat-card { padding: 0.8rem; gap: 0.6rem; }
+      .stat-icon { width: 38px; height: 38px; font-size: 1rem; }
+      .stat-info .stat-num { font-size: 1.25rem; }
+      #opStatNetTotal { font-size: 1rem !important; }
+      .stat-info .stat-label { font-size: 0.72rem; }
+
+      .toolbar-card { padding: 0.85rem; gap: 0.65rem; }
+      .toolbar-card > div { width: 100%; }
+      .op-filter-pills {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+      }
+      .op-filter-pills::-webkit-scrollbar { display: none; }
+      .op-pill-btn { flex: 0 0 auto; padding: 0.42rem 0.75rem; font-size: 0.78rem; }
+      #opFilterMonth { flex: 1 1 140px; min-width: 0; }
+      #btnToggleOlderYears, #btnClearOpMonth { flex: 1 1 auto; justify-content: center; }
+      #opSortOrder, .select-filter { width: 100%; max-width: 100%; }
+      .search-box { flex: 1 1 100%; }
+      .search-box input { font-size: 16px; }
+
+      .table-header-title { padding: 0.85rem 1rem; }
+      .table-header-title h2 { font-size: 0.95rem; }
+      .total-counter-badge { font-size: 0.72rem; }
+
+      .table-responsive { max-height: 72vh; overflow: auto; }
+      .op-table th, .op-table td { font-size: 0.74rem; padding: 0.5rem; }
+      .op-table th.op-sticky-col, .op-table td.op-sticky-col {
+        min-width: 92px !important;
+        max-width: 92px;
+      }
+      .op-detail-cell { min-width: 200px; max-width: 240px; font-size: 0.72rem; }
+
+      .op-pagination { padding: 0.75rem; flex-direction: column; align-items: stretch; }
+      .op-pagination-controls { justify-content: space-between; }
+      .op-pagination-controls .btn { flex: 1 1 auto; justify-content: center; }
+
+      .op-form-body { padding: 1rem; }
+      .op-form-grid { grid-template-columns: 1fr; }
+      .form-group input, .form-group textarea, .form-group select { font-size: 16px; }
+
+      .modal-content-card { width: 96vw !important; max-width: 96vw !important; }
+      .toast-container { left: 12px; right: 12px; bottom: 12px; }
+      .detail-box { min-width: 0 !important; }
+    }
   </style>
 </head>
 <body>
@@ -1625,6 +1841,7 @@
           <span class="total-counter-badge" id="opBookingCounter">Memuat data...</span>
         </div>
 
+        <div class="op-swipe-hint"><i class="fas fa-hand-point-right"></i> Geser tabel ke kanan untuk melihat kolom lainnya</div>
         <div class="table-responsive">
           <table class="bookings-table op-table">
             <thead>
