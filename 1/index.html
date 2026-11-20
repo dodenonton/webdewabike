@@ -1275,8 +1275,19 @@
       padding: 0.65rem 0.65rem;
       vertical-align: top;
     }
-    .op-table tbody tr:hover {
+    table.bookings-table.op-table tbody tr:hover {
       background-color: var(--row-bg, #ffffff) !important;
+    }
+    table.bookings-table.op-table tbody tr:hover td {
+      background-color: transparent !important;
+      box-shadow: inset 0 2px 0 #0f172a, inset 0 -2px 0 #0f172a;
+    }
+    table.bookings-table.op-table tbody tr:hover td.op-sticky-col {
+      background-color: var(--row-bg, #ffffff) !important;
+      box-shadow: inset 0 2px 0 #0f172a, inset 0 -2px 0 #0f172a, 3px 0 8px -2px rgba(15, 23, 42, 0.12);
+    }
+    table.bookings-table.op-table tbody tr:hover td[data-detail-bg="true"] {
+      background-color: var(--detail-bg) !important;
     }
     .op-pagination {
       display: flex;
@@ -3640,7 +3651,7 @@ Message / Special Requests: ${specialRequests}`;
             <td>${escapeHtml(item.tourPackage || '-')}</td>
             <td style="white-space: nowrap;">${escapeHtml(item.jam || '-')}</td>
             <td><span class="badge badge-direct">${escapeHtml(item.jenisTur || '-')}</span></td>
-            <td style="${detailBg ? `background-color: ${escapeHtml(detailBg)};` : ''}">
+            <td ${detailBg ? `data-detail-bg="true" style="--detail-bg: ${escapeHtml(detailBg)}; background-color: var(--detail-bg);"` : ''}>
               <div class="op-detail-cell">${escapeHtml(item.detail || '-')}</div>
               <div class="op-detail-color-bar">
                 <span>Warna Detail:</span>
