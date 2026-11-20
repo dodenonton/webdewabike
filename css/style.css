@@ -8377,7 +8377,7 @@ body.header-hidden-state .tour-sidebar-card {
   margin-bottom: 0.5rem;
 }
 
-.blog-prose a {
+.blog-prose a:not(.btn) {
   color: #105b38;
   font-weight: 600;
   text-decoration: underline;
