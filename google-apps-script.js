@@ -280,6 +280,67 @@ function deleteOpBooking_(rowParam) {
   return { status: "success", message: "Baris operasional #" + row + " berhasil dihapus.", row: row };
 }
 
+function extractOpYear_(val) {
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    return parseInt(Utilities.formatDate(val, "Asia/Makassar", "yyyy"), 10);
+  }
+  var s = String(val || "").trim();
+  if (!s) return null;
+  var mDmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (mDmy) return parseInt(mDmy[3], 10);
+  var mYmd = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if (mYmd) return parseInt(mYmd[1], 10);
+  var mShort = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2})$/);
+  if (mShort) return 2000 + parseInt(mShort[3], 10);
+  return null;
+}
+
+function deleteOpBookingsBeforeYear_(cutoffYearParam) {
+  var cutoffYear = parseInt(cutoffYearParam, 10) || 2026;
+  if (cutoffYear < 2000 || cutoffYear > 2100) {
+    return { status: "error", message: "Tahun batas tidak valid: " + cutoffYearParam };
+  }
+  var opSheet = getOperationalSheet_();
+  var lastRow = opSheet.getLastRow();
+  if (lastRow < 2) {
+    return { status: "success", deletedCount: 0, cutoffYear: cutoffYear, remainingRows: 0 };
+  }
+  var dateCol = opSheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  var rowsToDelete = [];
+  for (var i = 0; i < dateCol.length; i++) {
+    var yr = extractOpYear_(dateCol[i][0]);
+    if (yr !== null && yr < cutoffYear) {
+      rowsToDelete.push(i + 2);
+    }
+  }
+  if (rowsToDelete.length === 0) {
+    return { status: "success", deletedCount: 0, cutoffYear: cutoffYear, remainingRows: lastRow - 1 };
+  }
+
+  // Delete contiguous blocks from bottom to top so row indices stay valid and execution is fast
+  var blockEnd = rowsToDelete[rowsToDelete.length - 1];
+  var blockStart = blockEnd;
+  for (var j = rowsToDelete.length - 2; j >= 0; j--) {
+    if (rowsToDelete[j] === blockStart - 1) {
+      blockStart = rowsToDelete[j];
+    } else {
+      opSheet.deleteRows(blockStart, blockEnd - blockStart + 1);
+      blockEnd = rowsToDelete[j];
+      blockStart = blockEnd;
+    }
+  }
+  opSheet.deleteRows(blockStart, blockEnd - blockStart + 1);
+
+  var remaining = Math.max(0, opSheet.getLastRow() - 1);
+  return {
+    status: "success",
+    deletedCount: rowsToDelete.length,
+    cutoffYear: cutoffYear,
+    remainingRows: remaining,
+    message: rowsToDelete.length + " baris sebelum tahun " + cutoffYear + " berhasil dihapus."
+  };
+}
+
 function bulkImportOpBookings_(rowsInput, clearExisting) {
   var opSheet = getOperationalSheet_();
   if (clearExisting === true) {
@@ -450,6 +511,9 @@ function doGet(e) {
     if (action === "deleteOpBooking") {
       return createResponse(deleteOpBooking_(e && e.parameter && e.parameter.row), callback);
     }
+    if (action === "deleteOpBookingsBeforeYear") {
+      return createResponse(deleteOpBookingsBeforeYear_(e && e.parameter && e.parameter.year), callback);
+    }
 
     // Aksi 5: BACA SEMUA DATA BOOKING (Default)
     var lastRow = sheet.getLastRow();
@@ -583,6 +647,10 @@ function doPost(e) {
     }
     if (data.action === "deleteOpBooking") {
       return ContentService.createTextOutput(JSON.stringify(deleteOpBooking_(data.row)))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.action === "deleteOpBookingsBeforeYear") {
+      return ContentService.createTextOutput(JSON.stringify(deleteOpBookingsBeforeYear_(data.year)))
         .setMimeType(ContentService.MimeType.JSON);
     }
     if (data.action === "bulkImportOpBookings") {

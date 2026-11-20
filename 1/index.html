@@ -568,11 +568,26 @@
       max-width: 600px;
       max-height: 90vh;
       overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
       box-shadow: var(--shadow-lg);
       transform: scale(0.95);
       transition: transform 0.25s ease;
       display: flex;
       flex-direction: column;
+    }
+    .modal-backdrop {
+      overscroll-behavior: contain;
+    }
+    html.modal-open {
+      overflow: hidden !important;
+    }
+    body.modal-open {
+      position: fixed !important;
+      left: 0;
+      right: 0;
+      width: 100%;
+      overflow: hidden !important;
     }
     .modal-backdrop.active .modal-content-card {
       transform: scale(1);
@@ -1239,7 +1254,7 @@
     }
     .op-row-mini-swatches {
       display: grid;
-      grid-template-columns: repeat(3, 14px);
+      grid-template-columns: repeat(4, 14px);
       gap: 3px;
     }
     .op-mini-swatch {
@@ -1290,6 +1305,147 @@
     table.bookings-table.op-table tbody tr:hover td[data-detail-bg="true"] {
       background-color: var(--detail-bg) !important;
     }
+    .op-inline-input {
+      width: 100%;
+      min-width: 118px;
+      padding: 0.36rem 0.5rem;
+      border: 1.5px solid rgba(15, 23, 42, 0.14);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.7);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--dark);
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+    .op-inline-input:hover {
+      border-color: rgba(15, 23, 42, 0.35);
+      background: #ffffff;
+    }
+    .op-inline-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+    }
+    .op-inline-input-makan {
+      min-width: 74px;
+      text-align: center;
+    }
+    .op-inline-input.is-saving {
+      border-color: #d97706;
+      background: #fffbeb;
+      opacity: 0.85;
+    }
+    .op-inline-input.is-saved {
+      border-color: #16a34a;
+      background: #f0fdf4;
+    }
+    .op-inline-input.is-error {
+      border-color: var(--danger);
+      background: #fef2f2;
+    }
+    .op-inline-textarea {
+      min-width: 132px;
+      min-height: 32px;
+      resize: none;
+      overflow: hidden;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.38;
+      display: block;
+    }
+    .op-suggest-popup {
+      position: fixed;
+      z-index: 3000;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.16);
+      max-height: 190px;
+      overflow-y: auto;
+      padding: 0.25rem;
+      min-width: 150px;
+    }
+    .op-suggest-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      padding: 0.42rem 0.6rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dark);
+      cursor: pointer;
+    }
+    .op-suggest-item:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+    .op-jenis-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.42rem;
+      padding: 0.28rem 0.65rem;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1.5px solid #cbd5e1;
+      background: #f1f5f9;
+      color: #475569;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: filter 0.15s, box-shadow 0.15s, transform 0.1s;
+    }
+    .op-jenis-pill:hover {
+      filter: brightness(0.96);
+    }
+    .op-jenis-pill[data-jenis="Sharing"] {
+      background: #d9ead3;
+      color: #274e13;
+      border-color: #b6d7a8;
+    }
+    .op-jenis-pill[data-jenis="Private"] {
+      background: #cfe2f3;
+      color: #0b5394;
+      border-color: #9fc5e8;
+    }
+    .op-jenis-pill[data-jenis="Saving"] {
+      background: #fff2cc;
+      color: #7f6000;
+      border-color: #ffe599;
+    }
+    .op-jenis-pill[data-jenis=""] {
+      background: #f1f5f9;
+      color: #64748b;
+      border-color: #cbd5e1;
+    }
+    .op-jenis-pill.is-saving {
+      opacity: 0.72;
+      box-shadow: 0 0 0 2px #f59e0b;
+    }
+    .op-jenis-menu {
+      position: fixed;
+      z-index: 3100;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+      padding: 0.38rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-width: 132px;
+    }
+    .op-jenis-menu .op-jenis-pill {
+      width: 100%;
+      padding: 0.34rem 0.72rem;
+    }
     .op-pagination {
       display: flex;
       align-items: center;
@@ -1328,6 +1484,36 @@
       color: var(--dark);
       border-top: 2px solid #cbd5e1;
       font-size: 0.92rem;
+    }
+    .op-reorder-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 0.35rem;
+    }
+    .op-reorder-btn {
+      width: 26px;
+      height: 22px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.85);
+      color: #334155;
+      font-size: 0.68rem;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .op-reorder-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .op-reorder-btn:disabled {
+      opacity: 0.32;
+      cursor: not-allowed;
     }
     .op-money {
       font-variant-numeric: tabular-nums;
@@ -1557,7 +1743,7 @@
       }
       .op-filter-pills::-webkit-scrollbar { display: none; }
       .op-pill-btn { flex: 0 0 auto; padding: 0.52rem 0.88rem; font-size: 0.9rem; }
-      #opFilterMonth { flex: 1 1 140px; min-width: 0; font-size: 0.92rem; }
+      #opFilterDate, #opFilterMonth, #opFilterYear { flex: 1 1 130px; min-width: 0; font-size: 0.92rem; }
       #btnToggleOlderYears, #btnClearOpMonth { flex: 1 1 auto; justify-content: center; font-size: 0.88rem !important; padding: 0.52rem 0.8rem !important; }
       #opSortOrder, .select-filter { width: 100%; max-width: 100%; font-size: 0.95rem; padding: 0.58rem 0.75rem; }
       .search-box { flex: 1 1 100%; }
@@ -1580,6 +1766,8 @@
         max-width: 112px;
       }
       .op-detail-cell { min-width: 250px; max-width: 295px; padding-right: 0.75rem; font-size: 0.96rem; line-height: 1.55; font-weight: 500; color: #0f172a; }
+      .op-inline-input { font-size: 16px; min-width: 128px; }
+      .op-inline-input-makan { min-width: 78px; }
 
       .op-pagination { padding: 0.85rem; flex-direction: column; align-items: stretch; font-size: 0.9rem; }
       .op-pagination-controls { justify-content: space-between; }
@@ -1806,9 +1994,30 @@
       <section class="toolbar-card" style="flex-direction: column; align-items: stretch; gap: 0.85rem;">
         <div class="op-toolbar-row-month" style="display: flex; justify-content: flex-end; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
           <div style="display: flex; gap: 0.55rem; align-items: center; flex-wrap: wrap; width: 100%;">
+            <label for="opFilterDate" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tanggal:</label>
+            <input type="date" id="opFilterDate" class="select-filter" style="padding: 0.42rem 0.65rem;" title="Cari booking pada tanggal tertentu">
             <label for="opFilterMonth" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Bulan:</label>
-            <input type="month" id="opFilterMonth" class="select-filter" style="padding: 0.42rem 0.65rem;">
-            <button type="button" class="btn btn-outline" id="btnClearOpMonth" style="padding: 0.42rem 0.7rem; font-size: 0.78rem;">Semua Bulan</button>
+            <select id="opFilterMonth" class="select-filter" style="padding: 0.42rem 0.65rem;" title="Pilih bulan">
+              <option value="">Semua Bulan</option>
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+            <select id="opFilterYear" class="select-filter" style="padding: 0.42rem 0.65rem;" title="Pilih tahun">
+              <option value="">Semua Tahun</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+            </select>
+            <button type="button" class="btn btn-outline" id="btnClearOpMonth" style="padding: 0.42rem 0.7rem; font-size: 0.78rem;">Semua Tanggal / Bulan</button>
             <button type="button" class="btn btn-outline" id="btnToggleOlderYears" style="padding: 0.42rem 0.75rem; font-size: 0.78rem;" title="Tampilkan data tahun-tahun sebelumnya">
               <i class="fas fa-history"></i>
               <span id="btnToggleOlderYearsText">Tampilkan Lebih Banyak (&lt; 2026)</span>
@@ -1824,6 +2033,17 @@
             <option value="date_asc" selected>Urutan: Tanggal Terkecil &rarr; Terbesar</option>
             <option value="date_desc">Urutan: Tanggal Terbesar &rarr; Terkecil</option>
           </select>
+          <select class="select-filter" id="opSameDaySort" title="Atur urutan baris pada tanggal yang sama">
+            <option value="default" selected>Hari Sama: Jam &uarr; &rarr; Sharing &rarr; Private</option>
+            <option value="jenis_first">Hari Sama: Sharing &rarr; Private &rarr; Jam &uarr;</option>
+            <option value="private_first">Hari Sama: Private &rarr; Sharing &rarr; Jam &uarr;</option>
+            <option value="jam_desc">Hari Sama: Jam Terbesar &rarr; Terkecil</option>
+            <option value="name_asc">Hari Sama: Nama Tamu (A &rarr; Z)</option>
+            <option value="manual">Hari Sama: Manual (Tombol &uarr; / &darr;)</option>
+          </select>
+          <button type="button" class="btn btn-outline" id="btnResetSameDayOrder" style="display: none; padding: 0.42rem 0.7rem; font-size: 0.78rem;" title="Reset urutan manual ke default">
+            <i class="fas fa-undo"></i> Reset Urutan
+          </button>
         </div>
         <div class="op-filter-pills op-toolbar-row-pills">
           <button type="button" class="op-pill-btn active" data-op-filter="all">
@@ -1856,6 +2076,10 @@
         </div>
 
         <div class="op-swipe-hint"><i class="fas fa-hand-point-right"></i> Geser tabel ke kanan untuk melihat kolom lainnya</div>
+        <datalist id="opGuideDatalist"></datalist>
+        <datalist id="opDriverDatalist"></datalist>
+        <div id="opInlineSuggestPopup" class="op-suggest-popup" style="display: none;"></div>
+        <div id="opJenisDropdownMenu" class="op-jenis-menu" style="display: none;"></div>
         <div class="table-responsive">
           <table class="bookings-table op-table">
             <thead>
@@ -1871,9 +2095,9 @@
                 <th>Jam</th>
                 <th>Jenis Tur</th>
                 <th style="min-width: 300px; max-width: 400px; padding-right: 1rem;">Detail</th>
-                <th style="padding-left: 1rem;">Guide</th>
-                <th>Driver</th>
-                <th>Makan siang</th>
+                <th style="padding-left: 1rem; min-width: 136px;">Guide</th>
+                <th style="min-width: 136px;">Driver</th>
+                <th style="min-width: 92px; text-align: center;">Makan siang</th>
                 <th style="text-align: center; min-width: 135px;">Aksi</th>
                 <th>Makan siang (Biaya)</th>
                 <th>Guide (Biaya)</th>
@@ -2004,13 +2228,13 @@
                 <div class="form-group">
                   <label>Warna Baris (Sesuai Keinginan)</label>
                   <div class="op-color-swatches" id="opAddColorSwatches">
+                    <button type="button" class="op-swatch" data-color="#ffe599" style="background: #ffe599;" title="Kuning"></button>
+                    <button type="button" class="op-swatch" data-color="#93c47d" style="background: #93c47d;" title="Hijau"></button>
+                    <button type="button" class="op-swatch" data-color="#9fc5e8" style="background: #9fc5e8;" title="Biru"></button>
+                    <button type="button" class="op-swatch" data-color="#b4a7d6" style="background: #b4a7d6;" title="Ungu"></button>
+                    <button type="button" class="op-swatch" data-color="#cccccc" style="background: #cccccc;" title="Abu"></button>
+                    <button type="button" class="op-swatch" data-color="#ea9999" style="background: #ea9999;" title="Merah"></button>
                     <button type="button" class="op-swatch selected" data-color="#ffffff" style="background: #ffffff;" title="Putih (Default)"></button>
-                    <button type="button" class="op-swatch" data-color="#dcfce7" style="background: #dcfce7;" title="Hijau Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#fef9c3" style="background: #fef9c3;" title="Kuning Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#ffedd5" style="background: #ffedd5;" title="Oranye Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#dbeafe" style="background: #dbeafe;" title="Biru Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#fce7f3" style="background: #fce7f3;" title="Merah Muda"></button>
-                    <button type="button" class="op-swatch" data-color="#f3e8ff" style="background: #f3e8ff;" title="Ungu Muda"></button>
                     <input type="color" id="opInputColor" class="op-color-input" value="#ffffff" title="Pilih Warna Custom">
                   </div>
                 </div>
@@ -2314,7 +2538,7 @@
         <button type="button" class="btn-close-modal" id="btnCloseOpEditModal">&times;</button>
       </div>
       <form id="opEditForm">
-        <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+        <div class="modal-body">
           <input type="hidden" id="opEditRowNumber">
           <div class="op-form-grid">
             <div class="form-group">
@@ -2374,11 +2598,11 @@
           <div class="op-form-grid">
             <div class="form-group">
               <label for="opEditGuide">Guide (Nama Saja)</label>
-              <input type="text" id="opEditGuide" placeholder="Nama Guide">
+              <input type="text" id="opEditGuide" list="opGuideDatalist" placeholder="Nama Guide">
             </div>
             <div class="form-group">
               <label for="opEditDriver">Driver (Nama Saja)</label>
-              <input type="text" id="opEditDriver" placeholder="Nama Driver">
+              <input type="text" id="opEditDriver" list="opDriverDatalist" placeholder="Nama Driver">
             </div>
             <div class="form-group">
               <label for="opEditMakan">Makan siang (Jumlah Tamu)</label>
@@ -2418,26 +2642,26 @@
             <div class="form-group">
               <label for="opEditColor">Warna Baris</label>
               <div class="op-color-swatches" id="opEditColorSwatches">
+                <button type="button" class="op-swatch" data-color="#ffe599" style="background: #ffe599;" title="Kuning"></button>
+                <button type="button" class="op-swatch" data-color="#93c47d" style="background: #93c47d;" title="Hijau"></button>
+                <button type="button" class="op-swatch" data-color="#9fc5e8" style="background: #9fc5e8;" title="Biru"></button>
+                <button type="button" class="op-swatch" data-color="#b4a7d6" style="background: #b4a7d6;" title="Ungu"></button>
+                <button type="button" class="op-swatch" data-color="#cccccc" style="background: #cccccc;" title="Abu"></button>
+                <button type="button" class="op-swatch" data-color="#ea9999" style="background: #ea9999;" title="Merah"></button>
                 <button type="button" class="op-swatch" data-color="#ffffff" style="background: #ffffff;" title="Putih (Default)"></button>
-                <button type="button" class="op-swatch" data-color="#dcfce7" style="background: #dcfce7;" title="Hijau Muda"></button>
-                <button type="button" class="op-swatch" data-color="#fef9c3" style="background: #fef9c3;" title="Kuning Muda"></button>
-                <button type="button" class="op-swatch" data-color="#ffedd5" style="background: #ffedd5;" title="Oranye Muda"></button>
-                <button type="button" class="op-swatch" data-color="#dbeafe" style="background: #dbeafe;" title="Biru Muda"></button>
-                <button type="button" class="op-swatch" data-color="#fce7f3" style="background: #fce7f3;" title="Merah Muda"></button>
-                <button type="button" class="op-swatch" data-color="#f3e8ff" style="background: #f3e8ff;" title="Ungu Muda"></button>
                 <input type="color" id="opEditColor" class="op-color-input" value="#ffffff" title="Pilih Warna Custom">
               </div>
             </div>
             <div class="form-group">
               <label for="opEditDetailColor">Warna Kolom Detail</label>
               <div class="op-color-swatches" id="opEditDetailColorSwatches">
-                <button type="button" class="op-swatch" data-color="#ffffff" style="background: #ffffff;" title="Ikut Warna Baris"></button>
-                <button type="button" class="op-swatch" data-color="#dcfce7" style="background: #dcfce7;" title="Hijau Muda"></button>
-                <button type="button" class="op-swatch" data-color="#fef9c3" style="background: #fef9c3;" title="Kuning Muda"></button>
-                <button type="button" class="op-swatch" data-color="#ffedd5" style="background: #ffedd5;" title="Oranye Muda"></button>
-                <button type="button" class="op-swatch" data-color="#dbeafe" style="background: #dbeafe;" title="Biru Muda"></button>
-                <button type="button" class="op-swatch" data-color="#fce7f3" style="background: #fce7f3;" title="Merah Muda"></button>
-                <button type="button" class="op-swatch" data-color="#f3e8ff" style="background: #f3e8ff;" title="Ungu Muda"></button>
+                <button type="button" class="op-swatch" data-color="#ffe599" style="background: #ffe599;" title="Kuning"></button>
+                <button type="button" class="op-swatch" data-color="#93c47d" style="background: #93c47d;" title="Hijau"></button>
+                <button type="button" class="op-swatch" data-color="#9fc5e8" style="background: #9fc5e8;" title="Biru"></button>
+                <button type="button" class="op-swatch" data-color="#b4a7d6" style="background: #b4a7d6;" title="Ungu"></button>
+                <button type="button" class="op-swatch" data-color="#cccccc" style="background: #cccccc;" title="Abu"></button>
+                <button type="button" class="op-swatch" data-color="#ea9999" style="background: #ea9999;" title="Merah"></button>
+                <button type="button" class="op-swatch" data-color="#ffffff" style="background: #ffffff;" title="Putih (Ikut Warna Baris)"></button>
                 <input type="color" id="opEditDetailColor" class="op-color-input" value="#ffffff" title="Pilih Warna Detail Custom">
               </div>
             </div>
@@ -2492,6 +2716,24 @@
     const btnCloseDeleteModal = document.getElementById('btnCloseDeleteModal');
     const btnCancelDelete = document.getElementById('btnCancelDelete');
     const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+    function lockBodyScroll() {
+      if (document.body.classList.contains('modal-open')) return;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      document.body.dataset.scrollY = String(scrollY);
+      document.documentElement.classList.add('modal-open');
+      document.body.classList.add('modal-open');
+      document.body.style.top = `-${scrollY}px`;
+    }
+
+    function unlockBodyScroll() {
+      if (!document.body.classList.contains('modal-open')) return;
+      const scrollY = parseInt(document.body.dataset.scrollY || '0', 10) || 0;
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+      document.body.style.top = '';
+      window.scrollTo(0, scrollY);
+    }
 
     // Toast Helper
     function showToast(message, type = 'success') {
@@ -2925,10 +3167,14 @@ Message / Special Requests: ${specialRequests}`;
       document.getElementById('editDetail').value = detailFormatted;
 
       editModal.classList.add('active');
+      const card = editModal.querySelector('.modal-content-card');
+      if (card) card.scrollTop = 0;
+      lockBodyScroll();
     };
 
     function closeEditModal() {
       editModal.classList.remove('active');
+      unlockBodyScroll();
     }
 
     btnCloseEditModal.addEventListener('click', closeEditModal);
@@ -2994,10 +3240,12 @@ Message / Special Requests: ${specialRequests}`;
       document.getElementById('deleteRowNumber').value = rowNumber;
       document.getElementById('deleteConfirmTitle').textContent = `Hapus Booking Baris #${rowNumber} (${guestName})?`;
       deleteModal.classList.add('active');
+      lockBodyScroll();
     };
 
     function closeDeleteModal() {
       deleteModal.classList.remove('active');
+      unlockBodyScroll();
     }
 
     btnCloseDeleteModal.addEventListener('click', closeDeleteModal);
@@ -3505,7 +3753,9 @@ Message / Special Requests: ${specialRequests}`;
     const tabOpBadge = document.getElementById('tabOpBadge');
     const opSearchInput = document.getElementById('opSearchInput');
     const opSortOrder = document.getElementById('opSortOrder');
+    const opFilterDate = document.getElementById('opFilterDate');
     const opFilterMonth = document.getElementById('opFilterMonth');
+    const opFilterYear = document.getElementById('opFilterYear');
     const btnClearOpMonth = document.getElementById('btnClearOpMonth');
 
     const opAddForm = document.getElementById('opAddForm');
@@ -3676,10 +3926,54 @@ Message / Special Requests: ${specialRequests}`;
 
     if (opSearchInput) opSearchInput.addEventListener('input', () => { opCurrentPage = 1; renderOpTable(); });
     if (opSortOrder) opSortOrder.addEventListener('change', () => { opCurrentPage = 1; renderOpTable(); });
-    if (opFilterMonth) opFilterMonth.addEventListener('change', () => { opCurrentPage = 1; renderOpTable(); });
+    function refreshOpYearOptions() {
+      if (!opFilterYear) return;
+      const prev = opFilterYear.value;
+      const years = new Set([String(new Date().getFullYear()), String(new Date().getFullYear() + 1)]);
+      allOpBookings.forEach(item => {
+        const iso = parseOpDateToIso(item.tourDate);
+        if (iso && iso.length >= 4) years.add(iso.slice(0, 4));
+      });
+      const sorted = Array.from(years).sort((a, b) => a.localeCompare(b));
+      opFilterYear.innerHTML = '<option value="">Semua Tahun</option>' +
+        sorted.map(y => `<option value="${y}">${y}</option>`).join('');
+      if (prev && sorted.includes(prev)) opFilterYear.value = prev;
+    }
+
+    if (opFilterDate) {
+      opFilterDate.addEventListener('change', () => {
+        if (opFilterDate.value) {
+          if (opFilterMonth) opFilterMonth.value = '';
+          if (opFilterYear) opFilterYear.value = '';
+        }
+        opCurrentPage = 1;
+        renderOpTable();
+      });
+    }
+    if (opFilterMonth) {
+      opFilterMonth.addEventListener('change', () => {
+        if (opFilterMonth.value) {
+          if (opFilterDate) opFilterDate.value = '';
+          if (opFilterYear && !opFilterYear.value) {
+            opFilterYear.value = String(new Date().getFullYear());
+          }
+        }
+        opCurrentPage = 1;
+        renderOpTable();
+      });
+    }
+    if (opFilterYear) {
+      opFilterYear.addEventListener('change', () => {
+        if (opFilterYear.value && opFilterDate) opFilterDate.value = '';
+        opCurrentPage = 1;
+        renderOpTable();
+      });
+    }
     if (btnClearOpMonth) {
       btnClearOpMonth.addEventListener('click', () => {
+        if (opFilterDate) opFilterDate.value = '';
         if (opFilterMonth) opFilterMonth.value = '';
+        if (opFilterYear) opFilterYear.value = '';
         opCurrentPage = 1;
         renderOpTable();
       });
@@ -3763,6 +4057,7 @@ Message / Special Requests: ${specialRequests}`;
     }
 
     function updateOpCounts() {
+      refreshOpYearOptions();
       const todayIso = getLocalIsoDate(0);
       const tomorrowIso = getLocalIsoDate(1);
       let activeTotal = 0;
@@ -3796,21 +4091,197 @@ Message / Special Requests: ${specialRequests}`;
       if (pUp) pUp.textContent = upcomingCnt;
     }
 
+    const OP_SAME_DAY_ORDER_KEY = 'dewa_op_same_day_order_v1';
+    const OP_SAME_DAY_MODE_KEY = 'dewa_op_same_day_mode_v1';
+    const opSameDaySort = document.getElementById('opSameDaySort');
+    const btnResetSameDayOrder = document.getElementById('btnResetSameDayOrder');
+
+    function loadOpSameDayOrderMap() {
+      try {
+        const raw = localStorage.getItem(OP_SAME_DAY_ORDER_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return (parsed && typeof parsed === 'object') ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveOpSameDayOrderMap(map) {
+      try {
+        localStorage.setItem(OP_SAME_DAY_ORDER_KEY, JSON.stringify(map));
+      } catch (e) {}
+    }
+
+    let opSameDayOrderMap = loadOpSameDayOrderMap();
+    if (opSameDaySort) {
+      try {
+        const savedMode = localStorage.getItem(OP_SAME_DAY_MODE_KEY);
+        if (savedMode && opSameDaySort.querySelector(`option[value="${savedMode}"]`)) {
+          opSameDaySort.value = savedMode;
+        }
+      } catch (e) {}
+      opSameDaySort.addEventListener('change', () => {
+        try { localStorage.setItem(OP_SAME_DAY_MODE_KEY, opSameDaySort.value); } catch (e) {}
+        opCurrentPage = 1;
+        renderOpTable();
+      });
+    }
+    if (btnResetSameDayOrder) {
+      btnResetSameDayOrder.addEventListener('click', () => {
+        opSameDayOrderMap = {};
+        saveOpSameDayOrderMap(opSameDayOrderMap);
+        if (opSameDaySort && opSameDaySort.value === 'manual') {
+          opSameDaySort.value = 'default';
+          try { localStorage.setItem(OP_SAME_DAY_MODE_KEY, 'default'); } catch (e) {}
+        }
+        renderOpTable();
+        showToast('Urutan baris tanggal sama dikembalikan ke default.');
+      });
+    }
+
+    function parseOpJamToMinutes(jamStr) {
+      const s = String(jamStr || '').trim().toUpperCase();
+      if (!s || s === '-') return 9999;
+      const m = s.match(/(\d{1,2})[:.](\d{2})\s*(AM|PM)?/);
+      if (m) {
+        let h = parseInt(m[1], 10);
+        const min = parseInt(m[2], 10);
+        const ampm = m[3];
+        if (ampm === 'PM' && h < 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        return h * 60 + min;
+      }
+      const hOnly = s.match(/^(\d{1,2})\s*(AM|PM)?$/);
+      if (hOnly) {
+        let h = parseInt(hOnly[1], 10);
+        const ampm = hOnly[2];
+        if (ampm === 'PM' && h < 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        return h * 60;
+      }
+      return 9998;
+    }
+
+    // Urutan Jenis Tur: Sharing (0) -> Private (1) -> Lainnya (2) -> Tanpa Jenis Tur (3 / paling bawah)
+    function getJenisTurRank(jenisTurStr, mode = 'sharing_first') {
+      const s = String(jenisTurStr || '').trim().toLowerCase();
+      if (!s || s === '-') return 3;
+      if (mode === 'private_first') {
+        if (s.includes('private')) return 0;
+        if (s.includes('sharing')) return 1;
+        return 2;
+      }
+      if (s.includes('sharing')) return 0;
+      if (s.includes('private')) return 1;
+      return 2;
+    }
+
+    // Urutan pada tanggal yang sama TIDAK dipengaruhi oleh urutan tanggal (terkecil->terbesar / terbesar->terkecil)
+    function compareSameDayOpRows(a, b, sameDayMode, isoDate) {
+      if (sameDayMode === 'manual' && isoDate && Array.isArray(opSameDayOrderMap[isoDate])) {
+        const orderArr = opSameDayOrderMap[isoDate];
+        const idxA = orderArr.indexOf(a.row);
+        const idxB = orderArr.indexOf(b.row);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+      }
+
+      const jamA = parseOpJamToMinutes(a.jam);
+      const jamB = parseOpJamToMinutes(b.jam);
+
+      if (sameDayMode === 'jam_desc') {
+        const jA = jamA >= 9998 ? -1 : jamA;
+        const jB = jamB >= 9998 ? -1 : jamB;
+        if (jA !== jB) return jB - jA;
+        const rA = getJenisTurRank(a.jenisTur, 'sharing_first');
+        const rB = getJenisTurRank(b.jenisTur, 'sharing_first');
+        if (rA !== rB) return rA - rB;
+        return (a.row || 0) - (b.row || 0);
+      }
+
+      if (sameDayMode === 'jenis_first') {
+        const rA = getJenisTurRank(a.jenisTur, 'sharing_first');
+        const rB = getJenisTurRank(b.jenisTur, 'sharing_first');
+        if (rA !== rB) return rA - rB;
+        if (jamA !== jamB) return jamA - jamB;
+        return (a.row || 0) - (b.row || 0);
+      }
+
+      if (sameDayMode === 'private_first') {
+        const rA = getJenisTurRank(a.jenisTur, 'private_first');
+        const rB = getJenisTurRank(b.jenisTur, 'private_first');
+        if (rA !== rB) return rA - rB;
+        if (jamA !== jamB) return jamA - jamB;
+        return (a.row || 0) - (b.row || 0);
+      }
+
+      if (sameDayMode === 'name_asc') {
+        const nA = String(a.name || '').trim().toLowerCase();
+        const nB = String(b.name || '').trim().toLowerCase();
+        const cmp = nA.localeCompare(nB);
+        if (cmp !== 0) return cmp;
+        if (jamA !== jamB) return jamA - jamB;
+        return (a.row || 0) - (b.row || 0);
+      }
+
+      // Default: Jam terkecil dari atas -> Jenis Tur (Sharing -> Private -> Tanpa jenis tur di bawah)
+      if (jamA !== jamB) return jamA - jamB;
+      const rankA = getJenisTurRank(a.jenisTur, 'sharing_first');
+      const rankB = getJenisTurRank(b.jenisTur, 'sharing_first');
+      if (rankA !== rankB) return rankA - rankB;
+      return (a.row || 0) - (b.row || 0);
+    }
+
+    let lastRenderedSameDayGroups = {};
+    let lastFilteredOpBookings = [];
+
+    window.moveOpRowSameDay = function(isoDate, rowNum, delta) {
+      if (!isoDate || !lastRenderedSameDayGroups[isoDate]) return;
+      const currentRows = lastRenderedSameDayGroups[isoDate].slice();
+      const idx = currentRows.indexOf(rowNum);
+      const targetIdx = idx + delta;
+      if (idx === -1 || targetIdx < 0 || targetIdx >= currentRows.length) return;
+
+      const tmp = currentRows[idx];
+      currentRows[idx] = currentRows[targetIdx];
+      currentRows[targetIdx] = tmp;
+
+      opSameDayOrderMap[isoDate] = currentRows;
+      saveOpSameDayOrderMap(opSameDayOrderMap);
+
+      if (opSameDaySort && opSameDaySort.value !== 'manual') {
+        opSameDaySort.value = 'manual';
+        try { localStorage.setItem(OP_SAME_DAY_MODE_KEY, 'manual'); } catch (e) {}
+      }
+      renderOpTable();
+    };
+
     function renderOpTable() {
       if (!opTableBody) return;
       const todayIso = getLocalIsoDate(0);
       const tomorrowIso = getLocalIsoDate(1);
       const query = (opSearchInput ? opSearchInput.value : '').toLowerCase().trim();
+      const dateVal = opFilterDate ? opFilterDate.value : '';
       const monthVal = opFilterMonth ? opFilterMonth.value : '';
+      const yearVal = opFilterYear ? opFilterYear.value : '';
       const sortVal = opSortOrder ? opSortOrder.value : 'date_asc';
+      const sameDayMode = opSameDaySort ? opSameDaySort.value : 'default';
+
+      if (btnResetSameDayOrder) {
+        const hasManual = Object.keys(opSameDayOrderMap).length > 0 || sameDayMode === 'manual';
+        btnResetSameDayOrder.style.display = hasManual ? 'inline-flex' : 'none';
+      }
 
       let filtered = allOpBookings.filter(item => {
         const iso = parseOpDateToIso(item.tourDate);
-        if (!opShowOlderYears && !monthVal && iso && iso < currentYearPrefix) return false;
+        if (!opShowOlderYears && !dateVal && !monthVal && !yearVal && iso && iso < currentYearPrefix) return false;
         if (currentOpFilter === 'today' && iso !== todayIso) return false;
         if (currentOpFilter === 'tomorrow' && iso !== tomorrowIso) return false;
         if (currentOpFilter === 'upcoming' && (!iso || iso < todayIso)) return false;
-        if (monthVal && (!iso || !iso.startsWith(monthVal))) return false;
+        if (dateVal && iso !== dateVal) return false;
+        if (yearVal && (!iso || !iso.startsWith(yearVal + '-'))) return false;
+        if (monthVal && (!iso || iso.slice(5, 7) !== monthVal)) return false;
         if (query) {
           const hay = [
             item.tourDate, item.bookingAddress, item.phone, item.country,
@@ -3822,16 +4293,24 @@ Message / Special Requests: ${specialRequests}`;
         return true;
       });
 
-      // Sort by Date of the tour (terkecil ke terbesar / asc by default) then Jam
+      // Sort by Date of the tour; pada tanggal yang sama selalu pakai compareSameDayOpRows (independen dari arah tanggal)
       filtered.sort((a, b) => {
         const isoA = parseOpDateToIso(a.tourDate) || '9999-99-99';
         const isoB = parseOpDateToIso(b.tourDate) || '9999-99-99';
         if (isoA !== isoB) {
           return sortVal === 'date_desc' ? isoB.localeCompare(isoA) : isoA.localeCompare(isoB);
         }
-        const jamA = String(a.jam || '');
-        const jamB = String(b.jam || '');
-        return sortVal === 'date_desc' ? jamB.localeCompare(jamA) : jamA.localeCompare(jamB);
+        return compareSameDayOpRows(a, b, sameDayMode, isoA);
+      });
+
+      lastFilteredOpBookings = filtered;
+      refreshOpPersonDatalists();
+      lastRenderedSameDayGroups = {};
+      filtered.forEach(item => {
+        const iso = parseOpDateToIso(item.tourDate);
+        if (!iso) return;
+        if (!lastRenderedSameDayGroups[iso]) lastRenderedSameDayGroups[iso] = [];
+        lastRenderedSameDayGroups[iso].push(item.row);
       });
 
       if (opBookingCounter) {
@@ -3891,7 +4370,7 @@ Message / Special Requests: ${specialRequests}`;
         if (btnOpNextPage) btnOpNextPage.disabled = opCurrentPage >= totalPages;
       }
 
-      const miniColors = ['#ffffff', '#dcfce7', '#fef9c3', '#ffedd5', '#dbeafe', '#fce7f3'];
+      const miniColors = ['#ffe599', '#93c47d', '#9fc5e8', '#b4a7d6', '#cccccc', '#ea9999', '#ffffff'];
 
       opTableBody.innerHTML = pageItems.map(item => {
         const iso = parseOpDateToIso(item.tourDate);
@@ -3923,11 +4402,21 @@ Message / Special Requests: ${specialRequests}`;
           `<button type="button" class="op-mini-swatch" style="background:${c};" title="Ganti warna Detail" onclick="updateOpDetailColor(${item.row}, '${c}')"></button>`
         ).join('');
 
+        const sameDayGroup = iso ? (lastRenderedSameDayGroups[iso] || []) : [];
+        const sameDayIdx = sameDayGroup.indexOf(item.row);
+        const reorderControls = (sameDayGroup.length > 1 && sameDayIdx !== -1)
+          ? `<div class="op-reorder-group">
+               <button type="button" class="op-reorder-btn" title="Naikkan urutan di tanggal ini" ${sameDayIdx === 0 ? 'disabled' : ''} onclick="moveOpRowSameDay('${iso}', ${item.row}, -1)"><i class="fas fa-chevron-up"></i></button>
+               <button type="button" class="op-reorder-btn" title="Turunkan urutan di tanggal ini" ${sameDayIdx === sameDayGroup.length - 1 ? 'disabled' : ''} onclick="moveOpRowSameDay('${iso}', ${item.row}, 1)"><i class="fas fa-chevron-down"></i></button>
+             </div>`
+          : '';
+
         return `
           <tr style="--row-bg: ${escapeHtml(rowBg)}; background-color: var(--row-bg);">
             <td class="op-sticky-col">
               <strong>${escapeHtml(item.tourDate || '-')}</strong>
               ${dateBadge}
+              ${reorderControls}
             </td>
             <td>
               <div class="op-row-color-cell">
@@ -3942,7 +4431,12 @@ Message / Special Requests: ${specialRequests}`;
             <td><strong>${escapeHtml(item.name || '-')}</strong></td>
             <td>${escapeHtml(item.tourPackage || '-')}</td>
             <td style="white-space: nowrap;">${escapeHtml(item.jam || '-')}</td>
-            <td><span class="badge badge-direct">${escapeHtml(item.jenisTur || '-')}</span></td>
+            <td>
+              <button type="button" class="op-jenis-pill" data-jenis="${escapeHtml(item.jenisTur || '')}" onclick="openOpJenisDropdown(event, ${item.row}, this)" title="Klik untuk ubah Jenis Tur">
+                <span>${escapeHtml(item.jenisTur || '-')}</span>
+                <i class="fas fa-caret-down" style="font-size: 0.72rem; opacity: 0.75;"></i>
+              </button>
+            </td>
             <td ${detailBg ? `data-detail-bg="true" style="--detail-bg: ${escapeHtml(detailBg)}; background-color: var(--detail-bg);"` : ''}>
               <div class="op-detail-cell">${escapeHtml(item.detail || '-')}</div>
               <div class="op-detail-color-bar">
@@ -3951,9 +4445,15 @@ Message / Special Requests: ${specialRequests}`;
                 <input type="color" class="op-color-input" style="width: 22px; height: 18px;" value="${escapeHtml(detailBg || rowBg)}" title="Pilih warna Detail bebas" onchange="updateOpDetailColor(${item.row}, this.value)">
               </div>
             </td>
-            <td>${escapeHtml(item.guide || '-')}</td>
-            <td>${escapeHtml(item.driver || '-')}</td>
-            <td style="white-space: nowrap; font-weight: 600;">${escapeHtml(item.makanSiang || '-')}</td>
+            <td>
+              <textarea rows="1" class="op-inline-input op-inline-textarea" placeholder="Nama guide..." title="Edit Guide langsung (Enter / klik luar untuk simpan, Esc untuk batal)" onfocus="openOpInlineSuggest(this, 'guide')" oninput="autoResizeOpTextarea(this); openOpInlineSuggest(this, 'guide')" onblur="scheduleCloseOpInlineSuggest()" onchange="updateOpInlineField(${item.row}, 'guide', this)" onkeydown="handleOpInlineKeydown(event, ${item.row}, 'guide', this)">${escapeHtml(item.guide || '')}</textarea>
+            </td>
+            <td>
+              <textarea rows="1" class="op-inline-input op-inline-textarea" placeholder="Nama driver..." title="Edit Driver langsung (Enter / klik luar untuk simpan, Esc untuk batal)" onfocus="openOpInlineSuggest(this, 'driver')" oninput="autoResizeOpTextarea(this); openOpInlineSuggest(this, 'driver')" onblur="scheduleCloseOpInlineSuggest()" onchange="updateOpInlineField(${item.row}, 'driver', this)" onkeydown="handleOpInlineKeydown(event, ${item.row}, 'driver', this)">${escapeHtml(item.driver || '')}</textarea>
+            </td>
+            <td>
+              <input type="text" class="op-inline-input op-inline-input-makan" value="${escapeHtml(item.makanSiang || '')}" placeholder="-" title="Edit Makan siang langsung (Enter / klik luar untuk simpan, Esc untuk batal)" onchange="updateOpInlineField(${item.row}, 'makanSiang', this)" onkeydown="handleOpInlineKeydown(event, ${item.row}, 'makanSiang', this)">
+            </td>
             <td>
               <div class="action-group" style="justify-content: center;">
                 <button type="button" class="btn-action btn-action-copy" onclick="copyOpBookingDetail(${item.row}, this)" title="Salin Detail Jadwal">
@@ -3979,6 +4479,7 @@ Message / Special Requests: ${specialRequests}`;
           </tr>
         `;
       }).join('');
+      opTableBody.querySelectorAll('.op-inline-textarea').forEach(autoResizeOpTextarea);
 
       if (opTableFoot) {
         opTableFoot.style.display = 'table-footer-group';
@@ -4105,6 +4606,256 @@ Message / Special Requests: ${specialRequests}`;
       }
     };
 
+    function refreshOpPersonDatalists() {
+      const guideDl = document.getElementById('opGuideDatalist');
+      const driverDl = document.getElementById('opDriverDatalist');
+      if (!guideDl && !driverDl) return;
+      const guides = new Set();
+      const drivers = new Set();
+      allOpBookings.forEach(item => {
+        const g = String(item.guide || '').trim();
+        const d = String(item.driver || '').trim();
+        if (g) guides.add(g);
+        if (d) drivers.add(d);
+      });
+      if (guideDl) {
+        guideDl.innerHTML = Array.from(guides)
+          .sort((a, b) => a.localeCompare(b, 'id'))
+          .map(name => `<option value="${escapeHtml(name)}">`)
+          .join('');
+      }
+      if (driverDl) {
+        driverDl.innerHTML = Array.from(drivers)
+          .sort((a, b) => a.localeCompare(b, 'id'))
+          .map(name => `<option value="${escapeHtml(name)}">`)
+          .join('');
+      }
+    }
+
+    function recalcOpMakanPaxFooter() {
+      const el = document.getElementById('opSumMakanPax');
+      if (!el) return;
+      let sum = 0;
+      lastFilteredOpBookings.forEach(item => {
+        const m = String(item.makanSiang || '').match(/\d+/);
+        if (m) sum += parseInt(m[0], 10);
+      });
+      el.textContent = sum + ' org';
+    }
+
+    window.autoResizeOpTextarea = function(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = Math.max(32, el.scrollHeight) + 'px';
+    };
+
+    let opSuggestCloseTimer = null;
+    window.openOpInlineSuggest = function(inputEl, field) {
+      const popup = document.getElementById('opInlineSuggestPopup');
+      if (!popup || !inputEl) return;
+      if (opSuggestCloseTimer) {
+        clearTimeout(opSuggestCloseTimer);
+        opSuggestCloseTimer = null;
+      }
+      const namesSet = new Set();
+      allOpBookings.forEach(item => {
+        const val = String(item[field] || '').trim();
+        if (val) namesSet.add(val);
+      });
+      const q = inputEl.value.trim().toLowerCase();
+      const matches = Array.from(namesSet)
+        .filter(n => !q || n.toLowerCase().includes(q))
+        .sort((a, b) => a.localeCompare(b, 'id'))
+        .slice(0, 15);
+      if (matches.length === 0 || (matches.length === 1 && matches[0].toLowerCase() === q)) {
+        popup.style.display = 'none';
+        return;
+      }
+
+      const rect = inputEl.getBoundingClientRect();
+      popup.innerHTML = '';
+      matches.forEach(name => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'op-suggest-item';
+        btn.textContent = name;
+        btn.onmousedown = function(ev) {
+          ev.preventDefault();
+          inputEl.value = name;
+          autoResizeOpTextarea(inputEl);
+          popup.style.display = 'none';
+          inputEl.dispatchEvent(new Event('change'));
+          inputEl.blur();
+        };
+        popup.appendChild(btn);
+      });
+
+      popup.style.minWidth = Math.max(150, rect.width) + 'px';
+      popup.style.left = Math.min(rect.left, window.innerWidth - 200) + 'px';
+      const spaceBelow = window.innerHeight - rect.bottom;
+      if (spaceBelow < 180 && rect.top > 180) {
+        popup.style.top = 'auto';
+        popup.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+      } else {
+        popup.style.bottom = 'auto';
+        popup.style.top = (rect.bottom + 4) + 'px';
+      }
+      popup.style.display = 'block';
+    };
+
+    window.scheduleCloseOpInlineSuggest = function() {
+      const popup = document.getElementById('opInlineSuggestPopup');
+      if (!popup) return;
+      opSuggestCloseTimer = setTimeout(() => {
+        popup.style.display = 'none';
+      }, 150);
+    };
+
+    window.handleOpInlineKeydown = function(e, rowNumber, field, inputEl) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const popup = document.getElementById('opInlineSuggestPopup');
+        if (popup) popup.style.display = 'none';
+        inputEl.blur();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        const popup = document.getElementById('opInlineSuggestPopup');
+        if (popup) popup.style.display = 'none';
+        const item = allOpBookings.find(x => x.row === rowNumber);
+        inputEl.value = item ? String(item[field] || '') : '';
+        if (inputEl.classList.contains('op-inline-textarea')) autoResizeOpTextarea(inputEl);
+        inputEl.blur();
+      }
+    };
+
+    window.updateOpInlineField = async function(rowNumber, field, inputEl) {
+      const fieldLabels = { guide: 'Guide', driver: 'Driver', makanSiang: 'Makan siang' };
+      if (!fieldLabels[field]) return;
+      const item = allOpBookings.find(x => x.row === rowNumber);
+      const oldVal = item ? String(item[field] || '').trim() : '';
+      const newVal = inputEl.value.trim();
+      if (newVal === oldVal) {
+        inputEl.value = oldVal;
+        if (inputEl.classList.contains('op-inline-textarea')) autoResizeOpTextarea(inputEl);
+        return;
+      }
+
+      if (item) item[field] = newVal;
+      inputEl.value = newVal;
+      if (inputEl.classList.contains('op-inline-textarea')) autoResizeOpTextarea(inputEl);
+      if (field === 'makanSiang') {
+        recalcOpMakanPaxFooter();
+      } else {
+        refreshOpPersonDatalists();
+      }
+
+      inputEl.classList.remove('is-saved', 'is-error');
+      inputEl.classList.add('is-saving');
+
+      try {
+        const callbackName = 'cb_op_inline_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const params = new URLSearchParams({
+          action: 'updateOpBooking',
+          noEmail: 'true',
+          row: rowNumber
+        });
+        params.set(field, newVal);
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?${params.toString()}`, callbackName);
+        if (res && res.status === 'success') {
+          inputEl.classList.remove('is-saving');
+          inputEl.classList.add('is-saved');
+          setTimeout(() => inputEl.classList.remove('is-saved'), 1500);
+          showToast(`${fieldLabels[field]} baris #${rowNumber} disimpan!`);
+        } else {
+          throw new Error((res && res.message) || 'Gagal menyimpan');
+        }
+      } catch (err) {
+        inputEl.classList.remove('is-saving');
+        inputEl.classList.add('is-error');
+        setTimeout(() => inputEl.classList.remove('is-error'), 2200);
+        showToast(`${fieldLabels[field]} diubah lokal (gagal sinkron ke Sheets).`, 'warning');
+      }
+    };
+
+    window.openOpJenisDropdown = function(e, rowNumber, btnEl) {
+      e.stopPropagation();
+      const menu = document.getElementById('opJenisDropdownMenu');
+      if (!menu || !btnEl) return;
+
+      const options = [
+        { val: 'Private', label: 'Private' },
+        { val: 'Sharing', label: 'Sharing' },
+        { val: 'Saving', label: 'Saving' },
+        { val: '', label: '- (Kosong)' }
+      ];
+
+      menu.innerHTML = '';
+      options.forEach(opt => {
+        const optBtn = document.createElement('button');
+        optBtn.type = 'button';
+        optBtn.className = 'op-jenis-pill';
+        optBtn.dataset.jenis = opt.val;
+        optBtn.innerHTML = `<span>${escapeHtml(opt.label)}</span>`;
+        optBtn.onclick = function(ev) {
+          ev.stopPropagation();
+          menu.style.display = 'none';
+          updateOpJenisTur(rowNumber, opt.val, btnEl);
+        };
+        menu.appendChild(optBtn);
+      });
+
+      const rect = btnEl.getBoundingClientRect();
+      menu.style.left = Math.min(rect.left, window.innerWidth - 160) + 'px';
+      const spaceBelow = window.innerHeight - rect.bottom;
+      if (spaceBelow < 180 && rect.top > 180) {
+        menu.style.top = 'auto';
+        menu.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+      } else {
+        menu.style.bottom = 'auto';
+        menu.style.top = (rect.bottom + 4) + 'px';
+      }
+      menu.style.display = 'flex';
+    };
+
+    window.updateOpJenisTur = async function(rowNumber, newVal, btnEl) {
+      const item = allOpBookings.find(x => x.row === rowNumber);
+      const oldVal = item ? String(item.jenisTur || '').trim() : '';
+      if (newVal === oldVal) return;
+
+      if (item) item.jenisTur = newVal;
+      if (btnEl) {
+        btnEl.dataset.jenis = newVal;
+        const span = btnEl.querySelector('span');
+        if (span) span.textContent = newVal || '-';
+        btnEl.classList.add('is-saving');
+      }
+
+      try {
+        const callbackName = 'cb_op_jenis_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const params = new URLSearchParams({
+          action: 'updateOpBooking',
+          noEmail: 'true',
+          row: rowNumber,
+          jenisTur: newVal
+        });
+        const res = await fetchJSONP(`${APPS_SCRIPT_URL}?${params.toString()}`, callbackName);
+        if (res && res.status === 'success') {
+          if (btnEl) btnEl.classList.remove('is-saving');
+          showToast(`Jenis Tur baris #${rowNumber} diubah ke ${newVal || 'Kosong'}!`);
+        } else {
+          throw new Error((res && res.message) || 'Gagal menyimpan');
+        }
+      } catch (err) {
+        if (btnEl) btnEl.classList.remove('is-saving');
+        showToast('Jenis Tur diubah lokal (gagal sinkron ke Sheets).', 'warning');
+      }
+    };
+
+    document.addEventListener('click', () => {
+      const menu = document.getElementById('opJenisDropdownMenu');
+      if (menu && menu.style.display !== 'none') menu.style.display = 'none';
+    });
+
     // Copy Operational Booking Detail (Hanya isi kolom DETAIL saja, full ke samping)
     window.copyOpBookingDetail = async function(rowNumber, btnEl) {
       const item = allOpBookings.find(x => x.row === rowNumber);
@@ -4195,10 +4946,14 @@ Message / Special Requests: ${specialRequests}`;
         s.classList.toggle('selected', s.dataset.color.toLowerCase() === dc.toLowerCase());
       });
       opEditModal.classList.add('active');
+      const card = opEditModal.querySelector('.modal-content-card');
+      if (card) card.scrollTop = 0;
+      lockBodyScroll();
     };
 
     function closeOpEditModal() {
       if (opEditModal) opEditModal.classList.remove('active');
+      unlockBodyScroll();
     }
     if (btnCloseOpEditModal) btnCloseOpEditModal.addEventListener('click', closeOpEditModal);
     if (btnCancelOpEdit) btnCancelOpEdit.addEventListener('click', closeOpEditModal);
