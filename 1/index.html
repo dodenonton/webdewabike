@@ -1370,6 +1370,11 @@
     .nota-history-actions { display: flex; gap: 0.35rem; }
     .btn-action-nota { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
     .btn-action-nota:hover { background: #d1fae5; }
+    .btn-action-nota.has-nota { font-weight: 800; border-width: 2px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.14); }
+    .btn-action-nota.nota-paid { background: #16a34a; color: #ffffff; border-color: #15803d; }
+    .btn-action-nota.nota-paid:hover { background: #15803d; color: #ffffff; }
+    .btn-action-nota.nota-unpaid { background: #dc2626; color: #ffffff; border-color: #b91c1c; }
+    .btn-action-nota.nota-unpaid:hover { background: #b91c1c; color: #ffffff; }
     @media (max-width: 960px) {
       .nota-layout { grid-template-columns: 1fr; }
       .nota-preview-card { position: static; }
@@ -2732,7 +2737,10 @@
         <section class="op-form-card nota-form-card">
           <div class="op-form-header">
             <h3><i class="fas fa-file-invoice-dollar" style="color: var(--primary);"></i> Buat Nota Cycling Tour</h3>
-            <button type="button" class="btn btn-outline" id="btnNotaNew" style="padding: 0.4rem 0.75rem; font-size: 0.78rem;"><i class="fas fa-plus"></i> Nota Baru</button>
+            <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline" id="btnNotaGoToBooking" style="display: none; padding: 0.4rem 0.75rem; font-size: 0.78rem; border-color: var(--primary); color: var(--primary);"><i class="fas fa-calendar-check"></i> <span>Lihat Bookingan</span></button>
+              <button type="button" class="btn btn-outline" id="btnNotaNew" style="padding: 0.4rem 0.75rem; font-size: 0.78rem;"><i class="fas fa-plus"></i> Nota Baru</button>
+            </div>
           </div>
           <div class="op-form-body">
             <form id="notaForm" autocomplete="off" onsubmit="return false;">
@@ -3093,6 +3101,41 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Nota Quick Preview Modal -->
+  <div class="modal-backdrop" id="notaQuickPreviewModal">
+    <div class="modal-content-card" style="max-width: 500px;">
+      <div class="modal-head">
+        <h3><i class="fas fa-file-invoice-dollar" style="color: var(--primary);"></i> <span id="notaQuickTitle">Preview Nota</span></h3>
+        <button type="button" class="modal-close" id="btnCloseNotaQuickModal" aria-label="Tutup">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1rem;">
+        <div id="notaQuickPreviewBody" style="background: #e2e8f0; border-radius: 10px; padding: 0.75rem; overflow-x: auto;"></div>
+      </div>
+      <div id="notaQuickActionsPanel" style="display: none; padding: 0.85rem 1rem 0.35rem; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+        <div class="nota-actions" style="margin-bottom: 0.5rem;">
+          <button type="button" class="btn btn-primary" id="btnNotaQuickSave"><i class="fas fa-save"></i> Simpan</button>
+          <button type="button" class="btn btn-outline" id="btnNotaQuickDownloadPng"><i class="fas fa-image"></i> Foto</button>
+          <button type="button" class="btn btn-outline" id="btnNotaQuickDownloadPdf"><i class="fas fa-file-pdf"></i> PDF</button>
+          <button type="button" class="btn nota-btn-share" id="btnNotaQuickSharePng"><i class="fas fa-share-nodes"></i> Share Foto</button>
+          <button type="button" class="btn nota-btn-share" id="btnNotaQuickSharePdf"><i class="fas fa-share-nodes"></i> Share PDF</button>
+          <button type="button" class="btn nota-btn-drive" id="btnNotaQuickDrive" title="Simpan PDF nota ke Google Drive"><i class="fab fa-google-drive"></i> Drive</button>
+        </div>
+        <div id="notaQuickDriveResult" style="display: none; margin-bottom: 0.5rem; padding: 0.55rem 0.75rem; border-radius: 8px; background: #eff6ff; border: 1px solid #bfdbfe; font-size: 0.8rem; color: #1e3a8a;"></div>
+      </div>
+      <div class="modal-foot" style="flex-wrap: wrap;">
+        <button type="button" class="btn btn-outline" id="btnNotaQuickActions" style="margin-right: auto;">
+          <i class="fas fa-bolt"></i>
+          <span>Aksi Nota</span>
+        </button>
+        <button type="button" class="btn btn-outline" id="btnCancelNotaQuick">Tutup</button>
+        <button type="button" class="btn btn-primary" id="btnGoToNotaPage">
+          <i class="fas fa-edit"></i>
+          <span>Buka / Edit di Halaman Nota</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -4689,6 +4732,34 @@ Message / Special Requests: ${specialRequests}`;
       return blocks.join('');
     }
 
+    function getBookingNotaInfo(item) {
+      const detail = String(item.detail || '');
+      const ket = String(item.ket || '');
+      const m = (detail + '\n' + ket).match(/nota\s*:\s*([A-Za-z0-9\-]+)/i);
+      const linkedNo = m ? m[1].trim() : '';
+      const history = typeof notaLoadHistory === 'function' ? notaLoadHistory() : [];
+
+      let saved = null;
+      if (linkedNo) {
+        saved = history.find(n => String(n.number || '').toLowerCase() === linkedNo.toLowerCase()) || null;
+      }
+      if (!saved) {
+        saved = history.find(n => n.linkedRow && n.linkedRow === item.row) || null;
+      }
+      if (saved) {
+        return {
+          exists: true,
+          number: saved.number || linkedNo,
+          status: saved.status === 'paid' ? 'paid' : 'unpaid',
+          saved
+        };
+      }
+      if (linkedNo) {
+        return { exists: true, number: linkedNo, status: 'unpaid', saved: null };
+      }
+      return { exists: false, number: '', status: '', saved: null };
+    }
+
     function renderOpTable() {
       if (!opTableBody) return;
       const todayIso = getLocalIsoDate(0);
@@ -4842,7 +4913,7 @@ Message / Special Requests: ${specialRequests}`;
           : '';
 
         return `
-          <tr style="--row-bg: ${escapeHtml(rowBg)}; background-color: var(--row-bg);">
+          <tr id="op-row-${item.row}" style="--row-bg: ${escapeHtml(rowBg)}; background-color: var(--row-bg);">
             <td class="op-sticky-col">
               <strong class="op-cell-editable" onclick="editOpCellInline(this, ${item.row}, 'tourDate', 'date')" title="Klik untuk edit Tanggal">${escapeHtml(item.tourDate || '-')}</strong>
               ${dateBadge}
@@ -4892,9 +4963,16 @@ Message / Special Requests: ${specialRequests}`;
                 <button type="button" class="btn-action btn-action-edit" onclick="openOpEditModal(${item.row})" title="Edit Jadwal & Keuangan">
                   <i class="fas fa-edit"></i> Edit
                 </button>
-                <button type="button" class="btn-action btn-action-nota" onclick="openNotaFromBooking(${item.row})" title="Buat Nota dari booking ini">
-                  <i class="fas fa-file-invoice-dollar"></i> Nota
-                </button>
+                ${(() => {
+                  const ni = getBookingNotaInfo(item);
+                  const cls = ni.exists ? ('has-nota ' + (ni.status === 'paid' ? 'nota-paid' : 'nota-unpaid')) : '';
+                  const ttl = ni.exists
+                    ? `Nota ${ni.number || ''} (${ni.status === 'paid' ? 'Sudah Bayar' : 'Belum Bayar'}) - Klik untuk lihat preview`
+                    : 'Buat Nota dari booking ini';
+                  return `<button type="button" class="btn-action btn-action-nota ${cls}" onclick="openNotaFromBooking(${item.row})" title="${escapeHtml(ttl)}">
+                    <i class="fas fa-file-invoice-dollar"></i> Nota
+                  </button>`;
+                })()}
               </div>
             </td>
             <td class="op-money">${formatRupiah(makanBiaya)}</td>
@@ -4913,6 +4991,8 @@ Message / Special Requests: ${specialRequests}`;
         `;
       }).join('');
       opTableBody.querySelectorAll('.op-inline-textarea').forEach(autoResizeOpTextarea);
+      if (typeof updateNotaBookingShortcut === 'function') updateNotaBookingShortcut();
+      if (typeof notaRenderHistory === 'function') notaRenderHistory();
 
       if (opTableFoot) {
         opTableFoot.style.display = 'table-footer-group';
@@ -5539,7 +5619,36 @@ Message / Special Requests: ${specialRequests}`;
       return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     }
     function notaLoadHistory() {
-      try { return JSON.parse(localStorage.getItem(NOTA_STORAGE_KEY) || '[]') || []; } catch (e) { return []; }
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem(NOTA_STORAGE_KEY) || '[]') || []; } catch (e) { list = []; }
+      let skipSeed = false;
+      try { skipSeed = localStorage.getItem('dewa_nota_deleted_261121_01') === '1'; } catch (e) {}
+      if (!skipSeed && !list.some(n => String(n.number || '').toUpperCase() === 'DBT-261121-01')) {
+        list.push({
+          number: 'DBT-261121-01',
+          date: '2026-11-21',
+          guestName: 'Kanya',
+          phone: '+62 813-5338-6332',
+          hotel: 'IBU: The Sanctuary, Kemenuh',
+          tourDate: '2026-11-21',
+          package: 'Ubud Countryside with Rice Fields',
+          currency: 'IDR',
+          discount: '',
+          paid: '750000',
+          payMethod: 'Cash',
+          statusMode: 'paid',
+          note: '',
+          items: [
+            { desc: 'Adult normal bike', qty: 1, price: 250000 },
+            { desc: 'Adult e-bike', qty: 1, price: 100000 },
+            { desc: 'Transportation', qty: 1, price: 400000 }
+          ],
+          total: 750000,
+          status: 'paid',
+          savedAt: '2026-11-21T10:46:00.000Z'
+        });
+      }
+      return list;
     }
     function notaSaveHistory(list) {
       localStorage.setItem(NOTA_STORAGE_KEY, JSON.stringify(list.slice(0, 200)));
@@ -5617,14 +5726,10 @@ Message / Special Requests: ${specialRequests}`;
       }
     }
 
-    function notaRenderPreview() {
-      if (!notaPaper) return;
-      notaFileCache = null;
-      const d = notaCollect();
+    function notaBuildPaperHtml(d) {
       const cur = d.currency || 'IDR';
-      const statusLabel = { paid: 'PAID', partial: 'DEPOSIT', unpaid: 'UNPAID' }[d.status];
-
-      const itemsHtml = d.items.length ? d.items.map(it => `
+      const statusLabel = { paid: 'PAID', partial: 'DEPOSIT', unpaid: 'UNPAID' }[d.status] || 'UNPAID';
+      const itemsHtml = d.items && d.items.length ? d.items.map(it => `
         <tr>
           <td>${escapeHtml(it.desc || '-')}</td>
           <td class="c">${it.qty}</td>
@@ -5632,7 +5737,7 @@ Message / Special Requests: ${specialRequests}`;
           <td class="r">${notaFmt(it.qty * it.price, cur)}</td>
         </tr>`).join('') : `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Belum ada rincian biaya</td></tr>`;
 
-      notaPaper.innerHTML = `
+      return `
         <div class="np-head">
           <div class="np-brand">
             <img src="${DEWA_LOGO_DATA_URI}" alt="Dewa Bike Tour">
@@ -5666,15 +5771,15 @@ Message / Special Requests: ${specialRequests}`;
             <tbody>${itemsHtml}</tbody>
           </table>
           <div class="np-totals">
-            <div class="np-totals-row"><span>Subtotal</span><span>${notaFmt(d.subtotal, cur)}</span></div>
+            <div class="np-totals-row"><span>Subtotal</span><span>${notaFmt(d.subtotal || 0, cur)}</span></div>
             ${d.discountNum ? `<div class="np-totals-row"><span>Discount</span><span>-${notaFmt(d.discountNum, cur)}</span></div>` : ''}
-            <div class="np-totals-row grand"><span>Total</span><span>${notaFmt(d.total, cur)}</span></div>
-            <div class="np-totals-row"><span>Paid</span><span>${notaFmt(d.paidNum, cur)}</span></div>
-            ${d.balance > 0 ? `<div class="np-totals-row due"><span>Balance Due</span><span>${notaFmt(d.balance, cur)}</span></div>` : ''}
+            <div class="np-totals-row grand"><span>Total</span><span>${notaFmt(d.total || 0, cur)}</span></div>
+            <div class="np-totals-row"><span>Paid</span><span>${notaFmt(d.paidNum || 0, cur)}</span></div>
+            ${(d.balance || 0) > 0 ? `<div class="np-totals-row due"><span>Balance Due</span><span>${notaFmt(d.balance, cur)}</span></div>` : ''}
           </div>
           <div class="np-stamp-wrap">
             <div class="np-pay">Payment: <strong>${escapeHtml(d.payMethod || '-')}</strong></div>
-            <div class="np-stamp ${d.status}">${statusLabel}</div>
+            <div class="np-stamp ${d.status || 'unpaid'}">${statusLabel}</div>
           </div>
           ${d.note ? `<div class="np-note">${escapeHtml(d.note)}</div>` : ''}
           <div class="np-foot">
@@ -5682,9 +5787,17 @@ Message / Special Requests: ${specialRequests}`;
             Terima kasih · Have a wonderful time in Bali
           </div>
         </div>`;
+    }
+
+    function notaRenderPreview() {
+      if (!notaPaper) return;
+      notaFileCache = null;
+      const d = notaCollect();
+      notaPaper.innerHTML = notaBuildPaperHtml(d);
       const img = notaPaper.querySelector('img');
       if (img && !img.complete) img.addEventListener('load', notaFitPreview, { once: true });
       notaFitPreview();
+      if (typeof updateNotaBookingShortcut === 'function') updateNotaBookingShortcut();
     }
 
     function notaFill(data) {
@@ -5712,6 +5825,77 @@ Message / Special Requests: ${specialRequests}`;
       }, prefill));
     }
 
+    function findLinkedBookingForNota(notaNumber, linkedRow) {
+      if (!Array.isArray(allOpBookings) || !allOpBookings.length) return null;
+      if (linkedRow) {
+        const byRow = allOpBookings.find(x => Number(x.row) === Number(linkedRow));
+        if (byRow) return byRow;
+      }
+      const no = String(notaNumber || '').trim().toUpperCase();
+      if (!no) return null;
+      return allOpBookings.find(item => {
+        const m = String(item.detail || '').match(/nota\s*[:#-]?\s*([A-Z0-9-]+)/i);
+        return m && m[1].trim().toUpperCase() === no;
+      }) || null;
+    }
+
+    function updateNotaBookingShortcut() {
+      const btn = notaEl('btnNotaGoToBooking');
+      if (!btn) return;
+      const no = notaEl('notaNumber') ? notaEl('notaNumber').value.trim() : '';
+      const existing = no ? notaLoadHistory().find(n => String(n.number || '').trim().toUpperCase() === no.toUpperCase()) : null;
+      const linked = findLinkedBookingForNota(no, currentNotaLinkedRow || (existing && existing.linkedRow));
+      if (linked) {
+        btn.style.display = 'inline-flex';
+        btn.dataset.row = String(linked.row);
+        const label = linked.name ? `Booking: ${linked.name}` : 'Lihat Bookingan';
+        const span = btn.querySelector('span');
+        if (span) span.textContent = label.length > 26 ? label.slice(0, 24) + '...' : label;
+        btn.title = `Buka bookingan ${linked.name || ''} (${linked.tourDate || ''}) di Jadwal`.trim();
+      } else {
+        btn.style.display = 'none';
+        delete btn.dataset.row;
+      }
+    }
+
+    window.goToBookingFromNota = function(rowNumber) {
+      const targetRow = Number(rowNumber);
+      const item = allOpBookings.find(x => Number(x.row) === targetRow);
+      if (!item) { showToast('Bookingan tidak ditemukan di jadwal.', 'warning'); return; }
+      if (window.switchAdminTab) window.switchAdminTab('jadwal');
+
+      let tr = document.getElementById('op-row-' + targetRow);
+      if (!tr) {
+        // Reset filter agar baris booking pasti tampil di tabel Jadwal
+        currentOpFilter = 'all';
+        document.querySelectorAll('.op-filter-pill').forEach(p => {
+          p.classList.toggle('active', p.dataset.filter === 'all');
+        });
+        if (opSearchInput) opSearchInput.value = '';
+        if (opFilterDate) opFilterDate.value = '';
+        if (opFilterMonth) opFilterMonth.value = '';
+        const iso = parseOpDateToIso(item.tourDate);
+        if (iso && iso < currentYearPrefix) opShowOlderYears = true;
+        renderOpTable();
+        tr = document.getElementById('op-row-' + targetRow);
+      }
+
+      if (tr) {
+        setTimeout(() => {
+          tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const prevShadow = tr.style.boxShadow;
+          const prevTransition = tr.style.transition;
+          tr.style.transition = 'box-shadow 0.3s ease';
+          tr.style.boxShadow = 'inset 0 0 0 3px #059669';
+          setTimeout(() => {
+            tr.style.boxShadow = prevShadow || '';
+            tr.style.transition = prevTransition || '';
+          }, 2600);
+        }, 80);
+      }
+      showToast(`Menuju bookingan ${item.name || ''}`.trim());
+    };
+
     function notaRenderHistory() {
       const listEl = notaEl('notaHistoryList');
       const countEl = notaEl('notaHistoryCount');
@@ -5724,6 +5908,10 @@ Message / Special Requests: ${specialRequests}`;
       }
       listEl.innerHTML = list.map((n, idx) => {
         const st = { paid: 'LUNAS', partial: 'DP', unpaid: 'BELUM' }[n.status] || '';
+        const linked = findLinkedBookingForNota(n.number, n.linkedRow);
+        const bookingBtn = linked
+          ? `<button type="button" class="btn-action" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0;" onclick="goToBookingFromNota(${linked.row})" title="Lihat bookingan di Jadwal"><i class="fas fa-calendar-check"></i> Booking</button>`
+          : '';
         return `
           <div class="nota-history-item">
             <div class="nota-history-main">
@@ -5731,6 +5919,7 @@ Message / Special Requests: ${specialRequests}`;
               <div class="nota-history-sub">${escapeHtml(notaFmtDate(n.tourDate))} · ${escapeHtml(n.package || '-')} · <strong>${notaFmt(n.total || 0, n.currency)}</strong> · ${st}</div>
             </div>
             <div class="nota-history-actions">
+              ${bookingBtn}
               <button type="button" class="btn-action btn-action-edit" onclick="notaOpenSaved(${idx})"><i class="fas fa-folder-open"></i> Buka</button>
               <button type="button" class="btn-action btn-action-del" onclick="notaDeleteSaved(${idx})" title="Hapus"><i class="fas fa-trash-alt"></i></button>
             </div>
@@ -5738,20 +5927,25 @@ Message / Special Requests: ${specialRequests}`;
       }).join('');
     }
 
+    let currentNotaLinkedRow = null;
+
     function notaSaveCurrent(silent) {
       const d = notaCollect();
       if (!d.guestName) { showToast('Isi Nama Tamu terlebih dahulu.', 'warning'); return null; }
       if (!d.number) { d.number = notaGenerateNumber(d.date); notaEl('notaNumber').value = d.number; }
+      const existing = notaLoadHistory().find(n => n.number === d.number);
       const record = {
         number: d.number, date: d.date, guestName: d.guestName, phone: d.phone, hotel: d.hotel,
         tourDate: d.tourDate, package: d.package, currency: d.currency, discount: d.discount, paid: d.paid,
         payMethod: d.payMethod, statusMode: d.statusMode, note: d.note, items: d.items, total: d.total, status: d.status,
+        linkedRow: currentNotaLinkedRow || (existing && existing.linkedRow) || null,
         savedAt: new Date().toISOString()
       };
       const list = notaLoadHistory().filter(n => n.number !== record.number);
       list.unshift(record);
       notaSaveHistory(list);
       notaRenderHistory();
+      renderOpTable();
       if (!silent) showToast(`Nota ${record.number} tersimpan!`);
       return record;
     }
@@ -5759,6 +5953,7 @@ Message / Special Requests: ${specialRequests}`;
     window.notaOpenSaved = function(idx) {
       const n = notaLoadHistory()[idx];
       if (!n) return;
+      currentNotaLinkedRow = n.linkedRow || null;
       notaFill(n);
       window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
       showToast(`Nota ${n.number} dibuka.`);
@@ -5767,9 +5962,13 @@ Message / Special Requests: ${specialRequests}`;
       const list = notaLoadHistory();
       const n = list[idx];
       if (!n || !confirm(`Hapus nota ${n.number} (${n.guestName})?`)) return;
+      if (String(n.number || '').toUpperCase() === 'DBT-261121-01') {
+        try { localStorage.setItem('dewa_nota_deleted_261121_01', '1'); } catch (e) {}
+      }
       list.splice(idx, 1);
       notaSaveHistory(list);
       notaRenderHistory();
+      renderOpTable();
       showToast('Nota dihapus.');
     };
 
@@ -5793,7 +5992,8 @@ Message / Special Requests: ${specialRequests}`;
       return ['Nota', safe(d.number), safe(d.guestName)].filter(Boolean).join('_');
     }
 
-    async function notaBuildFiles() {
+    async function notaBuildFiles(targetPaperEl) {
+      const paperEl = targetPaperEl || notaPaper;
       const d = notaCollect();
       const key = JSON.stringify(d);
       if (notaFileCache && notaFileCache.key === key) return notaFileCache;
@@ -5802,25 +6002,26 @@ Message / Special Requests: ${specialRequests}`;
         notaLoadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')
       ]);
       if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
-      const prevTransform = notaPaper.style.transform;
-      notaPaper.style.transform = 'none';
+      const prevTransform = paperEl.style.transform;
+      paperEl.style.transform = 'none';
+      const cloneId = paperEl.id || 'notaPaper';
       let canvas;
       try {
-        canvas = await window.html2canvas(notaPaper, {
+        canvas = await window.html2canvas(paperEl, {
           scale: 3,
           backgroundColor: '#ffffff',
           useCORS: true,
           logging: false,
           width: 420,
-          height: notaPaper.offsetHeight,
+          height: paperEl.offsetHeight,
           onclone: doc => {
-            const el = doc.getElementById('notaPaper');
+            const el = doc.getElementById(cloneId);
             if (el) { el.style.transform = 'none'; el.style.margin = '0'; el.style.boxShadow = 'none'; el.style.borderRadius = '0'; }
           }
         });
       } finally {
-        notaPaper.style.transform = prevTransform;
-        notaFitPreview();
+        paperEl.style.transform = prevTransform;
+        if (paperEl === notaPaper) notaFitPreview();
       }
       const base = notaFileBaseName(d);
       const pngBlob = await new Promise(res => canvas.toBlob(res, 'image/png'));
@@ -5861,7 +6062,7 @@ Message / Special Requests: ${specialRequests}`;
       return false;
     }
 
-    async function notaExport(kind, share, btn) {
+    async function notaExport(kind, share, btn, targetPaperEl) {
       const d0 = notaCollect();
       if (!d0.guestName) { showToast('Isi Nama Tamu terlebih dahulu.', 'warning'); return; }
       const cachedReady = notaFileCache && notaFileCache.key === JSON.stringify(d0);
@@ -5880,7 +6081,7 @@ Message / Special Requests: ${specialRequests}`;
       if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Proses...'; }
       try {
         notaSaveCurrent(true);
-        const files = await notaBuildFiles();
+        const files = await notaBuildFiles(targetPaperEl);
         const file = files[kind];
         if (share) {
           try {
@@ -5904,43 +6105,190 @@ Message / Special Requests: ${specialRequests}`;
       }
     }
 
+    async function notaSaveToDrive(btn, targetPaperEl, customDriveRes) {
+      const d0 = notaCollect();
+      if (!d0.guestName) { showToast('Isi Nama Tamu terlebih dahulu.', 'warning'); return; }
+      const orig = btn ? btn.innerHTML : '';
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Mengunggah...'; }
+      const driveRes = customDriveRes || notaEl('notaDriveResult');
+      try {
+        notaSaveCurrent(true);
+        const files = await notaBuildFiles(targetPaperEl);
+        const pdfFile = files.pdf;
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const s = String(reader.result || '');
+            const idx = s.indexOf(',');
+            resolve(idx >= 0 ? s.slice(idx + 1) : s);
+          };
+          reader.onerror = () => reject(new Error('Gagal membaca file PDF'));
+          reader.readAsDataURL(pdfFile);
+        });
+        const payload = JSON.stringify({
+          action: 'saveNotaToDrive',
+          noEmail: true,
+          fileName: pdfFile.name,
+          mimeType: 'application/pdf',
+          base64
+        });
+        const resp = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: payload
+        });
+        const json = await resp.json();
+        if (json && json.status === 'success') {
+          showToast('Nota berhasil disimpan ke Google Drive!');
+          if (driveRes) {
+            driveRes.style.display = 'block';
+            driveRes.innerHTML = `<i class="fab fa-google-drive"></i> Tersimpan di Drive: <strong>${escapeHtml(json.fileName || pdfFile.name)}</strong> ` +
+              (json.fileUrl ? `— <a href="${escapeHtml(json.fileUrl)}" target="_blank" rel="noopener" style="font-weight:700; color:#1d4ed8; text-decoration:underline;">Buka File</a>` : '') +
+              (json.folderUrl ? ` · <a href="${escapeHtml(json.folderUrl)}" target="_blank" rel="noopener" style="font-weight:700; color:#1d4ed8; text-decoration:underline;">Buka Folder</a>` : '');
+          }
+        } else {
+          throw new Error((json && json.message) || 'Aksi saveNotaToDrive belum aktif di Google Apps Script. Deploy ulang google-apps-script.js.');
+        }
+      } catch (err) {
+        alert('Gagal menyimpan ke Google Drive: ' + err.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = orig; }
+      }
+    }
+
+    const notaQuickPreviewModal = document.getElementById('notaQuickPreviewModal');
+    const notaQuickPreviewBody = document.getElementById('notaQuickPreviewBody');
+    const notaQuickTitle = document.getElementById('notaQuickTitle');
+    const btnCloseNotaQuickModal = document.getElementById('btnCloseNotaQuickModal');
+    const btnCancelNotaQuick = document.getElementById('btnCancelNotaQuick');
+    const btnGoToNotaPage = document.getElementById('btnGoToNotaPage');
+    const btnNotaQuickActions = document.getElementById('btnNotaQuickActions');
+    const notaQuickActionsPanel = document.getElementById('notaQuickActionsPanel');
+    const notaQuickDriveResult = document.getElementById('notaQuickDriveResult');
+    let pendingNotaOpen = null; // { mode: 'fill'|'reset', data, rowNumber, linkedNo }
+
+    function syncPendingNotaToForm() {
+      const p = pendingNotaOpen;
+      if (!p) return null;
+      currentNotaLinkedRow = p.rowNumber || null;
+      if (p.mode === 'fill') notaFill(p.data);
+      else notaReset(p.data);
+      return p;
+    }
+
+    function closeNotaQuickModal() {
+      if (notaQuickPreviewModal) notaQuickPreviewModal.classList.remove('active');
+      unlockBodyScroll();
+    }
+    if (btnCloseNotaQuickModal) btnCloseNotaQuickModal.addEventListener('click', closeNotaQuickModal);
+    if (btnCancelNotaQuick) btnCancelNotaQuick.addEventListener('click', closeNotaQuickModal);
+    if (notaQuickPreviewModal) {
+      notaQuickPreviewModal.addEventListener('click', (e) => {
+        if (e.target === notaQuickPreviewModal) closeNotaQuickModal();
+      });
+    }
+    if (btnNotaQuickActions && notaQuickActionsPanel) {
+      btnNotaQuickActions.addEventListener('click', () => {
+        const isOpen = notaQuickActionsPanel.style.display !== 'none';
+        notaQuickActionsPanel.style.display = isOpen ? 'none' : 'block';
+        btnNotaQuickActions.classList.toggle('btn-primary', !isOpen);
+        btnNotaQuickActions.classList.toggle('btn-outline', isOpen);
+      });
+    }
+    function getNotaQuickPaper() {
+      return document.getElementById('notaQuickPaper') || notaPaper;
+    }
+    const qSaveBtn = document.getElementById('btnNotaQuickSave');
+    const qPngBtn = document.getElementById('btnNotaQuickDownloadPng');
+    const qPdfBtn = document.getElementById('btnNotaQuickDownloadPdf');
+    const qSharePngBtn = document.getElementById('btnNotaQuickSharePng');
+    const qSharePdfBtn = document.getElementById('btnNotaQuickSharePdf');
+    const qDriveBtn = document.getElementById('btnNotaQuickDrive');
+    if (qSaveBtn) qSaveBtn.addEventListener('click', () => { syncPendingNotaToForm(); notaSaveCurrent(false); });
+    if (qPngBtn) qPngBtn.addEventListener('click', e => { syncPendingNotaToForm(); notaExport('png', false, e.currentTarget, getNotaQuickPaper()); });
+    if (qPdfBtn) qPdfBtn.addEventListener('click', e => { syncPendingNotaToForm(); notaExport('pdf', false, e.currentTarget, getNotaQuickPaper()); });
+    if (qSharePngBtn) qSharePngBtn.addEventListener('click', e => { syncPendingNotaToForm(); notaExport('png', true, e.currentTarget, getNotaQuickPaper()); });
+    if (qSharePdfBtn) qSharePdfBtn.addEventListener('click', e => { syncPendingNotaToForm(); notaExport('pdf', true, e.currentTarget, getNotaQuickPaper()); });
+    if (qDriveBtn) qDriveBtn.addEventListener('click', e => { syncPendingNotaToForm(); notaSaveToDrive(e.currentTarget, getNotaQuickPaper(), notaQuickDriveResult); });
+
+    if (btnGoToNotaPage) {
+      btnGoToNotaPage.addEventListener('click', () => {
+        const p = pendingNotaOpen;
+        closeNotaQuickModal();
+        if (!p) return;
+        syncPendingNotaToForm();
+        if (p.mode === 'fill') showToast(`Membuka Nota ${p.data.number}`);
+        else if (p.linkedNo) showToast(`Terhubung ke Nota ${p.linkedNo}`);
+        if (window.switchAdminTab) window.switchAdminTab('nota');
+        window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
+      });
+    }
+
     window.openNotaFromBooking = function(rowNumber) {
       const item = allOpBookings.find(x => x.row === rowNumber);
       if (!item) return;
-      const detail = String(item.detail || '');
-      const notaMatch = (detail + '\n' + String(item.ket || '')).match(/nota\s*:\s*([A-Za-z0-9\-]+)/i);
-      const linkedNo = notaMatch ? notaMatch[1].trim() : '';
+      const ni = getBookingNotaInfo(item);
+      let previewData;
 
-      if (linkedNo) {
-        const saved = notaLoadHistory().find(n => String(n.number || '').toLowerCase() === linkedNo.toLowerCase());
-        if (saved) {
-          notaFill(saved);
-          if (window.switchAdminTab) window.switchAdminTab('nota');
-          window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
-          showToast(`Membuka Nota ${saved.number}`);
-          return;
+      if (ni.saved) {
+        const s = ni.saved;
+        const subtotal = (s.items || []).reduce((acc, it) => acc + notaNum(it.qty) * notaNum(it.price), 0);
+        const discountNum = notaNum(s.discount);
+        const total = Math.max(0, subtotal - discountNum);
+        let paidNum = notaNum(s.paid);
+        if (s.status === 'paid' && total > 0 && paidNum < total) paidNum = total;
+        previewData = Object.assign({}, s, {
+          subtotal, discountNum, total, paidNum, balance: Math.max(0, total - paidNum)
+        });
+        pendingNotaOpen = { mode: 'fill', data: s, rowNumber, linkedNo: ni.number };
+      } else {
+        const detail = String(item.detail || '');
+        const locMatch = detail.match(/(?:location|pick\s*-?\s*up|hotel)\s*:\s*(.+)/i);
+        let price = parseRupiahNum(item.pendapatan) || '';
+        if (!price) {
+          const hargaMatch = detail.match(/harga\s*(?:net|total)?\s*:\s*(?:rp\.?\s*)?([0-9.,]+)/i);
+          if (hargaMatch) price = parseRupiahNum(hargaMatch[1]) || '';
         }
+        const today = getLocalIsoDate(0);
+        const prefill = {
+          number: ni.number || notaGenerateNumber(today),
+          date: today,
+          guestName: item.name || '',
+          phone: item.phone || '',
+          hotel: locMatch ? locMatch[1].trim() : '',
+          tourDate: parseOpDateToIso(item.tourDate) || '',
+          package: item.tourPackage || '',
+          currency: 'IDR',
+          discount: '',
+          paid: '',
+          payMethod: 'Cash',
+          statusMode: 'auto',
+          note: '',
+          items: [{ desc: item.tourPackage || 'Cycling Tour', qty: 1, price }]
+        };
+        const subtotal = notaNum(price);
+        previewData = Object.assign({}, prefill, {
+          subtotal, discountNum: 0, total: subtotal, paidNum: 0, balance: subtotal, status: 'unpaid'
+        });
+        pendingNotaOpen = { mode: 'reset', data: prefill, rowNumber, linkedNo: ni.number };
       }
 
-      const locMatch = detail.match(/(?:location|pick\s*-?\s*up|hotel)\s*:\s*(.+)/i);
-      let price = parseRupiahNum(item.pendapatan) || '';
-      if (!price) {
-        const hargaMatch = detail.match(/harga\s*(?:net|total)?\s*:\s*(?:rp\.?\s*)?([0-9.,]+)/i);
-        if (hargaMatch) price = parseRupiahNum(hargaMatch[1]) || '';
+      if (notaQuickActionsPanel) notaQuickActionsPanel.style.display = 'none';
+      if (btnNotaQuickActions) {
+        btnNotaQuickActions.classList.remove('btn-primary');
+        btnNotaQuickActions.classList.add('btn-outline');
       }
-      const prefill = {
-        guestName: item.name || '',
-        phone: item.phone || '',
-        hotel: locMatch ? locMatch[1].trim() : '',
-        tourDate: parseOpDateToIso(item.tourDate) || '',
-        package: item.tourPackage || '',
-        items: [{ desc: item.tourPackage || 'Cycling Tour', qty: 1, price }]
-      };
-      if (linkedNo) prefill.number = linkedNo;
-      notaReset(prefill);
-      if (window.switchAdminTab) window.switchAdminTab('nota');
-      window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
-      if (linkedNo) showToast(`Terhubung ke Nota ${linkedNo}`);
+      if (notaQuickDriveResult) { notaQuickDriveResult.style.display = 'none'; notaQuickDriveResult.innerHTML = ''; }
+      if (notaQuickTitle) {
+        notaQuickTitle.textContent = previewData.number ? `Preview Nota ${previewData.number}` : 'Preview Nota';
+      }
+      if (notaQuickPreviewBody && notaQuickPreviewModal) {
+        notaQuickPreviewBody.innerHTML = `<div class="nota-paper" id="notaQuickPaper" style="margin: 0 auto;">${notaBuildPaperHtml(previewData)}</div>`;
+        notaQuickPreviewModal.classList.add('active');
+        lockBodyScroll();
+      } else if (btnGoToNotaPage) {
+        btnGoToNotaPage.click();
+      }
     };
 
     let notaInitialized = false;
@@ -5967,62 +6315,15 @@ Message / Special Requests: ${specialRequests}`;
           notaRenderPreview();
         });
       });
-      notaEl('btnNotaNew').addEventListener('click', () => { notaReset(); showToast('Form nota baru siap.'); });
+      const goBookingBtn = notaEl('btnNotaGoToBooking');
+      if (goBookingBtn) goBookingBtn.addEventListener('click', () => {
+        if (goBookingBtn.dataset.row) window.goToBookingFromNota(goBookingBtn.dataset.row);
+      });
+      notaEl('btnNotaNew').addEventListener('click', () => { currentNotaLinkedRow = null; notaReset(); showToast('Form nota baru siap.'); });
       notaEl('btnNotaSave').addEventListener('click', () => notaSaveCurrent(false));
       notaEl('btnNotaDownloadPng').addEventListener('click', e => notaExport('png', false, e.currentTarget));
       notaEl('btnNotaDownloadPdf').addEventListener('click', e => notaExport('pdf', false, e.currentTarget));
       notaEl('btnNotaSharePng').addEventListener('click', e => notaExport('png', true, e.currentTarget));
-      async function notaSaveToDrive(btn) {
-        const d0 = notaCollect();
-        if (!d0.guestName) { showToast('Isi Nama Tamu terlebih dahulu.', 'warning'); return; }
-        const orig = btn ? btn.innerHTML : '';
-        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Mengunggah...'; }
-        const driveRes = notaEl('notaDriveResult');
-        try {
-          notaSaveCurrent(true);
-          const files = await notaBuildFiles();
-          const pdfFile = files.pdf;
-          const base64 = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-              const s = String(reader.result || '');
-              const idx = s.indexOf(',');
-              resolve(idx >= 0 ? s.slice(idx + 1) : s);
-            };
-            reader.onerror = () => reject(new Error('Gagal membaca file PDF'));
-            reader.readAsDataURL(pdfFile);
-          });
-          const payload = JSON.stringify({
-            action: 'saveNotaToDrive',
-            noEmail: true,
-            fileName: pdfFile.name,
-            mimeType: 'application/pdf',
-            base64
-          });
-          const resp = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: payload
-          });
-          const json = await resp.json();
-          if (json && json.status === 'success') {
-            showToast('Nota berhasil disimpan ke Google Drive!');
-            if (driveRes) {
-              driveRes.style.display = 'block';
-              driveRes.innerHTML = `<i class="fab fa-google-drive"></i> Tersimpan di Drive: <strong>${escapeHtml(json.fileName || pdfFile.name)}</strong> ` +
-                (json.fileUrl ? `— <a href="${escapeHtml(json.fileUrl)}" target="_blank" rel="noopener" style="font-weight:700; color:#1d4ed8; text-decoration:underline;">Buka File</a>` : '') +
-                (json.folderUrl ? ` · <a href="${escapeHtml(json.folderUrl)}" target="_blank" rel="noopener" style="font-weight:700; color:#1d4ed8; text-decoration:underline;">Buka Folder</a>` : '');
-            }
-          } else {
-            throw new Error((json && json.message) || 'Aksi saveNotaToDrive belum aktif di Google Apps Script. Deploy ulang google-apps-script.js.');
-          }
-        } catch (err) {
-          alert('Gagal menyimpan ke Google Drive: ' + err.message);
-        } finally {
-          if (btn) { btn.disabled = false; btn.innerHTML = orig; }
-        }
-      }
-
       notaEl('btnNotaSharePdf').addEventListener('click', e => notaExport('pdf', true, e.currentTarget));
       const driveBtn = notaEl('btnNotaDrive');
       if (driveBtn) driveBtn.addEventListener('click', e => notaSaveToDrive(e.currentTarget));
