@@ -4214,13 +4214,42 @@ Message / Special Requests: ${specialRequests}`;
       renderOpTable();
     };
 
+    function isOpRiderLine(line) {
+      const s = String(line || '').trim().toLowerCase();
+      if (!s) return false;
+      return /^[-•*]?\s*\d+\s*x\s+/.test(s) ||
+             /^[-•*]\s*\d+\s+/.test(s) ||
+             /^\d+\s+(adults?|kids?|child(?:ren)?|sepeda|e-?bike|pax|infant|baby)\b/.test(s) ||
+             /^(backseat|baby\s*seat|child\s*seat)\b/.test(s);
+    }
+
     function formatOpDetailHtml(detailText) {
       const raw = String(detailText || '').trim();
       if (!raw) return '<div class="op-detail-line">-</div>';
-      return raw.split(/\r?\n/).map(line => {
-        if (!line.trim()) return '<div class="op-detail-spacer"></div>';
-        return `<div class="op-detail-line">${escapeHtml(line)}</div>`;
-      }).join('');
+      const lines = raw.split(/\r?\n/);
+      const blocks = [];
+      let riderGroup = [];
+
+      const flushRiderGroup = () => {
+        if (riderGroup.length > 0) {
+          blocks.push(`<div class="op-detail-line">${riderGroup.map(escapeHtml).join('<br>')}</div>`);
+          riderGroup = [];
+        }
+      };
+
+      lines.forEach(line => {
+        if (!line.trim()) {
+          flushRiderGroup();
+          blocks.push('<div class="op-detail-spacer"></div>');
+        } else if (isOpRiderLine(line)) {
+          riderGroup.push(line);
+        } else {
+          flushRiderGroup();
+          blocks.push(`<div class="op-detail-line">${escapeHtml(line)}</div>`);
+        }
+      });
+      flushRiderGroup();
+      return blocks.join('');
     }
 
     function renderOpTable() {
