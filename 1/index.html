@@ -1178,6 +1178,203 @@
       border-color: var(--primary);
       color: var(--primary);
     }
+    /* ===== NOTA CYCLING TOUR ===== */
+    .nota-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 470px);
+      gap: 1.25rem;
+      align-items: start;
+    }
+    .nota-form-card { margin-bottom: 0; }
+    .nota-section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin: 1.2rem 0 0.55rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .nota-section-title i { color: var(--primary); margin-right: 0.3rem; }
+    .nota-items-head, .nota-item-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 64px 120px 34px;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .nota-items-head {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0 0.1rem 0.3rem;
+    }
+    .nota-item-row { margin-bottom: 0.45rem; }
+    .nota-item-row input {
+      width: 100%;
+      padding: 0.5rem 0.6rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--dark);
+      background: #fff;
+    }
+    .nota-item-row input:focus { outline: none; border-color: var(--primary); }
+    .nota-item-row .nota-item-qty { text-align: center; }
+    .nota-item-del {
+      width: 34px; height: 34px;
+      border: 1.5px solid #fecaca;
+      background: #fff5f5;
+      color: var(--danger);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .nota-quick-items { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.2rem; }
+    .nota-status-auto {
+      padding: 0.55rem 0.7rem;
+      border-radius: var(--radius-sm);
+      font-weight: 800;
+      font-size: 0.85rem;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .nota-status-auto.paid { background: #dcfce7; color: #166534; }
+    .nota-status-auto.partial { background: #fef3c7; color: #92400e; }
+    .nota-status-auto.unpaid { background: #fee2e2; color: #991b1b; }
+    .nota-preview-card {
+      position: sticky;
+      top: 1rem;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 1rem;
+    }
+    .nota-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+      margin-bottom: 0.9rem;
+    }
+    .nota-actions .btn {
+      justify-content: center;
+      padding: 0.55rem 0.5rem;
+      font-size: 0.8rem;
+    }
+    .nota-actions .btn:disabled { opacity: 0.6; cursor: wait; }
+    .nota-btn-share {
+      background: var(--wa-green);
+      color: #fff;
+      border: none;
+    }
+    .nota-btn-share:hover { background: var(--wa-dark); color: #fff; }
+    .nota-preview-scroll {
+      overflow: hidden;
+      background: #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+    }
+    #notaPaperFit { position: relative; }
+    /* Kertas nota (yang di-capture menjadi foto / PDF) */
+    .nota-paper {
+      width: 420px;
+      margin: 0 auto;
+      background: #ffffff;
+      color: #0f172a;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 12px;
+      line-height: 1.4;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+    }
+    .np-head {
+      background: #105b38;
+      color: #ffffff;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .np-brand { display: flex; gap: 10px; align-items: center; }
+    .np-brand img { width: 42px; height: 42px; object-fit: contain; background: #fff; border-radius: 8px; padding: 3px; }
+    .np-brand-name { font-size: 15px; font-weight: 800; letter-spacing: 0.01em; }
+    .np-brand-sub { font-size: 9.5px; opacity: 0.88; line-height: 1.35; margin-top: 2px; }
+    .np-title { text-align: right; }
+    .np-title-main { font-size: 16px; font-weight: 800; letter-spacing: 0.08em; }
+    .np-title-meta { font-size: 10px; opacity: 0.92; margin-top: 3px; line-height: 1.45; }
+    .np-body { padding: 14px 18px 16px; }
+    .np-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    .np-label { font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; }
+    .np-value { font-size: 12px; font-weight: 600; color: #0f172a; word-break: break-word; }
+    .np-value + .np-label { margin-top: 6px; }
+    .np-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .np-table th {
+      font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;
+      color: #64748b; text-align: left; padding: 6px 4px; border-bottom: 1.5px solid #0f172a;
+    }
+    .np-table td { padding: 7px 4px; border-bottom: 1px solid #e2e8f0; vertical-align: top; font-size: 11.5px; }
+    .np-table .r { text-align: right; white-space: nowrap; }
+    .np-table .c { text-align: center; }
+    .np-totals { margin-top: 10px; margin-left: auto; width: 62%; }
+    .np-totals-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11.5px; }
+    .np-totals-row.grand {
+      border-top: 1.5px solid #0f172a; margin-top: 4px; padding-top: 6px;
+      font-size: 14px; font-weight: 800; color: #105b38;
+    }
+    .np-totals-row.due { font-weight: 800; color: #b91c1c; }
+    .np-stamp-wrap { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; gap: 10px; }
+    .np-stamp {
+      display: inline-block; padding: 5px 12px; border: 2.5px solid currentColor; border-radius: 6px;
+      font-size: 14px; font-weight: 900; letter-spacing: 0.12em; transform: rotate(-6deg);
+    }
+    .np-stamp.paid { color: #15803d; }
+    .np-stamp.partial { color: #b45309; }
+    .np-stamp.unpaid { color: #b91c1c; }
+    .np-pay { font-size: 10.5px; color: #475569; }
+    .np-note {
+      margin-top: 12px; padding: 8px 10px; background: #f8fafc; border-left: 3px solid #105b38;
+      font-size: 10.5px; color: #334155; white-space: pre-wrap; word-break: break-word;
+    }
+    .np-foot {
+      margin-top: 14px; padding-top: 10px; border-top: 1px dashed #cbd5e1;
+      text-align: center; font-size: 10.5px; color: #475569;
+    }
+    .np-foot strong { color: #105b38; }
+    .nota-history-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .nota-history-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+      padding: 0.65rem 0.8rem; border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      background: #fff; flex-wrap: wrap;
+    }
+    .nota-history-main { min-width: 0; flex: 1 1 220px; }
+    .nota-history-title { font-weight: 700; color: var(--dark); font-size: 0.9rem; }
+    .nota-history-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+    .nota-history-actions { display: flex; gap: 0.35rem; }
+    .btn-action-nota { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .btn-action-nota:hover { background: #d1fae5; }
+    @media (max-width: 960px) {
+      .nota-layout { grid-template-columns: 1fr; }
+      .nota-preview-card { position: static; }
+    }
+    @media (max-width: 640px) {
+      .nota-items-head, .nota-item-row { grid-template-columns: minmax(0, 1fr) 52px 96px 32px; gap: 0.3rem; }
+      .nota-item-row input { font-size: 16px; padding: 0.45rem 0.45rem; }
+      .nota-actions .btn { font-size: 0.78rem; padding: 0.6rem 0.35rem; }
+      .nota-preview-scroll { padding: 0.5rem; }
+      .nota-preview-card { padding: 0.75rem; }
+    }
     .op-radio-list {
       display: flex;
       flex-direction: column;
@@ -1844,6 +2041,10 @@
         <i class="fas fa-clipboard-list"></i>
         <span>Input Booking</span>
       </button>
+      <button type="button" class="tab-btn" id="tabBtnNota">
+        <i class="fas fa-file-invoice-dollar"></i>
+        <span>Nota</span>
+      </button>
       <button type="button" class="tab-btn" id="tabBtnBookings">
         <i class="fas fa-list-check"></i>
         <span>Daftar Reservasi Tamu</span>
@@ -2087,7 +2288,7 @@
                 <th style="padding-left: 1rem; min-width: 136px;">Guide</th>
                 <th style="min-width: 136px;">Driver</th>
                 <th style="min-width: 92px; text-align: center;">Makan siang</th>
-                <th style="text-align: center; min-width: 135px;">Aksi</th>
+                <th style="text-align: center; min-width: 205px;">Aksi</th>
                 <th>Makan siang (Biaya)</th>
                 <th>Guide (Biaya)</th>
                 <th>Bensin</th>
@@ -2425,6 +2626,129 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- PANE 5: NOTA CYCLING TOUR -->
+    <div id="paneNota" style="display: none;">
+      <div class="nota-layout">
+        <!-- Form Input Nota -->
+        <section class="op-form-card nota-form-card">
+          <div class="op-form-header">
+            <h3><i class="fas fa-file-invoice-dollar" style="color: var(--primary);"></i> Buat Nota Cycling Tour</h3>
+            <button type="button" class="btn btn-outline" id="btnNotaNew" style="padding: 0.4rem 0.75rem; font-size: 0.78rem;"><i class="fas fa-plus"></i> Nota Baru</button>
+          </div>
+          <div class="op-form-body">
+            <form id="notaForm" autocomplete="off" onsubmit="return false;">
+              <div class="op-form-grid">
+                <div class="form-group">
+                  <label for="notaNumber">No. Nota</label>
+                  <input type="text" id="notaNumber" placeholder="DBT-261121-01">
+                </div>
+                <div class="form-group">
+                  <label for="notaDate">Tanggal Nota</label>
+                  <input type="date" id="notaDate">
+                </div>
+                <div class="form-group">
+                  <label for="notaGuestName">Nama Tamu *</label>
+                  <input type="text" id="notaGuestName" placeholder="Nama tamu / group">
+                </div>
+                <div class="form-group">
+                  <label for="notaPhone">Phone / WA</label>
+                  <input type="text" id="notaPhone" placeholder="+62 ...">
+                </div>
+                <div class="form-group">
+                  <label for="notaHotel">Hotel / Alamat Jemput</label>
+                  <input type="text" id="notaHotel" placeholder="Nama hotel / villa">
+                </div>
+                <div class="form-group">
+                  <label for="notaTourDate">Tanggal Tur</label>
+                  <input type="date" id="notaTourDate">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label for="notaPackage">Paket Tour</label>
+                  <input type="text" id="notaPackage" list="opPackageDatalist" placeholder="Kintamani Downhill (Regular Package)">
+                </div>
+              </div>
+
+              <div class="nota-section-title">
+                <span><i class="fas fa-list-ul"></i> Rincian Biaya</span>
+                <select id="notaCurrency" class="select-filter" style="padding: 0.3rem 0.5rem; font-size: 0.8rem; width: auto;">
+                  <option value="IDR" selected>IDR (Rp)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="AUD">AUD (A$)</option>
+                </select>
+              </div>
+              <div class="nota-items-head">
+                <span>Deskripsi</span><span>Qty</span><span>Harga</span><span></span>
+              </div>
+              <div id="notaItems"></div>
+              <div class="nota-quick-items">
+                <button type="button" class="op-chip" id="btnNotaAddItem"><i class="fas fa-plus"></i> Tambah Baris</button>
+                <button type="button" class="op-chip" data-nota-item="Adult">+ Adult</button>
+                <button type="button" class="op-chip" data-nota-item="Child">+ Child</button>
+                <button type="button" class="op-chip" data-nota-item="E-bike upgrade">+ E-bike</button>
+                <button type="button" class="op-chip" data-nota-item="Child seat / Backseat">+ Child seat</button>
+              </div>
+
+              <div class="op-form-grid" style="margin-top: 0.9rem;">
+                <div class="form-group">
+                  <label for="notaDiscount">Diskon</label>
+                  <input type="number" id="notaDiscount" min="0" step="any" placeholder="0">
+                </div>
+                <div class="form-group">
+                  <label for="notaPaid">Sudah Dibayar (DP / Lunas)</label>
+                  <input type="number" id="notaPaid" min="0" step="any" placeholder="0">
+                </div>
+                <div class="form-group">
+                  <label for="notaPayMethod">Metode Pembayaran</label>
+                  <select id="notaPayMethod">
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="QRIS">QRIS</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Wise">Wise</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Status</label>
+                  <div class="nota-status-auto" id="notaStatusAuto">-</div>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label for="notaNote">Catatan</label>
+                  <textarea id="notaNote" rows="2" placeholder="Contoh: Termasuk makan siang, jemput hotel, asuransi"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- Preview & Actions -->
+        <section class="nota-preview-card">
+          <div class="nota-actions">
+            <button type="button" class="btn btn-primary" id="btnNotaSave"><i class="fas fa-save"></i> Simpan</button>
+            <button type="button" class="btn btn-outline" id="btnNotaDownloadPng"><i class="fas fa-image"></i> Foto</button>
+            <button type="button" class="btn btn-outline" id="btnNotaDownloadPdf"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button type="button" class="btn nota-btn-share" id="btnNotaSharePng"><i class="fas fa-share-nodes"></i> Share Foto</button>
+            <button type="button" class="btn nota-btn-share" id="btnNotaSharePdf"><i class="fas fa-share-nodes"></i> Share PDF</button>
+          </div>
+          <div class="nota-preview-scroll">
+            <div id="notaPaperFit"><div class="nota-paper" id="notaPaper"></div></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Riwayat Nota Tersimpan -->
+      <section class="op-form-card" style="margin-top: 1.25rem;">
+        <div class="op-form-header">
+          <h3><i class="fas fa-clock-rotate-left" style="color: var(--primary);"></i> Nota Tersimpan</h3>
+          <span class="total-counter-badge" id="notaHistoryCount">0 Nota</span>
+        </div>
+        <div class="op-form-body" style="padding-top: 0.5rem;">
+          <div id="notaHistoryList" class="nota-history-list"></div>
+        </div>
+      </section>
     </div>
 
   </main>
@@ -3310,11 +3634,17 @@ Message / Special Requests: ${specialRequests}`;
     const closedCounter = document.getElementById('closedCounter');
 
     // Tab Switching Function
+    const tabBtnNota = document.getElementById('tabBtnNota');
+    const paneNota = document.getElementById('paneNota');
     function switchTab(target) {
-      [tabBtnBookings, tabBtnOperational, tabBtnInputBooking, tabBtnClosedDates].forEach(b => b && b.classList.remove('active'));
-      [paneBookings, paneOperational, paneInputBooking, paneClosedDates].forEach(p => { if (p) p.style.display = 'none'; });
+      [tabBtnBookings, tabBtnOperational, tabBtnInputBooking, tabBtnClosedDates, tabBtnNota].forEach(b => b && b.classList.remove('active'));
+      [paneBookings, paneOperational, paneInputBooking, paneClosedDates, paneNota].forEach(p => { if (p) p.style.display = 'none'; });
 
-      if (target === 'closedDates') {
+      if (target === 'nota') {
+        if (tabBtnNota) tabBtnNota.classList.add('active');
+        if (paneNota) paneNota.style.display = 'block';
+        if (typeof window.notaOnShow === 'function') window.notaOnShow();
+      } else if (target === 'closedDates') {
         if (tabBtnClosedDates) tabBtnClosedDates.classList.add('active');
         if (paneClosedDates) paneClosedDates.style.display = 'block';
       } else if (target === 'inputBooking') {
@@ -3333,6 +3663,8 @@ Message / Special Requests: ${specialRequests}`;
     if (tabBtnOperational) tabBtnOperational.addEventListener('click', () => switchTab('operational'));
     if (tabBtnInputBooking) tabBtnInputBooking.addEventListener('click', () => switchTab('inputBooking'));
     if (tabBtnClosedDates) tabBtnClosedDates.addEventListener('click', () => switchTab('closedDates'));
+    if (tabBtnNota) tabBtnNota.addEventListener('click', () => switchTab('nota'));
+    window.switchAdminTab = switchTab;
 
     // Radio Button Type Toggle (Single vs Range)
     const dateTypeRadios = document.querySelectorAll('input[name="closedDateType"]');
@@ -4455,6 +4787,9 @@ Message / Special Requests: ${specialRequests}`;
                 <button type="button" class="btn-action btn-action-edit" onclick="openOpEditModal(${item.row})" title="Edit Jadwal & Keuangan">
                   <i class="fas fa-edit"></i> Edit
                 </button>
+                <button type="button" class="btn-action btn-action-nota" onclick="openNotaFromBooking(${item.row})" title="Buat Nota dari booking ini">
+                  <i class="fas fa-file-invoice-dollar"></i> Nota
+                </button>
               </div>
             </td>
             <td class="op-money">${formatRupiah(makanBiaya)}</td>
@@ -4848,6 +5183,447 @@ Message / Special Requests: ${specialRequests}`;
       const menu = document.getElementById('opJenisDropdownMenu');
       if (menu && menu.style.display !== 'none') menu.style.display = 'none';
     });
+
+    // =====================================================================
+    // NOTA CYCLING TOUR (Input, Preview, Simpan, Foto/PDF, Share)
+    // =====================================================================
+    const NOTA_STORAGE_KEY = 'dewa_nota_history';
+    const NOTA_CUR_SYMBOL = { IDR: 'Rp ', USD: '$', EUR: '€', AUD: 'A$' };
+    const notaForm = document.getElementById('notaForm');
+    const notaItemsEl = document.getElementById('notaItems');
+    const notaPaper = document.getElementById('notaPaper');
+    const notaPaperFit = document.getElementById('notaPaperFit');
+    const notaFieldIds = ['notaNumber', 'notaDate', 'notaGuestName', 'notaPhone', 'notaHotel', 'notaTourDate', 'notaPackage', 'notaCurrency', 'notaDiscount', 'notaPaid', 'notaPayMethod', 'notaNote'];
+    const notaEl = id => document.getElementById(id);
+    let notaFileCache = null; // { key, png: File, pdf: File }
+
+    function notaNum(v) {
+      const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, ''));
+      return isNaN(n) ? 0 : n;
+    }
+    function notaFmt(n, cur) {
+      const c = cur || 'IDR';
+      const sym = NOTA_CUR_SYMBOL[c] || (c + ' ');
+      const opts = c === 'IDR' ? { maximumFractionDigits: 0 } : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+      const neg = n < 0 ? '-' : '';
+      return neg + sym + Math.abs(n).toLocaleString(c === 'IDR' ? 'id-ID' : 'en-US', opts);
+    }
+    function notaFmtDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso + 'T00:00:00');
+      if (isNaN(d.getTime())) return iso;
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    function notaLoadHistory() {
+      try { return JSON.parse(localStorage.getItem(NOTA_STORAGE_KEY) || '[]') || []; } catch (e) { return []; }
+    }
+    function notaSaveHistory(list) {
+      localStorage.setItem(NOTA_STORAGE_KEY, JSON.stringify(list.slice(0, 200)));
+    }
+    function notaGenerateNumber(isoDate) {
+      const iso = isoDate || getLocalIsoDate(0);
+      const prefix = 'DBT-' + iso.slice(2, 4) + iso.slice(5, 7) + iso.slice(8, 10) + '-';
+      const used = notaLoadHistory().map(n => n.number).filter(n => String(n || '').startsWith(prefix));
+      let seq = 1;
+      while (used.includes(prefix + String(seq).padStart(2, '0'))) seq++;
+      return prefix + String(seq).padStart(2, '0');
+    }
+
+    function notaAddItemRow(desc = '', qty = 1, price = '') {
+      if (!notaItemsEl) return;
+      const row = document.createElement('div');
+      row.className = 'nota-item-row';
+      row.innerHTML = `
+        <input type="text" class="nota-item-desc" placeholder="Contoh: Adult" value="${escapeHtml(desc)}">
+        <input type="number" class="nota-item-qty" min="0" step="1" value="${escapeHtml(String(qty))}">
+        <input type="number" class="nota-item-price" min="0" step="any" placeholder="0" value="${escapeHtml(String(price))}">
+        <button type="button" class="nota-item-del" title="Hapus baris"><i class="fas fa-times"></i></button>`;
+      row.querySelector('.nota-item-del').addEventListener('click', () => {
+        row.remove();
+        if (!notaItemsEl.children.length) notaAddItemRow();
+        notaRenderPreview();
+      });
+      notaItemsEl.appendChild(row);
+      return row;
+    }
+
+    function notaCollect() {
+      const data = {};
+      notaFieldIds.forEach(id => { const el = notaEl(id); data[id.replace(/^nota/, '').replace(/^./, c => c.toLowerCase())] = el ? el.value.trim() : ''; });
+      data.items = Array.from(notaItemsEl ? notaItemsEl.querySelectorAll('.nota-item-row') : []).map(r => ({
+        desc: r.querySelector('.nota-item-desc').value.trim(),
+        qty: notaNum(r.querySelector('.nota-item-qty').value),
+        price: notaNum(r.querySelector('.nota-item-price').value)
+      })).filter(it => it.desc || it.price);
+      data.subtotal = data.items.reduce((s, it) => s + it.qty * it.price, 0);
+      data.discountNum = notaNum(data.discount);
+      data.total = Math.max(0, data.subtotal - data.discountNum);
+      data.paidNum = notaNum(data.paid);
+      data.balance = data.total - data.paidNum;
+      if (data.total > 0 && data.paidNum >= data.total) data.status = 'paid';
+      else if (data.paidNum > 0) data.status = 'partial';
+      else data.status = 'unpaid';
+      return data;
+    }
+
+    function notaFitPreview() {
+      if (!notaPaper || !notaPaperFit) return;
+      const container = notaPaperFit.parentElement;
+      const avail = container ? container.clientWidth - parseFloat(getComputedStyle(container).paddingLeft) * 2 : 420;
+      const k = Math.min(1, avail / 420);
+      if (k < 1) {
+        notaPaper.style.transform = `scale(${k})`;
+        notaPaper.style.transformOrigin = 'top left';
+        notaPaper.style.margin = '0';
+        notaPaperFit.style.height = (notaPaper.offsetHeight * k) + 'px';
+        notaPaperFit.style.width = (420 * k) + 'px';
+        notaPaperFit.style.margin = '0 auto';
+      } else {
+        notaPaper.style.transform = '';
+        notaPaper.style.margin = '0 auto';
+        notaPaperFit.style.height = '';
+        notaPaperFit.style.width = '';
+      }
+    }
+
+    function notaRenderPreview() {
+      if (!notaPaper) return;
+      notaFileCache = null;
+      const d = notaCollect();
+      const cur = d.currency || 'IDR';
+      const statusLabel = { paid: 'PAID', partial: 'DEPOSIT', unpaid: 'UNPAID' }[d.status];
+      const statusText = { paid: 'LUNAS', partial: 'DP / Belum Lunas', unpaid: 'Belum Dibayar' }[d.status];
+      const statusEl = notaEl('notaStatusAuto');
+      if (statusEl) { statusEl.textContent = statusText; statusEl.className = 'nota-status-auto ' + d.status; }
+
+      const itemsHtml = d.items.length ? d.items.map(it => `
+        <tr>
+          <td>${escapeHtml(it.desc || '-')}</td>
+          <td class="c">${it.qty}</td>
+          <td class="r">${notaFmt(it.price, cur)}</td>
+          <td class="r">${notaFmt(it.qty * it.price, cur)}</td>
+        </tr>`).join('') : `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Belum ada rincian biaya</td></tr>`;
+
+      notaPaper.innerHTML = `
+        <div class="np-head">
+          <div class="np-brand">
+            <img src="../images/logo.png" alt="Dewa Bike Tour" crossorigin="anonymous">
+            <div>
+              <div class="np-brand-name">Dewa Bike Tour Bali</div>
+              <div class="np-brand-sub">Jl. Arjuna, Br. Abianseka No. 16, Mas, Ubud<br>+62 813-3954-5689 · dewabiketour@gmail.com<br>www.dewabike.com</div>
+            </div>
+          </div>
+          <div class="np-title">
+            <div class="np-title-main">RECEIPT</div>
+            <div class="np-title-meta">No: <strong>${escapeHtml(d.number || '-')}</strong><br>Date: ${escapeHtml(notaFmtDate(d.date))}</div>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-info">
+            <div>
+              <div class="np-label">Guest</div>
+              <div class="np-value">${escapeHtml(d.guestName || '-')}</div>
+              ${d.phone ? `<div class="np-label">Phone</div><div class="np-value">${escapeHtml(d.phone)}</div>` : ''}
+              ${d.hotel ? `<div class="np-label">Hotel / Pick-up</div><div class="np-value">${escapeHtml(d.hotel)}</div>` : ''}
+            </div>
+            <div>
+              <div class="np-label">Tour Date</div>
+              <div class="np-value">${escapeHtml(notaFmtDate(d.tourDate))}</div>
+              <div class="np-label">Tour Package</div>
+              <div class="np-value">${escapeHtml(d.package || '-')}</div>
+            </div>
+          </div>
+          <table class="np-table">
+            <thead><tr><th>Description</th><th class="c">Qty</th><th class="r">Price</th><th class="r">Amount</th></tr></thead>
+            <tbody>${itemsHtml}</tbody>
+          </table>
+          <div class="np-totals">
+            <div class="np-totals-row"><span>Subtotal</span><span>${notaFmt(d.subtotal, cur)}</span></div>
+            ${d.discountNum ? `<div class="np-totals-row"><span>Discount</span><span>-${notaFmt(d.discountNum, cur)}</span></div>` : ''}
+            <div class="np-totals-row grand"><span>Total</span><span>${notaFmt(d.total, cur)}</span></div>
+            <div class="np-totals-row"><span>Paid</span><span>${notaFmt(d.paidNum, cur)}</span></div>
+            ${d.balance > 0 ? `<div class="np-totals-row due"><span>Balance Due</span><span>${notaFmt(d.balance, cur)}</span></div>` : ''}
+          </div>
+          <div class="np-stamp-wrap">
+            <div class="np-pay">Payment: <strong>${escapeHtml(d.payMethod || '-')}</strong></div>
+            <div class="np-stamp ${d.status}">${statusLabel}</div>
+          </div>
+          ${d.note ? `<div class="np-note">${escapeHtml(d.note)}</div>` : ''}
+          <div class="np-foot">
+            <strong>Thank you for cycling with Dewa Bike Tour!</strong><br>
+            Terima kasih · Have a wonderful time in Bali
+          </div>
+        </div>`;
+      const img = notaPaper.querySelector('img');
+      if (img && !img.complete) img.addEventListener('load', notaFitPreview, { once: true });
+      notaFitPreview();
+    }
+
+    function notaFill(data) {
+      notaFieldIds.forEach(id => {
+        const key = id.replace(/^nota/, '').replace(/^./, c => c.toLowerCase());
+        const el = notaEl(id);
+        if (el && data[key] !== undefined) el.value = data[key];
+      });
+      if (notaItemsEl) {
+        notaItemsEl.innerHTML = '';
+        (data.items && data.items.length ? data.items : [{ desc: '', qty: 1, price: '' }])
+          .forEach(it => notaAddItemRow(it.desc, it.qty, it.price || ''));
+      }
+      notaRenderPreview();
+    }
+
+    function notaReset(prefill = {}) {
+      const today = getLocalIsoDate(0);
+      notaFill(Object.assign({
+        number: notaGenerateNumber(today), date: today, guestName: '', phone: '', hotel: '',
+        tourDate: '', package: '', currency: 'IDR', discount: '', paid: '', payMethod: 'Cash', note: '',
+        items: [{ desc: '', qty: 1, price: '' }]
+      }, prefill));
+    }
+
+    function notaRenderHistory() {
+      const listEl = notaEl('notaHistoryList');
+      const countEl = notaEl('notaHistoryCount');
+      if (!listEl) return;
+      const list = notaLoadHistory();
+      if (countEl) countEl.textContent = `${list.length} Nota`;
+      if (!list.length) {
+        listEl.innerHTML = '<p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 0.75rem;">Belum ada nota tersimpan.</p>';
+        return;
+      }
+      listEl.innerHTML = list.map((n, idx) => {
+        const st = { paid: 'LUNAS', partial: 'DP', unpaid: 'BELUM' }[n.status] || '';
+        return `
+          <div class="nota-history-item">
+            <div class="nota-history-main">
+              <div class="nota-history-title">${escapeHtml(n.number || '-')} · ${escapeHtml(n.guestName || '-')}</div>
+              <div class="nota-history-sub">${escapeHtml(notaFmtDate(n.tourDate))} · ${escapeHtml(n.package || '-')} · <strong>${notaFmt(n.total || 0, n.currency)}</strong> · ${st}</div>
+            </div>
+            <div class="nota-history-actions">
+              <button type="button" class="btn-action btn-action-edit" onclick="notaOpenSaved(${idx})"><i class="fas fa-folder-open"></i> Buka</button>
+              <button type="button" class="btn-action btn-action-del" onclick="notaDeleteSaved(${idx})" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function notaSaveCurrent(silent) {
+      const d = notaCollect();
+      if (!d.guestName) { showToast('Isi Nama Tamu terlebih dahulu.', 'warning'); return null; }
+      if (!d.number) { d.number = notaGenerateNumber(d.date); notaEl('notaNumber').value = d.number; }
+      const record = {
+        number: d.number, date: d.date, guestName: d.guestName, phone: d.phone, hotel: d.hotel,
+        tourDate: d.tourDate, package: d.package, currency: d.currency, discount: d.discount, paid: d.paid,
+        payMethod: d.payMethod, note: d.note, items: d.items, total: d.total, status: d.status,
+        savedAt: new Date().toISOString()
+      };
+      const list = notaLoadHistory().filter(n => n.number !== record.number);
+      list.unshift(record);
+      notaSaveHistory(list);
+      notaRenderHistory();
+      if (!silent) showToast(`Nota ${record.number} tersimpan!`);
+      return record;
+    }
+
+    window.notaOpenSaved = function(idx) {
+      const n = notaLoadHistory()[idx];
+      if (!n) return;
+      notaFill(n);
+      window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
+      showToast(`Nota ${n.number} dibuka.`);
+    };
+    window.notaDeleteSaved = function(idx) {
+      const list = notaLoadHistory();
+      const n = list[idx];
+      if (!n || !confirm(`Hapus nota ${n.number} (${n.guestName})?`)) return;
+      list.splice(idx, 1);
+      notaSaveHistory(list);
+      notaRenderHistory();
+      showToast('Nota dihapus.');
+    };
+
+    // Lazy-load library export (hanya saat dibutuhkan agar halaman tetap ringan)
+    const notaScriptPromises = {};
+    function notaLoadScript(src) {
+      if (!notaScriptPromises[src]) {
+        notaScriptPromises[src] = new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = () => { delete notaScriptPromises[src]; reject(new Error('Gagal memuat ' + src)); };
+          document.head.appendChild(s);
+        });
+      }
+      return notaScriptPromises[src];
+    }
+
+    function notaFileBaseName(d) {
+      const safe = s => String(s || '').replace(/[^a-zA-Z0-9\-]+/g, '_').replace(/^_+|_+$/g, '');
+      return ['Nota', safe(d.number), safe(d.guestName)].filter(Boolean).join('_');
+    }
+
+    async function notaBuildFiles() {
+      const d = notaCollect();
+      const key = JSON.stringify(d);
+      if (notaFileCache && notaFileCache.key === key) return notaFileCache;
+      await Promise.all([
+        notaLoadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+        notaLoadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')
+      ]);
+      if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+      const prevTransform = notaPaper.style.transform;
+      notaPaper.style.transform = 'none';
+      let canvas;
+      try {
+        canvas = await window.html2canvas(notaPaper, {
+          scale: 3,
+          backgroundColor: '#ffffff',
+          useCORS: true,
+          logging: false,
+          width: 420,
+          height: notaPaper.offsetHeight,
+          onclone: doc => {
+            const el = doc.getElementById('notaPaper');
+            if (el) { el.style.transform = 'none'; el.style.margin = '0'; el.style.boxShadow = 'none'; el.style.borderRadius = '0'; }
+          }
+        });
+      } finally {
+        notaPaper.style.transform = prevTransform;
+        notaFitPreview();
+      }
+      const base = notaFileBaseName(d);
+      const pngBlob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      const pdfW = 105; // mm (lebar A6, pas untuk nota)
+      const pdfH = canvas.height * pdfW / canvas.width;
+      const pdf = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: [pdfW, pdfH] });
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
+      const pdfBlob = pdf.output('blob');
+      notaFileCache = {
+        key,
+        png: new File([pngBlob], base + '.png', { type: 'image/png' }),
+        pdf: new File([pdfBlob], base + '.pdf', { type: 'application/pdf' }),
+        data: d
+      };
+      return notaFileCache;
+    }
+
+    function notaDownloadFile(file) {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+
+    async function notaShareFile(file, d) {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `Receipt ${d.number || ''}`.trim(),
+          text: `Receipt ${d.number || ''} - ${d.guestName || ''} - Dewa Bike Tour Bali`
+        });
+        return true;
+      }
+      return false;
+    }
+
+    async function notaExport(kind, share, btn) {
+      const d0 = notaCollect();
+      if (!d0.guestName) { showToast('Isi Nama Tamu terlebih dahulu.', 'warning'); return; }
+      const cachedReady = notaFileCache && notaFileCache.key === JSON.stringify(d0);
+      // Jika file sudah siap, langsung share (menjaga "user gesture" di iOS Safari)
+      if (share && cachedReady) {
+        try {
+          const ok = await notaShareFile(notaFileCache[kind], notaFileCache.data);
+          if (!ok) { notaDownloadFile(notaFileCache[kind]); showToast('Browser tidak mendukung share, file diunduh.', 'warning'); }
+        } catch (err) {
+          if (err && err.name !== 'AbortError') showToast('Gagal share: ' + err.message, 'warning');
+        }
+        return;
+      }
+
+      const orig = btn ? btn.innerHTML : '';
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Proses...'; }
+      try {
+        notaSaveCurrent(true);
+        const files = await notaBuildFiles();
+        const file = files[kind];
+        if (share) {
+          try {
+            const ok = await notaShareFile(file, files.data);
+            if (!ok) { notaDownloadFile(file); showToast('Browser tidak mendukung share, file diunduh.', 'warning'); }
+          } catch (err) {
+            if (err && err.name === 'NotAllowedError') {
+              showToast('Nota siap! Ketuk tombol Share sekali lagi.', 'warning');
+            } else if (err && err.name !== 'AbortError') {
+              throw err;
+            }
+          }
+        } else {
+          notaDownloadFile(file);
+          showToast(`${kind === 'pdf' ? 'PDF' : 'Foto'} nota berhasil diunduh!`);
+        }
+      } catch (err) {
+        alert('Gagal membuat nota: ' + err.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = orig; }
+      }
+    }
+
+    window.openNotaFromBooking = function(rowNumber) {
+      const item = allOpBookings.find(x => x.row === rowNumber);
+      if (!item) return;
+      const detail = String(item.detail || '');
+      const locMatch = detail.match(/(?:location|pick\s*-?\s*up|hotel)\s*:\s*(.+)/i);
+      const price = parseRupiahNum(item.pendapatan) || '';
+      notaReset({
+        guestName: item.name || '',
+        phone: item.phone || '',
+        hotel: locMatch ? locMatch[1].trim() : '',
+        tourDate: parseOpDateToIso(item.tourDate) || '',
+        package: item.tourPackage || '',
+        items: [{ desc: item.tourPackage || 'Cycling Tour', qty: 1, price }]
+      });
+      if (window.switchAdminTab) window.switchAdminTab('nota');
+      window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
+    };
+
+    let notaInitialized = false;
+    window.notaOnShow = function() {
+      if (!notaInitialized) {
+        notaInitialized = true;
+        if (!notaEl('notaNumber').value) notaReset();
+        notaRenderHistory();
+      }
+      requestAnimationFrame(notaFitPreview);
+    };
+
+    if (notaForm) {
+      notaForm.addEventListener('input', notaRenderPreview);
+      notaForm.addEventListener('change', notaRenderPreview);
+      const addBtn = notaEl('btnNotaAddItem');
+      if (addBtn) addBtn.addEventListener('click', () => { const r = notaAddItemRow(); if (r) r.querySelector('input').focus(); notaRenderPreview(); });
+      document.querySelectorAll('[data-nota-item]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const empty = Array.from(notaItemsEl.querySelectorAll('.nota-item-row')).find(r => !r.querySelector('.nota-item-desc').value.trim() && !r.querySelector('.nota-item-price').value);
+          const row = empty || notaAddItemRow();
+          row.querySelector('.nota-item-desc').value = chip.dataset.notaItem;
+          row.querySelector('.nota-item-price').focus();
+          notaRenderPreview();
+        });
+      });
+      notaEl('btnNotaNew').addEventListener('click', () => { notaReset(); showToast('Form nota baru siap.'); });
+      notaEl('btnNotaSave').addEventListener('click', () => notaSaveCurrent(false));
+      notaEl('btnNotaDownloadPng').addEventListener('click', e => notaExport('png', false, e.currentTarget));
+      notaEl('btnNotaDownloadPdf').addEventListener('click', e => notaExport('pdf', false, e.currentTarget));
+      notaEl('btnNotaSharePng').addEventListener('click', e => notaExport('png', true, e.currentTarget));
+      notaEl('btnNotaSharePdf').addEventListener('click', e => notaExport('pdf', true, e.currentTarget));
+      window.addEventListener('resize', () => { if (paneNota && paneNota.style.display !== 'none') notaFitPreview(); });
+    }
 
     // Copy Operational Booking Detail (Hanya isi kolom DETAIL saja, full ke samping)
     window.copyOpBookingDetail = async function(rowNumber, btnEl) {
