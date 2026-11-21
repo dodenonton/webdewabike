@@ -1524,7 +1524,9 @@
       width: 100%;
       min-width: 280px;
       max-width: 380px;
-      white-space: pre-wrap;
+      display: flex;
+      flex-direction: column;
+      gap: 0.36rem;
       overflow-wrap: anywhere;
       word-break: break-word;
       box-sizing: border-box;
@@ -1533,8 +1535,14 @@
       font-size: 0.96rem;
       font-weight: 500;
       color: #0f172a;
-      line-height: 1.55;
+      line-height: 1.24;
       letter-spacing: 0.005em;
+    }
+    .op-detail-line {
+      line-height: 1.24;
+    }
+    .op-detail-spacer {
+      height: 0.3rem;
     }
     .op-detail-color-bar {
       display: flex;
@@ -1765,7 +1773,7 @@
         min-width: 112px !important;
         max-width: 112px;
       }
-      .op-detail-cell { min-width: 250px; max-width: 295px; padding-right: 0.75rem; font-size: 0.96rem; line-height: 1.55; font-weight: 500; color: #0f172a; }
+      .op-detail-cell { min-width: 250px; max-width: 295px; padding-right: 0.75rem; font-size: 0.96rem; line-height: 1.24; font-weight: 500; color: #0f172a; }
       .op-inline-input { font-size: 16px; min-width: 128px; }
       .op-inline-input-makan { min-width: 78px; }
 
@@ -4206,6 +4214,15 @@ Message / Special Requests: ${specialRequests}`;
       renderOpTable();
     };
 
+    function formatOpDetailHtml(detailText) {
+      const raw = String(detailText || '').trim();
+      if (!raw) return '<div class="op-detail-line">-</div>';
+      return raw.split(/\r?\n/).map(line => {
+        if (!line.trim()) return '<div class="op-detail-spacer"></div>';
+        return `<div class="op-detail-line">${escapeHtml(line)}</div>`;
+      }).join('');
+    }
+
     function renderOpTable() {
       if (!opTableBody) return;
       const todayIso = getLocalIsoDate(0);
@@ -4385,7 +4402,7 @@ Message / Special Requests: ${specialRequests}`;
               </button>
             </td>
             <td ${detailBg ? `data-detail-bg="true" style="--detail-bg: ${escapeHtml(detailBg)}; background-color: var(--detail-bg);"` : ''}>
-              <div class="op-detail-cell">${escapeHtml(item.detail || '-')}</div>
+              <div class="op-detail-cell">${formatOpDetailHtml(item.detail)}</div>
               <div class="op-detail-color-bar">
                 <span>Warna Detail:</span>
                 ${detailSwatchButtons}
