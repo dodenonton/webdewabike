@@ -1272,6 +1272,12 @@
       border: none;
     }
     .nota-btn-share:hover { background: var(--wa-dark); color: #fff; }
+    .nota-btn-drive {
+      background: #1d4ed8;
+      color: #fff;
+      border: none;
+    }
+    .nota-btn-drive:hover { background: #1e40af; color: #fff; }
     .nota-preview-scroll {
       overflow: hidden;
       background: #e2e8f0;
@@ -2712,8 +2718,13 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label>Status</label>
-                  <div class="nota-status-auto" id="notaStatusAuto">-</div>
+                  <label for="notaStatusMode">Status Pembayaran</label>
+                  <select id="notaStatusMode">
+                    <option value="auto">Otomatis</option>
+                    <option value="paid">Sudah Bayar (LUNAS)</option>
+                    <option value="partial">DP / Belum Lunas</option>
+                    <option value="unpaid">Belum Dibayar</option>
+                  </select>
                 </div>
                 <div class="form-group" style="grid-column: 1 / -1;">
                   <label for="notaNote">Catatan</label>
@@ -2732,7 +2743,9 @@
             <button type="button" class="btn btn-outline" id="btnNotaDownloadPdf"><i class="fas fa-file-pdf"></i> PDF</button>
             <button type="button" class="btn nota-btn-share" id="btnNotaSharePng"><i class="fas fa-share-nodes"></i> Share Foto</button>
             <button type="button" class="btn nota-btn-share" id="btnNotaSharePdf"><i class="fas fa-share-nodes"></i> Share PDF</button>
+            <button type="button" class="btn nota-btn-drive" id="btnNotaDrive" title="Simpan PDF nota ke Google Drive"><i class="fab fa-google-drive"></i> Drive</button>
           </div>
+          <div id="notaDriveResult" style="display: none; margin-bottom: 0.75rem; padding: 0.55rem 0.75rem; border-radius: 8px; background: #eff6ff; border: 1px solid #bfdbfe; font-size: 0.8rem; color: #1e3a8a;"></div>
           <div class="nota-preview-scroll">
             <div id="notaPaperFit"><div class="nota-paper" id="notaPaper"></div></div>
           </div>
@@ -5193,7 +5206,7 @@ Message / Special Requests: ${specialRequests}`;
     const notaItemsEl = document.getElementById('notaItems');
     const notaPaper = document.getElementById('notaPaper');
     const notaPaperFit = document.getElementById('notaPaperFit');
-    const notaFieldIds = ['notaNumber', 'notaDate', 'notaGuestName', 'notaPhone', 'notaHotel', 'notaTourDate', 'notaPackage', 'notaCurrency', 'notaDiscount', 'notaPaid', 'notaPayMethod', 'notaNote'];
+    const notaFieldIds = ['notaNumber', 'notaDate', 'notaGuestName', 'notaPhone', 'notaHotel', 'notaTourDate', 'notaPackage', 'notaCurrency', 'notaDiscount', 'notaPaid', 'notaPayMethod', 'notaStatusMode', 'notaNote'];
     const notaEl = id => document.getElementById(id);
     let notaFileCache = null; // { key, png: File, pdf: File }
 
@@ -5259,10 +5272,17 @@ Message / Special Requests: ${specialRequests}`;
       data.discountNum = notaNum(data.discount);
       data.total = Math.max(0, data.subtotal - data.discountNum);
       data.paidNum = notaNum(data.paid);
-      data.balance = data.total - data.paidNum;
-      if (data.total > 0 && data.paidNum >= data.total) data.status = 'paid';
-      else if (data.paidNum > 0) data.status = 'partial';
-      else data.status = 'unpaid';
+      if (data.statusMode && data.statusMode !== 'auto') {
+        data.status = data.statusMode;
+        if (data.status === 'paid' && data.total > 0 && data.paidNum < data.total) {
+          data.paidNum = data.total;
+        }
+      } else {
+        if (data.total > 0 && data.paidNum >= data.total) data.status = 'paid';
+        else if (data.paidNum > 0) data.status = 'partial';
+        else data.status = 'unpaid';
+      }
+      data.balance = Math.max(0, data.total - data.paidNum);
       return data;
     }
 
@@ -5292,9 +5312,6 @@ Message / Special Requests: ${specialRequests}`;
       const d = notaCollect();
       const cur = d.currency || 'IDR';
       const statusLabel = { paid: 'PAID', partial: 'DEPOSIT', unpaid: 'UNPAID' }[d.status];
-      const statusText = { paid: 'LUNAS', partial: 'DP / Belum Lunas', unpaid: 'Belum Dibayar' }[d.status];
-      const statusEl = notaEl('notaStatusAuto');
-      if (statusEl) { statusEl.textContent = statusText; statusEl.className = 'nota-status-auto ' + d.status; }
 
       const itemsHtml = d.items.length ? d.items.map(it => `
         <tr>
@@ -5375,9 +5392,11 @@ Message / Special Requests: ${specialRequests}`;
 
     function notaReset(prefill = {}) {
       const today = getLocalIsoDate(0);
+      const driveRes = notaEl('notaDriveResult');
+      if (driveRes) { driveRes.style.display = 'none'; driveRes.innerHTML = ''; }
       notaFill(Object.assign({
         number: notaGenerateNumber(today), date: today, guestName: '', phone: '', hotel: '',
-        tourDate: '', package: '', currency: 'IDR', discount: '', paid: '', payMethod: 'Cash', note: '',
+        tourDate: '', package: '', currency: 'IDR', discount: '', paid: '', payMethod: 'Cash', statusMode: 'auto', note: '',
         items: [{ desc: '', qty: 1, price: '' }]
       }, prefill));
     }
@@ -5415,7 +5434,7 @@ Message / Special Requests: ${specialRequests}`;
       const record = {
         number: d.number, date: d.date, guestName: d.guestName, phone: d.phone, hotel: d.hotel,
         tourDate: d.tourDate, package: d.package, currency: d.currency, discount: d.discount, paid: d.paid,
-        payMethod: d.payMethod, note: d.note, items: d.items, total: d.total, status: d.status,
+        payMethod: d.payMethod, statusMode: d.statusMode, note: d.note, items: d.items, total: d.total, status: d.status,
         savedAt: new Date().toISOString()
       };
       const list = notaLoadHistory().filter(n => n.number !== record.number);
@@ -5621,7 +5640,60 @@ Message / Special Requests: ${specialRequests}`;
       notaEl('btnNotaDownloadPng').addEventListener('click', e => notaExport('png', false, e.currentTarget));
       notaEl('btnNotaDownloadPdf').addEventListener('click', e => notaExport('pdf', false, e.currentTarget));
       notaEl('btnNotaSharePng').addEventListener('click', e => notaExport('png', true, e.currentTarget));
+      async function notaSaveToDrive(btn) {
+        const d0 = notaCollect();
+        if (!d0.guestName) { showToast('Isi Nama Tamu terlebih dahulu.', 'warning'); return; }
+        const orig = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Mengunggah...'; }
+        const driveRes = notaEl('notaDriveResult');
+        try {
+          notaSaveCurrent(true);
+          const files = await notaBuildFiles();
+          const pdfFile = files.pdf;
+          const base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const s = String(reader.result || '');
+              const idx = s.indexOf(',');
+              resolve(idx >= 0 ? s.slice(idx + 1) : s);
+            };
+            reader.onerror = () => reject(new Error('Gagal membaca file PDF'));
+            reader.readAsDataURL(pdfFile);
+          });
+          const payload = JSON.stringify({
+            action: 'saveNotaToDrive',
+            noEmail: true,
+            fileName: pdfFile.name,
+            mimeType: 'application/pdf',
+            base64
+          });
+          const resp = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: payload
+          });
+          const json = await resp.json();
+          if (json && json.status === 'success') {
+            showToast('Nota berhasil disimpan ke Google Drive!');
+            if (driveRes) {
+              driveRes.style.display = 'block';
+              driveRes.innerHTML = `<i class="fab fa-google-drive"></i> Tersimpan di Drive: <strong>${escapeHtml(json.fileName || pdfFile.name)}</strong> ` +
+                (json.fileUrl ? `— <a href="${escapeHtml(json.fileUrl)}" target="_blank" rel="noopener" style="font-weight:700; color:#1d4ed8; text-decoration:underline;">Buka File</a>` : '') +
+                (json.folderUrl ? ` · <a href="${escapeHtml(json.folderUrl)}" target="_blank" rel="noopener" style="font-weight:700; color:#1d4ed8; text-decoration:underline;">Buka Folder</a>` : '');
+            }
+          } else {
+            throw new Error((json && json.message) || 'Aksi saveNotaToDrive belum aktif di Google Apps Script. Deploy ulang google-apps-script.js.');
+          }
+        } catch (err) {
+          alert('Gagal menyimpan ke Google Drive: ' + err.message);
+        } finally {
+          if (btn) { btn.disabled = false; btn.innerHTML = orig; }
+        }
+      }
+
       notaEl('btnNotaSharePdf').addEventListener('click', e => notaExport('pdf', true, e.currentTarget));
+      const driveBtn = notaEl('btnNotaDrive');
+      if (driveBtn) driveBtn.addEventListener('click', e => notaSaveToDrive(e.currentTarget));
       window.addEventListener('resize', () => { if (paneNota && paneNota.style.display !== 'none') notaFitPreview(); });
     }
 

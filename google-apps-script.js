@@ -341,6 +341,28 @@ function deleteOpBookingsBeforeYear_(cutoffYearParam) {
   };
 }
 
+function saveNotaToDrive_(data) {
+  if (!data || !data.base64) {
+    return { status: "error", message: "Data file nota kosong." };
+  }
+  var folderName = "Nota Dewa Bike Tour";
+  var folders = DriveApp.getFoldersByName(folderName);
+  var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(folderName);
+  var bytes = Utilities.base64Decode(data.base64);
+  var mimeType = data.mimeType || "application/pdf";
+  var fileName = data.fileName || ("Nota_" + Utilities.formatDate(new Date(), "Asia/Makassar", "yyyyMMdd_HHmmss") + ".pdf");
+  var blob = Utilities.newBlob(bytes, mimeType, fileName);
+  var file = folder.createFile(blob);
+  return {
+    status: "success",
+    fileId: file.getId(),
+    fileName: file.getName(),
+    fileUrl: file.getUrl(),
+    folderUrl: folder.getUrl(),
+    message: "Nota berhasil disimpan ke Google Drive (" + folderName + ")."
+  };
+}
+
 function bulkImportOpBookings_(rowsInput, clearExisting) {
   var opSheet = getOperationalSheet_();
   if (clearExisting === true) {
@@ -655,6 +677,10 @@ function doPost(e) {
     }
     if (data.action === "bulkImportOpBookings") {
       return ContentService.createTextOutput(JSON.stringify(bulkImportOpBookings_(data.rows, data.clearExisting === true)))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.action === "saveNotaToDrive") {
+      return ContentService.createTextOutput(JSON.stringify(saveNotaToDrive_(data)))
         .setMimeType(ContentService.MimeType.JSON);
     }
 
