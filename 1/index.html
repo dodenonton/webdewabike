@@ -1740,12 +1740,101 @@
       color: #0f172a;
       line-height: 1.24;
       letter-spacing: 0.005em;
+      cursor: text;
+      border-radius: 6px;
+    }
+    .op-detail-cell:hover {
+      background: rgba(15, 23, 42, 0.03);
     }
     .op-detail-line {
       line-height: 1.24;
     }
     .op-detail-spacer {
       height: 0.3rem;
+    }
+    .op-detail-inline-textarea {
+      width: 100%;
+      min-width: 280px;
+      max-width: 380px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 6px;
+      padding: 2px 4px;
+      margin: -2px -4px;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.96rem;
+      font-weight: 500;
+      color: #0f172a;
+      line-height: 1.42;
+      resize: none;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .op-cell-editable {
+      cursor: text;
+      border-radius: 5px;
+      padding: 2px 4px;
+      margin: -2px -4px;
+      min-height: 22px;
+      display: inline-block;
+      width: 100%;
+    }
+    .op-cell-editable:hover {
+      background: rgba(15, 23, 42, 0.04);
+    }
+    .op-cell-inline-input {
+      width: 100%;
+      min-width: 90px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: 5px;
+      padding: 2px 4px;
+      margin: -2px -4px;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      color: var(--dark);
+      box-sizing: border-box;
+    }
+    .op-pkg-menu {
+      position: fixed;
+      z-index: 3100;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+      padding: 0.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 260px;
+      max-width: 340px;
+    }
+    .op-pkg-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      padding: 0.45rem 0.65rem;
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--dark);
+      cursor: pointer;
+    }
+    .op-pkg-item:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+    .op-pkg-item.is-custom {
+      border-top: 1px dashed var(--border);
+      margin-top: 0.15rem;
+      padding-top: 0.5rem;
+      color: var(--primary);
     }
     .op-detail-color-bar {
       display: flex;
@@ -1977,6 +2066,7 @@
         max-width: 112px;
       }
       .op-detail-cell { min-width: 250px; max-width: 295px; padding-right: 0.75rem; font-size: 0.96rem; line-height: 1.24; font-weight: 500; color: #0f172a; }
+      .op-detail-inline-textarea { font-size: 16px; min-width: 250px; max-width: 295px; }
       .op-inline-input { font-size: 16px; min-width: 128px; }
       .op-inline-input-makan { min-width: 78px; }
 
@@ -2276,6 +2366,7 @@
         <datalist id="opDriverDatalist"></datalist>
         <div id="opInlineSuggestPopup" class="op-suggest-popup" style="display: none;"></div>
         <div id="opJenisDropdownMenu" class="op-jenis-menu" style="display: none;"></div>
+        <div id="opPackageDropdownMenu" class="op-pkg-menu" style="display: none;"></div>
         <div class="table-responsive">
           <table class="bookings-table op-table">
             <thead>
@@ -4753,7 +4844,7 @@ Message / Special Requests: ${specialRequests}`;
         return `
           <tr style="--row-bg: ${escapeHtml(rowBg)}; background-color: var(--row-bg);">
             <td class="op-sticky-col">
-              <strong>${escapeHtml(item.tourDate || '-')}</strong>
+              <strong class="op-cell-editable" onclick="editOpCellInline(this, ${item.row}, 'tourDate', 'date')" title="Klik untuk edit Tanggal">${escapeHtml(item.tourDate || '-')}</strong>
               ${dateBadge}
               ${reorderControls}
             </td>
@@ -4764,12 +4855,12 @@ Message / Special Requests: ${specialRequests}`;
               </div>
             </td>
             <td style="font-size: 0.74rem; color: var(--text-muted);">${escapeHtml(item.timestamp || '-')}</td>
-            <td>${escapeHtml(item.bookingAddress || '-')}</td>
-            <td>${escapeHtml(item.phone || '-')}</td>
-            <td>${escapeHtml(item.country || '-')}</td>
-            <td><strong>${escapeHtml(item.name || '-')}</strong></td>
-            <td>${escapeHtml(item.tourPackage || '-')}</td>
-            <td style="white-space: nowrap;">${escapeHtml(item.jam || '-')}</td>
+            <td><span class="op-cell-editable" onclick="editOpCellInline(this, ${item.row}, 'bookingAddress', 'text')" title="Klik untuk edit Booking Address">${escapeHtml(item.bookingAddress || '-')}</span></td>
+            <td><span class="op-cell-editable" onclick="editOpCellInline(this, ${item.row}, 'phone', 'text')" title="Klik untuk edit Phone / WA">${escapeHtml(item.phone || '-')}</span></td>
+            <td><span class="op-cell-editable" onclick="editOpCellInline(this, ${item.row}, 'country', 'text')" title="Klik untuk edit Country">${escapeHtml(item.country || '-')}</span></td>
+            <td><strong class="op-cell-editable" onclick="editOpCellInline(this, ${item.row}, 'name', 'text')" title="Klik untuk edit Name">${escapeHtml(item.name || '-')}</strong></td>
+            <td><span class="op-cell-editable" style="cursor: pointer;" onclick="openOpPackageDropdown(event, ${item.row}, this)" title="Klik untuk pilih / ubah Paket Tur">${escapeHtml(item.tourPackage || '-')}</span></td>
+            <td style="white-space: nowrap;"><span class="op-cell-editable" onclick="editOpCellInline(this, ${item.row}, 'jam', 'time')" title="Klik untuk edit Jam">${escapeHtml(item.jam || '-')}</span></td>
             <td>
               <button type="button" class="op-jenis-pill" data-jenis="${escapeHtml(item.jenisTur || '')}" onclick="openOpJenisDropdown(event, ${item.row}, this)" title="Klik untuk ubah Jenis Tur">
                 <span>${escapeHtml(item.jenisTur || '-')}</span>
@@ -4777,7 +4868,7 @@ Message / Special Requests: ${specialRequests}`;
               </button>
             </td>
             <td ${detailBg ? `data-detail-bg="true" style="--detail-bg: ${escapeHtml(detailBg)}; background-color: var(--detail-bg);"` : ''}>
-              <div class="op-detail-cell">${formatOpDetailHtml(item.detail)}</div>
+              <div class="op-detail-cell" onclick="editOpDetailInline(this, ${item.row})" title="Klik untuk edit Detail langsung (klik luar / Ctrl+Enter untuk simpan, Esc untuk batal)">${formatOpDetailHtml(item.detail)}</div>
               <div class="op-detail-color-bar">
                 <span>Warna Detail:</span>
                 ${detailSwatchButtons}
@@ -5070,6 +5161,222 @@ Message / Special Requests: ${specialRequests}`;
       }
     };
 
+    window.editOpDetailInline = function(cellEl, rowNumber) {
+      if (!cellEl || cellEl.dataset.editing === '1') return;
+      const item = allOpBookings.find(x => x.row === rowNumber);
+      const origVal = item ? String(item.detail || '') : '';
+      cellEl.dataset.editing = '1';
+
+      const ta = document.createElement('textarea');
+      ta.className = 'op-detail-inline-textarea';
+      ta.value = origVal;
+      cellEl.innerHTML = '';
+      cellEl.appendChild(ta);
+
+      const resize = () => {
+        ta.style.height = 'auto';
+        ta.style.height = Math.max(48, ta.scrollHeight) + 'px';
+      };
+      resize();
+      ta.focus();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+
+      let cancelled = false;
+      ta.addEventListener('input', resize);
+      ta.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          cancelled = true;
+          ta.blur();
+        } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          ta.blur();
+        }
+      });
+
+      ta.addEventListener('blur', async () => {
+        delete cellEl.dataset.editing;
+        if (cancelled) {
+          cellEl.innerHTML = formatOpDetailHtml(origVal);
+          return;
+        }
+        const newVal = ta.value.trim();
+        cellEl.innerHTML = formatOpDetailHtml(newVal);
+        if (newVal === origVal.trim()) return;
+
+        if (item) item.detail = newVal;
+        try {
+          const callbackName = 'cb_op_detail_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+          const params = new URLSearchParams({
+            action: 'updateOpBooking',
+            noEmail: 'true',
+            row: rowNumber,
+            detail: newVal
+          });
+          const res = await fetchJSONP(`${APPS_SCRIPT_URL}?${params.toString()}`, callbackName);
+          if (res && res.status === 'success') {
+            showToast(`Detail baris #${rowNumber} disimpan!`);
+          } else {
+            throw new Error((res && res.message) || 'Gagal menyimpan');
+          }
+        } catch (err) {
+          showToast('Detail diubah lokal (gagal sinkron ke Sheets).', 'warning');
+        }
+      });
+    };
+
+    window.editOpCellInline = function(cellEl, rowNumber, field, inputType = 'text') {
+      if (!cellEl || cellEl.dataset.editing === '1') return;
+      const fieldLabels = {
+        tourDate: 'Date', timestamp: 'Timestamp', bookingAddress: 'Booking Address',
+        phone: 'Phone / WA', country: 'Country', name: 'Name',
+        tourPackage: 'Tour Package', jam: 'Jam'
+      };
+      const item = allOpBookings.find(x => x.row === rowNumber);
+      const origRaw = item ? String(item[field] || '') : '';
+      cellEl.dataset.editing = '1';
+
+      const inp = document.createElement('input');
+      inp.type = inputType;
+      inp.className = 'op-cell-inline-input';
+      if (inputType === 'date') {
+        inp.value = parseOpDateToIso(origRaw) || '';
+      } else if (inputType === 'time') {
+        inp.value = origRaw.slice(0, 5);
+      } else {
+        inp.value = origRaw;
+      }
+
+      cellEl.innerHTML = '';
+      cellEl.appendChild(inp);
+      inp.focus();
+      if (inputType === 'text') inp.select();
+
+      let cancelled = false;
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          cancelled = true;
+          inp.blur();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          inp.blur();
+        }
+      });
+
+      inp.addEventListener('blur', async () => {
+        delete cellEl.dataset.editing;
+        if (cancelled) {
+          cellEl.textContent = origRaw || '-';
+          return;
+        }
+        let newVal = inp.value.trim();
+        if (inputType === 'date' && newVal) {
+          newVal = formatIsoToDmy(newVal);
+        }
+        cellEl.textContent = newVal || '-';
+        if (newVal === origRaw.trim()) return;
+
+        if (item) item[field] = newVal;
+        if (field === 'tourDate') {
+          updateOpCounts();
+          renderOpTable();
+        }
+        try {
+          const callbackName = 'cb_op_cell_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+          const params = new URLSearchParams({
+            action: 'updateOpBooking',
+            noEmail: 'true',
+            row: rowNumber
+          });
+          params.set(field, newVal);
+          const res = await fetchJSONP(`${APPS_SCRIPT_URL}?${params.toString()}`, callbackName);
+          if (res && res.status === 'success') {
+            showToast(`${fieldLabels[field] || field} baris #${rowNumber} disimpan!`);
+          } else {
+            throw new Error((res && res.message) || 'Gagal menyimpan');
+          }
+        } catch (err) {
+          showToast(`${fieldLabels[field] || field} diubah lokal (gagal sinkron ke Sheets).`, 'warning');
+        }
+      });
+    };
+
+    window.openOpPackageDropdown = function(e, rowNumber, cellEl) {
+      e.stopPropagation();
+      const menu = document.getElementById('opPackageDropdownMenu');
+      if (!menu || !cellEl) return;
+      const jenisMenu = document.getElementById('opJenisDropdownMenu');
+      if (jenisMenu) jenisMenu.style.display = 'none';
+
+      const packages = [
+        'Kintamani Downhill (Regular Package)',
+        'Ubud Countryside with Rice Fields (Regular Package)',
+        'E-Bike Ubud Countryside with Rice Fields (Regular Package)',
+        'Around Mount Batur (Regular Package)',
+        'Ubud Countryside with Rice Fields (Saving Package)',
+        'E-Bike Ubud Countryside with Rice Fields (Saving Package)'
+      ];
+
+      menu.innerHTML = '';
+      packages.forEach(pkg => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'op-pkg-item';
+        btn.textContent = pkg;
+        btn.onclick = async (ev) => {
+          ev.stopPropagation();
+          menu.style.display = 'none';
+          const item = allOpBookings.find(x => x.row === rowNumber);
+          const oldVal = item ? String(item.tourPackage || '').trim() : '';
+          cellEl.textContent = pkg;
+          if (pkg === oldVal) return;
+          if (item) item.tourPackage = pkg;
+          try {
+            const callbackName = 'cb_op_pkg_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const params = new URLSearchParams({
+              action: 'updateOpBooking',
+              noEmail: 'true',
+              row: rowNumber,
+              tourPackage: pkg
+            });
+            const res = await fetchJSONP(`${APPS_SCRIPT_URL}?${params.toString()}`, callbackName);
+            if (res && res.status === 'success') {
+              showToast(`Tour Package baris #${rowNumber} disimpan!`);
+            } else {
+              throw new Error((res && res.message) || 'Gagal menyimpan');
+            }
+          } catch (err) {
+            showToast('Tour Package diubah lokal (gagal sinkron ke Sheets).', 'warning');
+          }
+        };
+        menu.appendChild(btn);
+      });
+
+      const customBtn = document.createElement('button');
+      customBtn.type = 'button';
+      customBtn.className = 'op-pkg-item is-custom';
+      customBtn.innerHTML = '<i class="fas fa-pen" style="margin-right: 0.35rem;"></i> Isi sendiri...';
+      customBtn.onclick = (ev) => {
+        ev.stopPropagation();
+        menu.style.display = 'none';
+        editOpCellInline(cellEl, rowNumber, 'tourPackage', 'text');
+      };
+      menu.appendChild(customBtn);
+
+      const rect = cellEl.getBoundingClientRect();
+      menu.style.left = Math.min(rect.left, window.innerWidth - 280) + 'px';
+      const spaceBelow = window.innerHeight - rect.bottom;
+      if (spaceBelow < 260 && rect.top > 260) {
+        menu.style.top = 'auto';
+        menu.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+      } else {
+        menu.style.bottom = 'auto';
+        menu.style.top = (rect.bottom + 4) + 'px';
+      }
+      menu.style.display = 'flex';
+    };
+
     window.updateOpInlineField = async function(rowNumber, field, inputEl) {
       const fieldLabels = { guide: 'Guide', driver: 'Driver', makanSiang: 'Makan siang' };
       if (!fieldLabels[field]) return;
@@ -5196,6 +5503,8 @@ Message / Special Requests: ${specialRequests}`;
     document.addEventListener('click', () => {
       const menu = document.getElementById('opJenisDropdownMenu');
       if (menu && menu.style.display !== 'none') menu.style.display = 'none';
+      const pkgMenu = document.getElementById('opPackageDropdownMenu');
+      if (pkgMenu && pkgMenu.style.display !== 'none') pkgMenu.style.display = 'none';
     });
 
     // =====================================================================
@@ -5599,18 +5908,39 @@ Message / Special Requests: ${specialRequests}`;
       const item = allOpBookings.find(x => x.row === rowNumber);
       if (!item) return;
       const detail = String(item.detail || '');
+      const notaMatch = (detail + '\n' + String(item.ket || '')).match(/nota\s*:\s*([A-Za-z0-9\-]+)/i);
+      const linkedNo = notaMatch ? notaMatch[1].trim() : '';
+
+      if (linkedNo) {
+        const saved = notaLoadHistory().find(n => String(n.number || '').toLowerCase() === linkedNo.toLowerCase());
+        if (saved) {
+          notaFill(saved);
+          if (window.switchAdminTab) window.switchAdminTab('nota');
+          window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
+          showToast(`Membuka Nota ${saved.number}`);
+          return;
+        }
+      }
+
       const locMatch = detail.match(/(?:location|pick\s*-?\s*up|hotel)\s*:\s*(.+)/i);
-      const price = parseRupiahNum(item.pendapatan) || '';
-      notaReset({
+      let price = parseRupiahNum(item.pendapatan) || '';
+      if (!price) {
+        const hargaMatch = detail.match(/harga\s*(?:net|total)?\s*:\s*(?:rp\.?\s*)?([0-9.,]+)/i);
+        if (hargaMatch) price = parseRupiahNum(hargaMatch[1]) || '';
+      }
+      const prefill = {
         guestName: item.name || '',
         phone: item.phone || '',
         hotel: locMatch ? locMatch[1].trim() : '',
         tourDate: parseOpDateToIso(item.tourDate) || '',
         package: item.tourPackage || '',
         items: [{ desc: item.tourPackage || 'Cycling Tour', qty: 1, price }]
-      });
+      };
+      if (linkedNo) prefill.number = linkedNo;
+      notaReset(prefill);
       if (window.switchAdminTab) window.switchAdminTab('nota');
       window.scrollTo({ top: (paneNota ? paneNota.offsetTop : 0) - 10, behavior: 'smooth' });
+      if (linkedNo) showToast(`Terhubung ke Nota ${linkedNo}`);
     };
 
     let notaInitialized = false;
